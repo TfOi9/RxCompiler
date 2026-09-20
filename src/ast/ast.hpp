@@ -78,7 +78,9 @@ struct Crate: AstNode {
     explicit Crate(SourceSpan span): AstNode(span, NodeType::Crate) {}
 };
 
-struct TypeRef;
+struct TypeRef {
+    // TODO unimplemented
+};
 
 struct FunctionParam {
     SourceSpan span;
@@ -99,10 +101,43 @@ struct SelfParam {
     std::optional<Lifetime> lifetime;
 };
 
-struct GenericParam;
+struct LifetimeBounds {
+    SourceSpan span;
+    std::vector<Lifetime> lifetimes;
+};
+
+struct TypeParamBounds {
+    SourceSpan span;
+    std::vector<Lifetime> lifetimes;
+};
+
+struct GenericParam {
+    SourceSpan span;
+    Lifetime lifetime;
+    std::optional<LifetimeBounds> lifetime_bounds;
+};
+
+struct LifetimeWhereClauseItem {
+    SourceSpan span;
+    Lifetime lifetime;
+    LifetimeBounds lifetime_bounds;
+};
+
+struct TypeBoundWhereClauseItem {
+    SourceSpan span;
+    TypeRef type;
+    TypeParamBounds type_param_bounds;
+};
+
+struct WhereClauseItem {
+    SourceSpan span;
+    std::optional<LifetimeWhereClauseItem> lifetime;
+    std::optional<TypeBoundWhereClauseItem> type_bound;
+};
 
 struct WhereClause {
-    // TODO unimplemented
+    SourceSpan span;
+    std::vector<WhereClauseItem> items;
 };
 
 struct BlockExpr;
@@ -141,6 +176,30 @@ struct StructItem: Item {
     std::vector<GenericParam> generic_params;
     std::optional<WhereClause> where_clause;
     std::vector<StructField> struct_fields;
+};
+
+struct ConstValue {
+    // TODO unimplemented
+};
+
+struct ConstantItem: Item {
+    SourceSpan span;
+    TypeRef type;
+    ConstValue value;
+};
+
+struct AssociatedItem {
+    SourceSpan span;
+    std::optional<ConstantItem> constant;
+    std::optional<FunctionParam> function;
+};
+
+struct ImplItem: Item {
+    SourceSpan span;
+    std::vector<GenericParam> generic_params;
+    TypeRef type;
+    std::optional<WhereClause> where_clause;
+    std::vector<AssociatedItem> associated_items;
 };
 
 } // namespace ast
