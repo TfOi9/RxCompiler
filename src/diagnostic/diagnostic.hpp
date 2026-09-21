@@ -12,21 +12,21 @@ enum class Severity {
 
 struct Diagnostic {
     Severity severity;
-    ast::SourceSpan span;
+    ast::SourceLocation location;
     std::string message;
 };
 
 class DiagnosticBase {
 public:
     virtual ~DiagnosticBase() = default;
-    virtual void add_entry(Severity severity, ast::SourceSpan span, const std::string& message) = 0;
+    virtual void add_entry(Severity severity, ast::SourceLocation location, const std::string& message) = 0;
     virtual bool has_error() = 0;
 };
 
 class DiagnosticCollector final: public DiagnosticBase {
 public:
     ~DiagnosticCollector() override = default;
-    void add_entry(Severity severity, ast::SourceSpan span, const std::string& message) override;
+    void add_entry(Severity severity, ast::SourceLocation location, const std::string& message) override;
     bool has_error() override;
     std::vector<Diagnostic> diagnostics();
 
