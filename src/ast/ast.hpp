@@ -52,11 +52,13 @@ enum class NodeType {
     ArrayExpr,
     StructExpr,
     UnitExpr,
+    GroupedExpr,
 
     UnitType,
     PathType,
     ReferenceType,
-    ArrayType
+    ArrayType,
+    ParenthesizedType
 };
 
 struct AstNode {
@@ -128,7 +130,7 @@ struct LifetimeWhereClauseItem {
 struct TypeBoundWhereClauseItem {
     SourceSpan span;
     AstPtr<TypeRef> type;
-    TypeParamBounds type_param_bounds;
+    std::optional<TypeParamBounds> type_param_bounds;
 };
 
 struct WhereClauseItem {
@@ -184,8 +186,78 @@ struct StructItem: Item {
     explicit StructItem(SourceSpan span): Item(span, NodeType::StructItem) {}
 };
 
+enum class MagnitudeType {
+    IntegerLiteral,
+    ConstantPath,
+    Parenthesized
+};
+
+enum class IntegerSuffix {
+    None,
+    I32,
+    U32,
+    Isize,
+    Usize
+};
+
+struct IntegerLiteralValue {
+    SourceSpan span;
+    std::string spelling;
+    IntegerSuffix suffix = IntegerSuffix::None;
+};
+
+struct PathIdentSegment {
+    SourceSpan span;
+    std::optional<std::string> name;
+    bool is_self = 0;
+    bool is_Self = 0;
+};
+
+struct GenericArg {
+    SourceSpan span;
+    std::optional<Lifetime> lifetime;
+    std::optional<AstPtr<TypeRef>> type;
+};
+struct GenericArgs {
+    SourceSpan span;
+    std::vector<GenericArg> args;
+};
+
+struct PathExprSegment {
+    SourceSpan span;
+    PathIdentSegment ident_segment;
+    std::optional<GenericArgs> generic_args;
+};
+
+struct PathInExpression {
+    SourceSpan span;
+    std::vector<PathExprSegment> segments;
+};
+
+struct Magnitude {
+    SourceSpan span;
+    MagnitudeType type;
+    std::optional<IntegerLiteralValue> value;
+    std::optional<PathInExpression> path;
+    AstPtr<Magnitude> inner;
+};
+
+enum class ConstValueType {
+    Integer,
+    Boolean,
+    ConstantPath,
+    NegatedMagnitude,
+    Parenthesized
+};
+
 struct ConstValue {
-    // TODO unimplemented
+    SourceSpan span;
+    ConstValueType type;
+    std::optional<IntegerLiteralValue> integer;
+    std::optional<bool> boolean;
+    std::optional<PathInExpression> path;
+    AstPtr<Magnitude> magnitude;
+    AstPtr<ConstValue> inner;
 };
 
 struct ConstantItem: Item {
@@ -238,32 +310,8 @@ struct ExpressionStatement: Statement {
     explicit ExpressionStatement(SourceSpan span): Statement(span, NodeType::ExprStmt) {}
 };
 
-struct PathIdentSegment {
-    SourceSpan span;
-    std::optional<std::string> name;
-    bool is_self = 0;
-    bool is_Self = 0;
-};
-
-struct GenericArg {
-    SourceSpan span;
-    std::optional<Lifetime> lifetime;
-    std::optional<AstPtr<TypeRef>> type;
-};
-struct GenericArgs {
-    SourceSpan span;
-    std::vector<GenericArg> args;
-};
-
-struct PathExprSegment {
-    SourceSpan span;
-    PathIdentSegment ident_segment;
-    std::optional<GenericArgs> generic_args;
-};
-
-struct PathInExpression {
-    SourceSpan span;
-    std::vector<PathExprSegment> segments;
+struct EmptyStatement: Statement {
+    explicit EmptyStatement(SourceSpan span): Statement(span, NodeType::EmptyStmt) {}
 };
 
 struct TypePathSegment {
@@ -297,20 +345,11 @@ struct ArrayType: TypeRef {
     explicit ArrayType(SourceSpan span): TypeRef(span, NodeType::ArrayType) {}
 };
 
-enum class IntegerSuffix {
-    None,
-    I32,
-    U32,
-    Isize,
-    Usize
-};
+struct ParenthesizedType: TypeRef {
+    AstPtr<TypeRef> type;
 
-struct IntegerLiteralValue {
-    SourceSpan span;
-    std::string spelling;
-    IntegerSuffix suffix = IntegerSuffix::None;
+    explicit ParenthesizedType(SourceSpan span): TypeRef(span, NodeType::ParenthesizedType) {}
 };
-
 struct IntegerExpression: Expression {
     IntegerLiteralValue value;
 
@@ -498,6 +537,12 @@ struct ReturnExpression: Expression {
     AstPtr<Expression> expr;
 
     explicit ReturnExpression(SourceSpan span): Expression(span, NodeType::ReturnExpr) {}
+};
+
+struct GroupedExpression:Expression {
+    AstPtr<Expression> expr;
+
+    explicit GroupedExpression(SourceSpan span): Expression(span, NodeType::GroupedExpr) {}
 };
 
 } // namespace ast
