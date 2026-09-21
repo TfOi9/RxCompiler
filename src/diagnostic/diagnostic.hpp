@@ -1,5 +1,6 @@
 #pragma once
 #include "../ast/ast.hpp"
+#include "antlr4-runtime.h"
 #include <string>
 #include <vector>
 
@@ -33,6 +34,22 @@ public:
 private:
     std::vector<Diagnostic> diagnostics_;
     bool has_error_ = false;
+};
+
+class AntlrErrorListener final: public antlr4::BaseErrorListener {
+public:
+    explicit AntlrErrorListener(std::unique_ptr<DiagnosticBase> diag): diag_(std::move(diag)) {}
+    void syntaxError(
+        antlr4::Recognizer*,
+        antlr4::Token* offendingSymbol,
+        size_t line,
+        size_t charPositionInLine,
+        const std::string& message,
+        std::exception_ptr
+    ) override;
+
+private:
+    std::unique_ptr<DiagnosticBase> diag_;
 };
 
 } // namespace diagnostic
