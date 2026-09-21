@@ -2,7 +2,7 @@
 // Generated from grammar/Lexer.g4 by ANTLR 4.13.2
 
 
-#include "Lexer.h"
+#include "RxLexer.h"
 
 
 using namespace antlr4;
@@ -13,8 +13,8 @@ using namespace antlr4;
 
 namespace {
 
-struct LexerStaticData final {
-  LexerStaticData(std::vector<std::string> ruleNames,
+struct RxLexerStaticData final {
+  RxLexerStaticData(std::vector<std::string> ruleNames,
                           std::vector<std::string> channelNames,
                           std::vector<std::string> modeNames,
                           std::vector<std::string> literalNames,
@@ -24,10 +24,10 @@ struct LexerStaticData final {
         symbolicNames(std::move(symbolicNames)),
         vocabulary(this->literalNames, this->symbolicNames) {}
 
-  LexerStaticData(const LexerStaticData&) = delete;
-  LexerStaticData(LexerStaticData&&) = delete;
-  LexerStaticData& operator=(const LexerStaticData&) = delete;
-  LexerStaticData& operator=(LexerStaticData&&) = delete;
+  RxLexerStaticData(const RxLexerStaticData&) = delete;
+  RxLexerStaticData(RxLexerStaticData&&) = delete;
+  RxLexerStaticData& operator=(const RxLexerStaticData&) = delete;
+  RxLexerStaticData& operator=(RxLexerStaticData&&) = delete;
 
   std::vector<antlr4::dfa::DFA> decisionToDFA;
   antlr4::atn::PredictionContextCache sharedContextCache;
@@ -41,21 +41,21 @@ struct LexerStaticData final {
   std::unique_ptr<antlr4::atn::ATN> atn;
 };
 
-::antlr4::internal::OnceFlag lexerLexerOnceFlag;
+::antlr4::internal::OnceFlag rxlexerLexerOnceFlag;
 #if ANTLR4_USE_THREAD_LOCAL_CACHE
 static thread_local
 #endif
-std::unique_ptr<LexerStaticData> lexerLexerStaticData = nullptr;
+std::unique_ptr<RxLexerStaticData> rxlexerLexerStaticData = nullptr;
 
-void lexerLexerInitialize() {
+void rxlexerLexerInitialize() {
 #if ANTLR4_USE_THREAD_LOCAL_CACHE
-  if (lexerLexerStaticData != nullptr) {
+  if (rxlexerLexerStaticData != nullptr) {
     return;
   }
 #else
-  assert(lexerLexerStaticData == nullptr);
+  assert(rxlexerLexerStaticData == nullptr);
 #endif
-  auto staticData = std::make_unique<LexerStaticData>(
+  auto staticData = std::make_unique<RxLexerStaticData>(
     std::vector<std::string>{
       "AS", "BREAK", "CONST", "CONTINUE", "CRATE", "ELSE", "FALSE", "FN", 
       "IF", "IMPL", "LET", "LOOP", "MUT", "RETURN", "SELF_VALUE", "SELF_TYPE", 
@@ -846,55 +846,55 @@ void lexerLexerInitialize() {
   for (size_t i = 0; i < count; i++) { 
     staticData->decisionToDFA.emplace_back(staticData->atn->getDecisionState(i), i);
   }
-  lexerLexerStaticData = std::move(staticData);
+  rxlexerLexerStaticData = std::move(staticData);
 }
 
 }
 
-Lexer::Lexer(CharStream *input) : Lexer(input) {
-  Lexer::initialize();
-  _interpreter = new atn::LexerATNSimulator(this, *lexerLexerStaticData->atn, lexerLexerStaticData->decisionToDFA, lexerLexerStaticData->sharedContextCache);
+RxLexer::RxLexer(CharStream *input) : Lexer(input) {
+  RxLexer::initialize();
+  _interpreter = new atn::LexerATNSimulator(this, *rxlexerLexerStaticData->atn, rxlexerLexerStaticData->decisionToDFA, rxlexerLexerStaticData->sharedContextCache);
 }
 
-Lexer::~Lexer() {
+RxLexer::~RxLexer() {
   delete _interpreter;
 }
 
-std::string Lexer::getGrammarFileName() const {
-  return "Lexer.g4";
+std::string RxLexer::getGrammarFileName() const {
+  return "RxLexer.g4";
 }
 
-const std::vector<std::string>& Lexer::getRuleNames() const {
-  return lexerLexerStaticData->ruleNames;
+const std::vector<std::string>& RxLexer::getRuleNames() const {
+  return rxlexerLexerStaticData->ruleNames;
 }
 
-const std::vector<std::string>& Lexer::getChannelNames() const {
-  return lexerLexerStaticData->channelNames;
+const std::vector<std::string>& RxLexer::getChannelNames() const {
+  return rxlexerLexerStaticData->channelNames;
 }
 
-const std::vector<std::string>& Lexer::getModeNames() const {
-  return lexerLexerStaticData->modeNames;
+const std::vector<std::string>& RxLexer::getModeNames() const {
+  return rxlexerLexerStaticData->modeNames;
 }
 
-const dfa::Vocabulary& Lexer::getVocabulary() const {
-  return lexerLexerStaticData->vocabulary;
+const dfa::Vocabulary& RxLexer::getVocabulary() const {
+  return rxlexerLexerStaticData->vocabulary;
 }
 
-antlr4::atn::SerializedATNView Lexer::getSerializedATN() const {
-  return lexerLexerStaticData->serializedATN;
+antlr4::atn::SerializedATNView RxLexer::getSerializedATN() const {
+  return rxlexerLexerStaticData->serializedATN;
 }
 
-const atn::ATN& Lexer::getATN() const {
-  return *lexerLexerStaticData->atn;
+const atn::ATN& RxLexer::getATN() const {
+  return *rxlexerLexerStaticData->atn;
 }
 
 
 
 
-void Lexer::initialize() {
+void RxLexer::initialize() {
 #if ANTLR4_USE_THREAD_LOCAL_CACHE
-  lexerLexerInitialize();
+  rxlexerLexerInitialize();
 #else
-  ::antlr4::internal::call_once(lexerLexerOnceFlag, lexerLexerInitialize);
+  ::antlr4::internal::call_once(rxlexerLexerOnceFlag, rxlexerLexerInitialize);
 #endif
 }

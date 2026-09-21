@@ -47,6 +47,16 @@ rustup target add riscv32im-unknown-none-elf
 
 Makefile 是调用你编译器的统一入口。你需要编辑 [`config.mk`](config.mk) 并接入你的编译器命令。具体来说，需要配置以下字段：
 
+本仓库的 C++ 前端还提供了以下检查目标：
+
+```bash
+make build   # 编译 src 下的 C++ 源文件，并链接 ANTLR 4 C++ runtime
+make lint    # 使用相同的 ANTLR runtime 头文件和编译参数做语法检查
+make generate # 使用 ANTLR 重新生成 src/generated 下的 C++ 文件
+```
+
+ANTLR runtime 默认从 Homebrew 或系统目录查找；如果安装在其他位置，可以设置 `ANTLR4_ROOT`，例如 `make build ANTLR4_ROOT=/opt/antlr4-cpp-runtime`。重新生成语法文件时，如果 ANTLR 工具 jar 不在脚本默认路径，设置 `ANTLR4_JAR`。
+
 | 命令名称 | 用途 |
 | --- | --- |
 | `BUILD` | 构建编译器的命令，可为空。执行必须以退出码 0 结束。 |

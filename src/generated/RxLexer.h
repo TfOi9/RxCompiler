@@ -9,7 +9,7 @@
 
 
 
-class  Lexer : public antlr4::Lexer {
+class  RxLexer : public antlr4::Lexer {
 public:
   enum {
     AS = 1, BREAK = 2, CONST = 3, CONTINUE = 4, CRATE = 5, ELSE = 6, FALSE = 7, 
@@ -34,9 +34,9 @@ public:
     AFTER_GT = 1, AFTER_SECOND_GT = 2
   };
 
-  explicit Lexer(antlr4::CharStream *input);
+  explicit RxLexer(antlr4::CharStream *input);
 
-  ~Lexer() override;
+  ~RxLexer() override;
 
 
   std::string getGrammarFileName() const override;

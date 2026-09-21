@@ -49,6 +49,16 @@ In this course you can use **any language** to implement your compiler. Contact 
 
 The Makefile is our unified entrypoint in accessing your compiler. You are expected to edit [`config.mk`](config.mk) and hook in your compiler commands. In practice, specify in these fields:
 
+The C++ frontend also provides these local checks:
+
+```bash
+make build    # Compile src and link the ANTLR 4 C++ runtime
+make lint     # Syntax-check src with the same ANTLR runtime flags
+make generate # Regenerate the C++ sources under src/generated
+```
+
+The ANTLR runtime is searched for in Homebrew and common system locations. Set `ANTLR4_ROOT` when it is installed elsewhere, for example `make build ANTLR4_ROOT=/opt/antlr4-cpp-runtime`. Set `ANTLR4_JAR` when regenerating with an ANTLR tool jar outside the script's default paths.
+
 | Command Name | Purpose |
 | --- | --- |
 | `BUILD` | The command to build your compiler, can be empty. Must exit 0. |

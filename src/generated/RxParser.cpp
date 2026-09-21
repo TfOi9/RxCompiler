@@ -2,9 +2,9 @@
 // Generated from grammar/Parser.g4 by ANTLR 4.13.2
 
 
-#include "ParserVisitor.h"
+#include "RxParserVisitor.h"
 
-#include "Parser.h"
+#include "RxParser.h"
 
 
 using namespace antlrcpp;
@@ -13,18 +13,18 @@ using namespace antlr4;
 
 namespace {
 
-struct ParserStaticData final {
-  ParserStaticData(std::vector<std::string> ruleNames,
+struct RxParserStaticData final {
+  RxParserStaticData(std::vector<std::string> ruleNames,
                         std::vector<std::string> literalNames,
                         std::vector<std::string> symbolicNames)
       : ruleNames(std::move(ruleNames)), literalNames(std::move(literalNames)),
         symbolicNames(std::move(symbolicNames)),
         vocabulary(this->literalNames, this->symbolicNames) {}
 
-  ParserStaticData(const ParserStaticData&) = delete;
-  ParserStaticData(ParserStaticData&&) = delete;
-  ParserStaticData& operator=(const ParserStaticData&) = delete;
-  ParserStaticData& operator=(ParserStaticData&&) = delete;
+  RxParserStaticData(const RxParserStaticData&) = delete;
+  RxParserStaticData(RxParserStaticData&&) = delete;
+  RxParserStaticData& operator=(const RxParserStaticData&) = delete;
+  RxParserStaticData& operator=(RxParserStaticData&&) = delete;
 
   std::vector<antlr4::dfa::DFA> decisionToDFA;
   antlr4::atn::PredictionContextCache sharedContextCache;
@@ -36,21 +36,21 @@ struct ParserStaticData final {
   std::unique_ptr<antlr4::atn::ATN> atn;
 };
 
-::antlr4::internal::OnceFlag parserParserOnceFlag;
+::antlr4::internal::OnceFlag rxparserParserOnceFlag;
 #if ANTLR4_USE_THREAD_LOCAL_CACHE
 static thread_local
 #endif
-std::unique_ptr<ParserStaticData> parserParserStaticData = nullptr;
+std::unique_ptr<RxParserStaticData> rxparserParserStaticData = nullptr;
 
-void parserParserInitialize() {
+void rxparserParserInitialize() {
 #if ANTLR4_USE_THREAD_LOCAL_CACHE
-  if (parserParserStaticData != nullptr) {
+  if (rxparserParserStaticData != nullptr) {
     return;
   }
 #else
-  assert(parserParserStaticData == nullptr);
+  assert(rxparserParserStaticData == nullptr);
 #endif
-  auto staticData = std::make_unique<ParserStaticData>(
+  auto staticData = std::make_unique<RxParserStaticData>(
     std::vector<std::string>{
       "crate", "item", "useDeclaration", "useTree", "usePath", "usePathSegment", 
       "functionDefinition", "functionParameters", "selfParam", "functionParam", 
@@ -794,77 +794,77 @@ void parserParserInitialize() {
   for (size_t i = 0; i < count; i++) { 
     staticData->decisionToDFA.emplace_back(staticData->atn->getDecisionState(i), i);
   }
-  parserParserStaticData = std::move(staticData);
+  rxparserParserStaticData = std::move(staticData);
 }
 
 }
 
-Parser::Parser(TokenStream *input) : Parser(input, antlr4::atn::ParserATNSimulatorOptions()) {}
+RxParser::RxParser(TokenStream *input) : RxParser(input, antlr4::atn::ParserATNSimulatorOptions()) {}
 
-Parser::Parser(TokenStream *input, const antlr4::atn::ParserATNSimulatorOptions &options) : Parser(input) {
-  Parser::initialize();
-  _interpreter = new atn::ParserATNSimulator(this, *parserParserStaticData->atn, parserParserStaticData->decisionToDFA, parserParserStaticData->sharedContextCache, options);
+RxParser::RxParser(TokenStream *input, const antlr4::atn::ParserATNSimulatorOptions &options) : Parser(input) {
+  RxParser::initialize();
+  _interpreter = new atn::ParserATNSimulator(this, *rxparserParserStaticData->atn, rxparserParserStaticData->decisionToDFA, rxparserParserStaticData->sharedContextCache, options);
 }
 
-Parser::~Parser() {
+RxParser::~RxParser() {
   delete _interpreter;
 }
 
-const atn::ATN& Parser::getATN() const {
-  return *parserParserStaticData->atn;
+const atn::ATN& RxParser::getATN() const {
+  return *rxparserParserStaticData->atn;
 }
 
-std::string Parser::getGrammarFileName() const {
-  return "Parser.g4";
+std::string RxParser::getGrammarFileName() const {
+  return "RxParser.g4";
 }
 
-const std::vector<std::string>& Parser::getRuleNames() const {
-  return parserParserStaticData->ruleNames;
+const std::vector<std::string>& RxParser::getRuleNames() const {
+  return rxparserParserStaticData->ruleNames;
 }
 
-const dfa::Vocabulary& Parser::getVocabulary() const {
-  return parserParserStaticData->vocabulary;
+const dfa::Vocabulary& RxParser::getVocabulary() const {
+  return rxparserParserStaticData->vocabulary;
 }
 
-antlr4::atn::SerializedATNView Parser::getSerializedATN() const {
-  return parserParserStaticData->serializedATN;
+antlr4::atn::SerializedATNView RxParser::getSerializedATN() const {
+  return rxparserParserStaticData->serializedATN;
 }
 
 
 //----------------- CrateContext ------------------------------------------------------------------
 
-Parser::CrateContext::CrateContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::CrateContext::CrateContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-tree::TerminalNode* Parser::CrateContext::EOF() {
-  return getToken(Parser::EOF, 0);
+tree::TerminalNode* RxParser::CrateContext::EOF() {
+  return getToken(RxParser::EOF, 0);
 }
 
-std::vector<Parser::ItemContext *> Parser::CrateContext::item() {
-  return getRuleContexts<Parser::ItemContext>();
+std::vector<RxParser::ItemContext *> RxParser::CrateContext::item() {
+  return getRuleContexts<RxParser::ItemContext>();
 }
 
-Parser::ItemContext* Parser::CrateContext::item(size_t i) {
-  return getRuleContext<Parser::ItemContext>(i);
-}
-
-
-size_t Parser::CrateContext::getRuleIndex() const {
-  return Parser::RuleCrate;
+RxParser::ItemContext* RxParser::CrateContext::item(size_t i) {
+  return getRuleContext<RxParser::ItemContext>(i);
 }
 
 
-std::any Parser::CrateContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::CrateContext::getRuleIndex() const {
+  return RxParser::RuleCrate;
+}
+
+
+std::any RxParser::CrateContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitCrate(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::CrateContext* Parser::crate() {
+RxParser::CrateContext* RxParser::crate() {
   CrateContext *_localctx = _tracker.createInstance<CrateContext>(_ctx, getState());
-  enterRule(_localctx, 0, Parser::RuleCrate);
+  enterRule(_localctx, 0, RxParser::RuleCrate);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -880,7 +880,7 @@ Parser::CrateContext* Parser::crate() {
     _errHandler->sync(this);
     _la = _input->LA(1);
     while ((((_la & ~ 0x3fULL) == 0) &&
-      ((1ULL << _la) & 2360584) != 0) || _la == Parser::HASH) {
+      ((1ULL << _la) & 2360584) != 0) || _la == RxParser::HASH) {
       setState(294);
       item();
       setState(299);
@@ -888,7 +888,7 @@ Parser::CrateContext* Parser::crate() {
       _la = _input->LA(1);
     }
     setState(300);
-    match(Parser::EOF);
+    match(RxParser::EOF);
    
   }
   catch (RecognitionException &e) {
@@ -902,46 +902,46 @@ Parser::CrateContext* Parser::crate() {
 
 //----------------- ItemContext ------------------------------------------------------------------
 
-Parser::ItemContext::ItemContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ItemContext::ItemContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::UseDeclarationContext* Parser::ItemContext::useDeclaration() {
-  return getRuleContext<Parser::UseDeclarationContext>(0);
+RxParser::UseDeclarationContext* RxParser::ItemContext::useDeclaration() {
+  return getRuleContext<RxParser::UseDeclarationContext>(0);
 }
 
-Parser::FunctionDefinitionContext* Parser::ItemContext::functionDefinition() {
-  return getRuleContext<Parser::FunctionDefinitionContext>(0);
+RxParser::FunctionDefinitionContext* RxParser::ItemContext::functionDefinition() {
+  return getRuleContext<RxParser::FunctionDefinitionContext>(0);
 }
 
-Parser::StructDefinitionContext* Parser::ItemContext::structDefinition() {
-  return getRuleContext<Parser::StructDefinitionContext>(0);
+RxParser::StructDefinitionContext* RxParser::ItemContext::structDefinition() {
+  return getRuleContext<RxParser::StructDefinitionContext>(0);
 }
 
-Parser::ConstantItemContext* Parser::ItemContext::constantItem() {
-  return getRuleContext<Parser::ConstantItemContext>(0);
+RxParser::ConstantItemContext* RxParser::ItemContext::constantItem() {
+  return getRuleContext<RxParser::ConstantItemContext>(0);
 }
 
-Parser::InherentImplContext* Parser::ItemContext::inherentImpl() {
-  return getRuleContext<Parser::InherentImplContext>(0);
-}
-
-
-size_t Parser::ItemContext::getRuleIndex() const {
-  return Parser::RuleItem;
+RxParser::InherentImplContext* RxParser::ItemContext::inherentImpl() {
+  return getRuleContext<RxParser::InherentImplContext>(0);
 }
 
 
-std::any Parser::ItemContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ItemContext::getRuleIndex() const {
+  return RxParser::RuleItem;
+}
+
+
+std::any RxParser::ItemContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitItem(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ItemContext* Parser::item() {
+RxParser::ItemContext* RxParser::item() {
   ItemContext *_localctx = _tracker.createInstance<ItemContext>(_ctx, getState());
-  enterRule(_localctx, 2, Parser::RuleItem);
+  enterRule(_localctx, 2, RxParser::RuleItem);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -954,36 +954,36 @@ Parser::ItemContext* Parser::item() {
     setState(307);
     _errHandler->sync(this);
     switch (_input->LA(1)) {
-      case Parser::USE: {
+      case RxParser::USE: {
         enterOuterAlt(_localctx, 1);
         setState(302);
         useDeclaration();
         break;
       }
 
-      case Parser::FN: {
+      case RxParser::FN: {
         enterOuterAlt(_localctx, 2);
         setState(303);
         functionDefinition();
         break;
       }
 
-      case Parser::STRUCT:
-      case Parser::HASH: {
+      case RxParser::STRUCT:
+      case RxParser::HASH: {
         enterOuterAlt(_localctx, 3);
         setState(304);
         structDefinition();
         break;
       }
 
-      case Parser::CONST: {
+      case RxParser::CONST: {
         enterOuterAlt(_localctx, 4);
         setState(305);
         constantItem();
         break;
       }
 
-      case Parser::IMPL: {
+      case RxParser::IMPL: {
         enterOuterAlt(_localctx, 5);
         setState(306);
         inherentImpl();
@@ -1006,38 +1006,38 @@ Parser::ItemContext* Parser::item() {
 
 //----------------- UseDeclarationContext ------------------------------------------------------------------
 
-Parser::UseDeclarationContext::UseDeclarationContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::UseDeclarationContext::UseDeclarationContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-tree::TerminalNode* Parser::UseDeclarationContext::USE() {
-  return getToken(Parser::USE, 0);
+tree::TerminalNode* RxParser::UseDeclarationContext::USE() {
+  return getToken(RxParser::USE, 0);
 }
 
-Parser::UseTreeContext* Parser::UseDeclarationContext::useTree() {
-  return getRuleContext<Parser::UseTreeContext>(0);
+RxParser::UseTreeContext* RxParser::UseDeclarationContext::useTree() {
+  return getRuleContext<RxParser::UseTreeContext>(0);
 }
 
-tree::TerminalNode* Parser::UseDeclarationContext::SEMI() {
-  return getToken(Parser::SEMI, 0);
-}
-
-
-size_t Parser::UseDeclarationContext::getRuleIndex() const {
-  return Parser::RuleUseDeclaration;
+tree::TerminalNode* RxParser::UseDeclarationContext::SEMI() {
+  return getToken(RxParser::SEMI, 0);
 }
 
 
-std::any Parser::UseDeclarationContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::UseDeclarationContext::getRuleIndex() const {
+  return RxParser::RuleUseDeclaration;
+}
+
+
+std::any RxParser::UseDeclarationContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitUseDeclaration(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::UseDeclarationContext* Parser::useDeclaration() {
+RxParser::UseDeclarationContext* RxParser::useDeclaration() {
   UseDeclarationContext *_localctx = _tracker.createInstance<UseDeclarationContext>(_ctx, getState());
-  enterRule(_localctx, 4, Parser::RuleUseDeclaration);
+  enterRule(_localctx, 4, RxParser::RuleUseDeclaration);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -1049,11 +1049,11 @@ Parser::UseDeclarationContext* Parser::useDeclaration() {
   try {
     enterOuterAlt(_localctx, 1);
     setState(309);
-    match(Parser::USE);
+    match(RxParser::USE);
     setState(310);
     useTree();
     setState(311);
-    match(Parser::SEMI);
+    match(RxParser::SEMI);
    
   }
   catch (RecognitionException &e) {
@@ -1067,74 +1067,74 @@ Parser::UseDeclarationContext* Parser::useDeclaration() {
 
 //----------------- UseTreeContext ------------------------------------------------------------------
 
-Parser::UseTreeContext::UseTreeContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::UseTreeContext::UseTreeContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-tree::TerminalNode* Parser::UseTreeContext::STAR() {
-  return getToken(Parser::STAR, 0);
+tree::TerminalNode* RxParser::UseTreeContext::STAR() {
+  return getToken(RxParser::STAR, 0);
 }
 
-tree::TerminalNode* Parser::UseTreeContext::LBRACE() {
-  return getToken(Parser::LBRACE, 0);
+tree::TerminalNode* RxParser::UseTreeContext::LBRACE() {
+  return getToken(RxParser::LBRACE, 0);
 }
 
-tree::TerminalNode* Parser::UseTreeContext::RBRACE() {
-  return getToken(Parser::RBRACE, 0);
+tree::TerminalNode* RxParser::UseTreeContext::RBRACE() {
+  return getToken(RxParser::RBRACE, 0);
 }
 
-tree::TerminalNode* Parser::UseTreeContext::PATHSEP() {
-  return getToken(Parser::PATHSEP, 0);
+tree::TerminalNode* RxParser::UseTreeContext::PATHSEP() {
+  return getToken(RxParser::PATHSEP, 0);
 }
 
-std::vector<Parser::UseTreeContext *> Parser::UseTreeContext::useTree() {
-  return getRuleContexts<Parser::UseTreeContext>();
+std::vector<RxParser::UseTreeContext *> RxParser::UseTreeContext::useTree() {
+  return getRuleContexts<RxParser::UseTreeContext>();
 }
 
-Parser::UseTreeContext* Parser::UseTreeContext::useTree(size_t i) {
-  return getRuleContext<Parser::UseTreeContext>(i);
+RxParser::UseTreeContext* RxParser::UseTreeContext::useTree(size_t i) {
+  return getRuleContext<RxParser::UseTreeContext>(i);
 }
 
-Parser::UsePathContext* Parser::UseTreeContext::usePath() {
-  return getRuleContext<Parser::UsePathContext>(0);
+RxParser::UsePathContext* RxParser::UseTreeContext::usePath() {
+  return getRuleContext<RxParser::UsePathContext>(0);
 }
 
-std::vector<tree::TerminalNode *> Parser::UseTreeContext::COMMA() {
-  return getTokens(Parser::COMMA);
+std::vector<tree::TerminalNode *> RxParser::UseTreeContext::COMMA() {
+  return getTokens(RxParser::COMMA);
 }
 
-tree::TerminalNode* Parser::UseTreeContext::COMMA(size_t i) {
-  return getToken(Parser::COMMA, i);
+tree::TerminalNode* RxParser::UseTreeContext::COMMA(size_t i) {
+  return getToken(RxParser::COMMA, i);
 }
 
-tree::TerminalNode* Parser::UseTreeContext::AS() {
-  return getToken(Parser::AS, 0);
+tree::TerminalNode* RxParser::UseTreeContext::AS() {
+  return getToken(RxParser::AS, 0);
 }
 
-Parser::IdentifierContext* Parser::UseTreeContext::identifier() {
-  return getRuleContext<Parser::IdentifierContext>(0);
+RxParser::IdentifierContext* RxParser::UseTreeContext::identifier() {
+  return getRuleContext<RxParser::IdentifierContext>(0);
 }
 
-tree::TerminalNode* Parser::UseTreeContext::UNDERSCORE() {
-  return getToken(Parser::UNDERSCORE, 0);
-}
-
-
-size_t Parser::UseTreeContext::getRuleIndex() const {
-  return Parser::RuleUseTree;
+tree::TerminalNode* RxParser::UseTreeContext::UNDERSCORE() {
+  return getToken(RxParser::UNDERSCORE, 0);
 }
 
 
-std::any Parser::UseTreeContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::UseTreeContext::getRuleIndex() const {
+  return RxParser::RuleUseTree;
+}
+
+
+std::any RxParser::UseTreeContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitUseTree(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::UseTreeContext* Parser::useTree() {
+RxParser::UseTreeContext* RxParser::useTree() {
   UseTreeContext *_localctx = _tracker.createInstance<UseTreeContext>(_ctx, getState());
-  enterRule(_localctx, 6, Parser::RuleUseTree);
+  enterRule(_localctx, 6, RxParser::RuleUseTree);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -1171,28 +1171,28 @@ Parser::UseTreeContext* Parser::useTree() {
           break;
         }
         setState(316);
-        match(Parser::PATHSEP);
+        match(RxParser::PATHSEP);
       }
       setState(335);
       _errHandler->sync(this);
       switch (_input->LA(1)) {
-        case Parser::STAR: {
+        case RxParser::STAR: {
           setState(319);
-          match(Parser::STAR);
+          match(RxParser::STAR);
           break;
         }
 
-        case Parser::LBRACE: {
+        case RxParser::LBRACE: {
           setState(320);
-          match(Parser::LBRACE);
+          match(RxParser::LBRACE);
           setState(332);
           _errHandler->sync(this);
 
           _la = _input->LA(1);
           if ((((_la & ~ 0x3fULL) == 0) &&
-            ((1ULL << _la) & 140740676583456) != 0) || _la == Parser::PATHSEP
+            ((1ULL << _la) & 140740676583456) != 0) || _la == RxParser::PATHSEP
 
-          || _la == Parser::LBRACE) {
+          || _la == RxParser::LBRACE) {
             setState(321);
             useTree();
             setState(326);
@@ -1201,7 +1201,7 @@ Parser::UseTreeContext* Parser::useTree() {
             while (alt != 2 && alt != atn::ATN::INVALID_ALT_NUMBER) {
               if (alt == 1) {
                 setState(322);
-                match(Parser::COMMA);
+                match(RxParser::COMMA);
                 setState(323);
                 useTree(); 
               }
@@ -1213,13 +1213,13 @@ Parser::UseTreeContext* Parser::useTree() {
             _errHandler->sync(this);
 
             _la = _input->LA(1);
-            if (_la == Parser::COMMA) {
+            if (_la == RxParser::COMMA) {
               setState(329);
-              match(Parser::COMMA);
+              match(RxParser::COMMA);
             }
           }
           setState(334);
-          match(Parser::RBRACE);
+          match(RxParser::RBRACE);
           break;
         }
 
@@ -1237,26 +1237,26 @@ Parser::UseTreeContext* Parser::useTree() {
       _errHandler->sync(this);
 
       _la = _input->LA(1);
-      if (_la == Parser::AS) {
+      if (_la == RxParser::AS) {
         setState(338);
-        match(Parser::AS);
+        match(RxParser::AS);
         setState(341);
         _errHandler->sync(this);
         switch (_input->LA(1)) {
-          case Parser::DERIVE:
-          case Parser::COPY:
-          case Parser::CLONE:
-          case Parser::PARTIAL_EQ:
-          case Parser::EQ:
-          case Parser::IDENTIFIER: {
+          case RxParser::DERIVE:
+          case RxParser::COPY:
+          case RxParser::CLONE:
+          case RxParser::PARTIAL_EQ:
+          case RxParser::EQ:
+          case RxParser::IDENTIFIER: {
             setState(339);
             identifier();
             break;
           }
 
-          case Parser::UNDERSCORE: {
+          case RxParser::UNDERSCORE: {
             setState(340);
-            match(Parser::UNDERSCORE);
+            match(RxParser::UNDERSCORE);
             break;
           }
 
@@ -1283,42 +1283,42 @@ Parser::UseTreeContext* Parser::useTree() {
 
 //----------------- UsePathContext ------------------------------------------------------------------
 
-Parser::UsePathContext::UsePathContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::UsePathContext::UsePathContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-std::vector<Parser::UsePathSegmentContext *> Parser::UsePathContext::usePathSegment() {
-  return getRuleContexts<Parser::UsePathSegmentContext>();
+std::vector<RxParser::UsePathSegmentContext *> RxParser::UsePathContext::usePathSegment() {
+  return getRuleContexts<RxParser::UsePathSegmentContext>();
 }
 
-Parser::UsePathSegmentContext* Parser::UsePathContext::usePathSegment(size_t i) {
-  return getRuleContext<Parser::UsePathSegmentContext>(i);
+RxParser::UsePathSegmentContext* RxParser::UsePathContext::usePathSegment(size_t i) {
+  return getRuleContext<RxParser::UsePathSegmentContext>(i);
 }
 
-std::vector<tree::TerminalNode *> Parser::UsePathContext::PATHSEP() {
-  return getTokens(Parser::PATHSEP);
+std::vector<tree::TerminalNode *> RxParser::UsePathContext::PATHSEP() {
+  return getTokens(RxParser::PATHSEP);
 }
 
-tree::TerminalNode* Parser::UsePathContext::PATHSEP(size_t i) {
-  return getToken(Parser::PATHSEP, i);
-}
-
-
-size_t Parser::UsePathContext::getRuleIndex() const {
-  return Parser::RuleUsePath;
+tree::TerminalNode* RxParser::UsePathContext::PATHSEP(size_t i) {
+  return getToken(RxParser::PATHSEP, i);
 }
 
 
-std::any Parser::UsePathContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::UsePathContext::getRuleIndex() const {
+  return RxParser::RuleUsePath;
+}
+
+
+std::any RxParser::UsePathContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitUsePath(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::UsePathContext* Parser::usePath() {
+RxParser::UsePathContext* RxParser::usePath() {
   UsePathContext *_localctx = _tracker.createInstance<UsePathContext>(_ctx, getState());
-  enterRule(_localctx, 8, Parser::RuleUsePath);
+  enterRule(_localctx, 8, RxParser::RuleUsePath);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -1335,9 +1335,9 @@ Parser::UsePathContext* Parser::usePath() {
     _errHandler->sync(this);
 
     _la = _input->LA(1);
-    if (_la == Parser::PATHSEP) {
+    if (_la == RxParser::PATHSEP) {
       setState(347);
-      match(Parser::PATHSEP);
+      match(RxParser::PATHSEP);
     }
     setState(350);
     usePathSegment();
@@ -1347,7 +1347,7 @@ Parser::UsePathContext* Parser::usePath() {
     while (alt != 2 && alt != atn::ATN::INVALID_ALT_NUMBER) {
       if (alt == 1) {
         setState(351);
-        match(Parser::PATHSEP);
+        match(RxParser::PATHSEP);
         setState(352);
         usePathSegment(); 
       }
@@ -1368,42 +1368,42 @@ Parser::UsePathContext* Parser::usePath() {
 
 //----------------- UsePathSegmentContext ------------------------------------------------------------------
 
-Parser::UsePathSegmentContext::UsePathSegmentContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::UsePathSegmentContext::UsePathSegmentContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::IdentifierContext* Parser::UsePathSegmentContext::identifier() {
-  return getRuleContext<Parser::IdentifierContext>(0);
+RxParser::IdentifierContext* RxParser::UsePathSegmentContext::identifier() {
+  return getRuleContext<RxParser::IdentifierContext>(0);
 }
 
-tree::TerminalNode* Parser::UsePathSegmentContext::SELF_VALUE() {
-  return getToken(Parser::SELF_VALUE, 0);
+tree::TerminalNode* RxParser::UsePathSegmentContext::SELF_VALUE() {
+  return getToken(RxParser::SELF_VALUE, 0);
 }
 
-tree::TerminalNode* Parser::UsePathSegmentContext::SUPER() {
-  return getToken(Parser::SUPER, 0);
+tree::TerminalNode* RxParser::UsePathSegmentContext::SUPER() {
+  return getToken(RxParser::SUPER, 0);
 }
 
-tree::TerminalNode* Parser::UsePathSegmentContext::CRATE() {
-  return getToken(Parser::CRATE, 0);
-}
-
-
-size_t Parser::UsePathSegmentContext::getRuleIndex() const {
-  return Parser::RuleUsePathSegment;
+tree::TerminalNode* RxParser::UsePathSegmentContext::CRATE() {
+  return getToken(RxParser::CRATE, 0);
 }
 
 
-std::any Parser::UsePathSegmentContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::UsePathSegmentContext::getRuleIndex() const {
+  return RxParser::RuleUsePathSegment;
+}
+
+
+std::any RxParser::UsePathSegmentContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitUsePathSegment(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::UsePathSegmentContext* Parser::usePathSegment() {
+RxParser::UsePathSegmentContext* RxParser::usePathSegment() {
   UsePathSegmentContext *_localctx = _tracker.createInstance<UsePathSegmentContext>(_ctx, getState());
-  enterRule(_localctx, 10, Parser::RuleUsePathSegment);
+  enterRule(_localctx, 10, RxParser::RuleUsePathSegment);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -1416,36 +1416,36 @@ Parser::UsePathSegmentContext* Parser::usePathSegment() {
     setState(362);
     _errHandler->sync(this);
     switch (_input->LA(1)) {
-      case Parser::DERIVE:
-      case Parser::COPY:
-      case Parser::CLONE:
-      case Parser::PARTIAL_EQ:
-      case Parser::EQ:
-      case Parser::IDENTIFIER: {
+      case RxParser::DERIVE:
+      case RxParser::COPY:
+      case RxParser::CLONE:
+      case RxParser::PARTIAL_EQ:
+      case RxParser::EQ:
+      case RxParser::IDENTIFIER: {
         enterOuterAlt(_localctx, 1);
         setState(358);
         identifier();
         break;
       }
 
-      case Parser::SELF_VALUE: {
+      case RxParser::SELF_VALUE: {
         enterOuterAlt(_localctx, 2);
         setState(359);
-        match(Parser::SELF_VALUE);
+        match(RxParser::SELF_VALUE);
         break;
       }
 
-      case Parser::SUPER: {
+      case RxParser::SUPER: {
         enterOuterAlt(_localctx, 3);
         setState(360);
-        match(Parser::SUPER);
+        match(RxParser::SUPER);
         break;
       }
 
-      case Parser::CRATE: {
+      case RxParser::CRATE: {
         enterOuterAlt(_localctx, 4);
         setState(361);
-        match(Parser::CRATE);
+        match(RxParser::CRATE);
         break;
       }
 
@@ -1465,66 +1465,66 @@ Parser::UsePathSegmentContext* Parser::usePathSegment() {
 
 //----------------- FunctionDefinitionContext ------------------------------------------------------------------
 
-Parser::FunctionDefinitionContext::FunctionDefinitionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::FunctionDefinitionContext::FunctionDefinitionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-tree::TerminalNode* Parser::FunctionDefinitionContext::FN() {
-  return getToken(Parser::FN, 0);
+tree::TerminalNode* RxParser::FunctionDefinitionContext::FN() {
+  return getToken(RxParser::FN, 0);
 }
 
-Parser::IdentifierContext* Parser::FunctionDefinitionContext::identifier() {
-  return getRuleContext<Parser::IdentifierContext>(0);
+RxParser::IdentifierContext* RxParser::FunctionDefinitionContext::identifier() {
+  return getRuleContext<RxParser::IdentifierContext>(0);
 }
 
-tree::TerminalNode* Parser::FunctionDefinitionContext::LPAREN() {
-  return getToken(Parser::LPAREN, 0);
+tree::TerminalNode* RxParser::FunctionDefinitionContext::LPAREN() {
+  return getToken(RxParser::LPAREN, 0);
 }
 
-tree::TerminalNode* Parser::FunctionDefinitionContext::RPAREN() {
-  return getToken(Parser::RPAREN, 0);
+tree::TerminalNode* RxParser::FunctionDefinitionContext::RPAREN() {
+  return getToken(RxParser::RPAREN, 0);
 }
 
-Parser::BlockExpressionContext* Parser::FunctionDefinitionContext::blockExpression() {
-  return getRuleContext<Parser::BlockExpressionContext>(0);
+RxParser::BlockExpressionContext* RxParser::FunctionDefinitionContext::blockExpression() {
+  return getRuleContext<RxParser::BlockExpressionContext>(0);
 }
 
-Parser::GenericParamsContext* Parser::FunctionDefinitionContext::genericParams() {
-  return getRuleContext<Parser::GenericParamsContext>(0);
+RxParser::GenericParamsContext* RxParser::FunctionDefinitionContext::genericParams() {
+  return getRuleContext<RxParser::GenericParamsContext>(0);
 }
 
-Parser::FunctionParametersContext* Parser::FunctionDefinitionContext::functionParameters() {
-  return getRuleContext<Parser::FunctionParametersContext>(0);
+RxParser::FunctionParametersContext* RxParser::FunctionDefinitionContext::functionParameters() {
+  return getRuleContext<RxParser::FunctionParametersContext>(0);
 }
 
-tree::TerminalNode* Parser::FunctionDefinitionContext::ARROW() {
-  return getToken(Parser::ARROW, 0);
+tree::TerminalNode* RxParser::FunctionDefinitionContext::ARROW() {
+  return getToken(RxParser::ARROW, 0);
 }
 
-Parser::TypeRefContext* Parser::FunctionDefinitionContext::typeRef() {
-  return getRuleContext<Parser::TypeRefContext>(0);
+RxParser::TypeRefContext* RxParser::FunctionDefinitionContext::typeRef() {
+  return getRuleContext<RxParser::TypeRefContext>(0);
 }
 
-Parser::WhereClauseContext* Parser::FunctionDefinitionContext::whereClause() {
-  return getRuleContext<Parser::WhereClauseContext>(0);
-}
-
-
-size_t Parser::FunctionDefinitionContext::getRuleIndex() const {
-  return Parser::RuleFunctionDefinition;
+RxParser::WhereClauseContext* RxParser::FunctionDefinitionContext::whereClause() {
+  return getRuleContext<RxParser::WhereClauseContext>(0);
 }
 
 
-std::any Parser::FunctionDefinitionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::FunctionDefinitionContext::getRuleIndex() const {
+  return RxParser::RuleFunctionDefinition;
+}
+
+
+std::any RxParser::FunctionDefinitionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitFunctionDefinition(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::FunctionDefinitionContext* Parser::functionDefinition() {
+RxParser::FunctionDefinitionContext* RxParser::functionDefinition() {
   FunctionDefinitionContext *_localctx = _tracker.createInstance<FunctionDefinitionContext>(_ctx, getState());
-  enterRule(_localctx, 12, Parser::RuleFunctionDefinition);
+  enterRule(_localctx, 12, RxParser::RuleFunctionDefinition);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -1537,19 +1537,19 @@ Parser::FunctionDefinitionContext* Parser::functionDefinition() {
   try {
     enterOuterAlt(_localctx, 1);
     setState(364);
-    match(Parser::FN);
+    match(RxParser::FN);
     setState(365);
     identifier();
     setState(367);
     _errHandler->sync(this);
 
     _la = _input->LA(1);
-    if (_la == Parser::LT) {
+    if (_la == RxParser::LT) {
       setState(366);
       genericParams();
     }
     setState(369);
-    match(Parser::LPAREN);
+    match(RxParser::LPAREN);
     setState(371);
     _errHandler->sync(this);
 
@@ -1560,14 +1560,14 @@ Parser::FunctionDefinitionContext* Parser::functionDefinition() {
       functionParameters();
     }
     setState(373);
-    match(Parser::RPAREN);
+    match(RxParser::RPAREN);
     setState(376);
     _errHandler->sync(this);
 
     _la = _input->LA(1);
-    if (_la == Parser::ARROW) {
+    if (_la == RxParser::ARROW) {
       setState(374);
-      match(Parser::ARROW);
+      match(RxParser::ARROW);
       setState(375);
       typeRef();
     }
@@ -1575,7 +1575,7 @@ Parser::FunctionDefinitionContext* Parser::functionDefinition() {
     _errHandler->sync(this);
 
     _la = _input->LA(1);
-    if (_la == Parser::WHERE) {
+    if (_la == RxParser::WHERE) {
       setState(378);
       whereClause();
     }
@@ -1594,46 +1594,46 @@ Parser::FunctionDefinitionContext* Parser::functionDefinition() {
 
 //----------------- FunctionParametersContext ------------------------------------------------------------------
 
-Parser::FunctionParametersContext::FunctionParametersContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::FunctionParametersContext::FunctionParametersContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::SelfParamContext* Parser::FunctionParametersContext::selfParam() {
-  return getRuleContext<Parser::SelfParamContext>(0);
+RxParser::SelfParamContext* RxParser::FunctionParametersContext::selfParam() {
+  return getRuleContext<RxParser::SelfParamContext>(0);
 }
 
-std::vector<tree::TerminalNode *> Parser::FunctionParametersContext::COMMA() {
-  return getTokens(Parser::COMMA);
+std::vector<tree::TerminalNode *> RxParser::FunctionParametersContext::COMMA() {
+  return getTokens(RxParser::COMMA);
 }
 
-tree::TerminalNode* Parser::FunctionParametersContext::COMMA(size_t i) {
-  return getToken(Parser::COMMA, i);
+tree::TerminalNode* RxParser::FunctionParametersContext::COMMA(size_t i) {
+  return getToken(RxParser::COMMA, i);
 }
 
-std::vector<Parser::FunctionParamContext *> Parser::FunctionParametersContext::functionParam() {
-  return getRuleContexts<Parser::FunctionParamContext>();
+std::vector<RxParser::FunctionParamContext *> RxParser::FunctionParametersContext::functionParam() {
+  return getRuleContexts<RxParser::FunctionParamContext>();
 }
 
-Parser::FunctionParamContext* Parser::FunctionParametersContext::functionParam(size_t i) {
-  return getRuleContext<Parser::FunctionParamContext>(i);
-}
-
-
-size_t Parser::FunctionParametersContext::getRuleIndex() const {
-  return Parser::RuleFunctionParameters;
+RxParser::FunctionParamContext* RxParser::FunctionParametersContext::functionParam(size_t i) {
+  return getRuleContext<RxParser::FunctionParamContext>(i);
 }
 
 
-std::any Parser::FunctionParametersContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::FunctionParametersContext::getRuleIndex() const {
+  return RxParser::RuleFunctionParameters;
+}
+
+
+std::any RxParser::FunctionParametersContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitFunctionParameters(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::FunctionParametersContext* Parser::functionParameters() {
+RxParser::FunctionParametersContext* RxParser::functionParameters() {
   FunctionParametersContext *_localctx = _tracker.createInstance<FunctionParametersContext>(_ctx, getState());
-  enterRule(_localctx, 14, Parser::RuleFunctionParameters);
+  enterRule(_localctx, 14, RxParser::RuleFunctionParameters);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -1658,7 +1658,7 @@ Parser::FunctionParametersContext* Parser::functionParameters() {
       while (alt != 2 && alt != atn::ATN::INVALID_ALT_NUMBER) {
         if (alt == 1) {
           setState(384);
-          match(Parser::COMMA);
+          match(RxParser::COMMA);
           setState(385);
           functionParam(); 
         }
@@ -1670,9 +1670,9 @@ Parser::FunctionParametersContext* Parser::functionParameters() {
       _errHandler->sync(this);
 
       _la = _input->LA(1);
-      if (_la == Parser::COMMA) {
+      if (_la == RxParser::COMMA) {
         setState(391);
-        match(Parser::COMMA);
+        match(RxParser::COMMA);
       }
       break;
     }
@@ -1687,7 +1687,7 @@ Parser::FunctionParametersContext* Parser::functionParameters() {
       while (alt != 2 && alt != atn::ATN::INVALID_ALT_NUMBER) {
         if (alt == 1) {
           setState(395);
-          match(Parser::COMMA);
+          match(RxParser::COMMA);
           setState(396);
           functionParam(); 
         }
@@ -1699,9 +1699,9 @@ Parser::FunctionParametersContext* Parser::functionParameters() {
       _errHandler->sync(this);
 
       _la = _input->LA(1);
-      if (_la == Parser::COMMA) {
+      if (_la == RxParser::COMMA) {
         setState(402);
-        match(Parser::COMMA);
+        match(RxParser::COMMA);
       }
       break;
     }
@@ -1722,42 +1722,42 @@ Parser::FunctionParametersContext* Parser::functionParameters() {
 
 //----------------- SelfParamContext ------------------------------------------------------------------
 
-Parser::SelfParamContext::SelfParamContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::SelfParamContext::SelfParamContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-tree::TerminalNode* Parser::SelfParamContext::SELF_VALUE() {
-  return getToken(Parser::SELF_VALUE, 0);
+tree::TerminalNode* RxParser::SelfParamContext::SELF_VALUE() {
+  return getToken(RxParser::SELF_VALUE, 0);
 }
 
-tree::TerminalNode* Parser::SelfParamContext::AMP() {
-  return getToken(Parser::AMP, 0);
+tree::TerminalNode* RxParser::SelfParamContext::AMP() {
+  return getToken(RxParser::AMP, 0);
 }
 
-tree::TerminalNode* Parser::SelfParamContext::MUT() {
-  return getToken(Parser::MUT, 0);
+tree::TerminalNode* RxParser::SelfParamContext::MUT() {
+  return getToken(RxParser::MUT, 0);
 }
 
-Parser::LifetimeContext* Parser::SelfParamContext::lifetime() {
-  return getRuleContext<Parser::LifetimeContext>(0);
-}
-
-
-size_t Parser::SelfParamContext::getRuleIndex() const {
-  return Parser::RuleSelfParam;
+RxParser::LifetimeContext* RxParser::SelfParamContext::lifetime() {
+  return getRuleContext<RxParser::LifetimeContext>(0);
 }
 
 
-std::any Parser::SelfParamContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::SelfParamContext::getRuleIndex() const {
+  return RxParser::RuleSelfParam;
+}
+
+
+std::any RxParser::SelfParamContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitSelfParam(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::SelfParamContext* Parser::selfParam() {
+RxParser::SelfParamContext* RxParser::selfParam() {
   SelfParamContext *_localctx = _tracker.createInstance<SelfParamContext>(_ctx, getState());
-  enterRule(_localctx, 16, Parser::RuleSelfParam);
+  enterRule(_localctx, 16, RxParser::RuleSelfParam);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -1773,14 +1773,14 @@ Parser::SelfParamContext* Parser::selfParam() {
     _errHandler->sync(this);
 
     _la = _input->LA(1);
-    if (_la == Parser::AMP) {
+    if (_la == RxParser::AMP) {
       setState(407);
-      match(Parser::AMP);
+      match(RxParser::AMP);
       setState(409);
       _errHandler->sync(this);
 
       _la = _input->LA(1);
-      if (_la == Parser::LIFETIME) {
+      if (_la == RxParser::LIFETIME) {
         setState(408);
         lifetime();
       }
@@ -1789,12 +1789,12 @@ Parser::SelfParamContext* Parser::selfParam() {
     _errHandler->sync(this);
 
     _la = _input->LA(1);
-    if (_la == Parser::MUT) {
+    if (_la == RxParser::MUT) {
       setState(413);
-      match(Parser::MUT);
+      match(RxParser::MUT);
     }
     setState(416);
-    match(Parser::SELF_VALUE);
+    match(RxParser::SELF_VALUE);
    
   }
   catch (RecognitionException &e) {
@@ -1808,38 +1808,38 @@ Parser::SelfParamContext* Parser::selfParam() {
 
 //----------------- FunctionParamContext ------------------------------------------------------------------
 
-Parser::FunctionParamContext::FunctionParamContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::FunctionParamContext::FunctionParamContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::IdentifierBindingContext* Parser::FunctionParamContext::identifierBinding() {
-  return getRuleContext<Parser::IdentifierBindingContext>(0);
+RxParser::IdentifierBindingContext* RxParser::FunctionParamContext::identifierBinding() {
+  return getRuleContext<RxParser::IdentifierBindingContext>(0);
 }
 
-tree::TerminalNode* Parser::FunctionParamContext::COLON() {
-  return getToken(Parser::COLON, 0);
+tree::TerminalNode* RxParser::FunctionParamContext::COLON() {
+  return getToken(RxParser::COLON, 0);
 }
 
-Parser::TypeRefContext* Parser::FunctionParamContext::typeRef() {
-  return getRuleContext<Parser::TypeRefContext>(0);
-}
-
-
-size_t Parser::FunctionParamContext::getRuleIndex() const {
-  return Parser::RuleFunctionParam;
+RxParser::TypeRefContext* RxParser::FunctionParamContext::typeRef() {
+  return getRuleContext<RxParser::TypeRefContext>(0);
 }
 
 
-std::any Parser::FunctionParamContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::FunctionParamContext::getRuleIndex() const {
+  return RxParser::RuleFunctionParam;
+}
+
+
+std::any RxParser::FunctionParamContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitFunctionParam(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::FunctionParamContext* Parser::functionParam() {
+RxParser::FunctionParamContext* RxParser::functionParam() {
   FunctionParamContext *_localctx = _tracker.createInstance<FunctionParamContext>(_ctx, getState());
-  enterRule(_localctx, 18, Parser::RuleFunctionParam);
+  enterRule(_localctx, 18, RxParser::RuleFunctionParam);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -1853,7 +1853,7 @@ Parser::FunctionParamContext* Parser::functionParam() {
     setState(418);
     identifierBinding();
     setState(419);
-    match(Parser::COLON);
+    match(RxParser::COLON);
     setState(420);
     typeRef();
    
@@ -1869,74 +1869,74 @@ Parser::FunctionParamContext* Parser::functionParam() {
 
 //----------------- StructDefinitionContext ------------------------------------------------------------------
 
-Parser::StructDefinitionContext::StructDefinitionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::StructDefinitionContext::StructDefinitionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-tree::TerminalNode* Parser::StructDefinitionContext::STRUCT() {
-  return getToken(Parser::STRUCT, 0);
+tree::TerminalNode* RxParser::StructDefinitionContext::STRUCT() {
+  return getToken(RxParser::STRUCT, 0);
 }
 
-Parser::IdentifierContext* Parser::StructDefinitionContext::identifier() {
-  return getRuleContext<Parser::IdentifierContext>(0);
+RxParser::IdentifierContext* RxParser::StructDefinitionContext::identifier() {
+  return getRuleContext<RxParser::IdentifierContext>(0);
 }
 
-tree::TerminalNode* Parser::StructDefinitionContext::LBRACE() {
-  return getToken(Parser::LBRACE, 0);
+tree::TerminalNode* RxParser::StructDefinitionContext::LBRACE() {
+  return getToken(RxParser::LBRACE, 0);
 }
 
-tree::TerminalNode* Parser::StructDefinitionContext::RBRACE() {
-  return getToken(Parser::RBRACE, 0);
+tree::TerminalNode* RxParser::StructDefinitionContext::RBRACE() {
+  return getToken(RxParser::RBRACE, 0);
 }
 
-std::vector<Parser::OuterAttributeContext *> Parser::StructDefinitionContext::outerAttribute() {
-  return getRuleContexts<Parser::OuterAttributeContext>();
+std::vector<RxParser::OuterAttributeContext *> RxParser::StructDefinitionContext::outerAttribute() {
+  return getRuleContexts<RxParser::OuterAttributeContext>();
 }
 
-Parser::OuterAttributeContext* Parser::StructDefinitionContext::outerAttribute(size_t i) {
-  return getRuleContext<Parser::OuterAttributeContext>(i);
+RxParser::OuterAttributeContext* RxParser::StructDefinitionContext::outerAttribute(size_t i) {
+  return getRuleContext<RxParser::OuterAttributeContext>(i);
 }
 
-Parser::GenericParamsContext* Parser::StructDefinitionContext::genericParams() {
-  return getRuleContext<Parser::GenericParamsContext>(0);
+RxParser::GenericParamsContext* RxParser::StructDefinitionContext::genericParams() {
+  return getRuleContext<RxParser::GenericParamsContext>(0);
 }
 
-Parser::WhereClauseContext* Parser::StructDefinitionContext::whereClause() {
-  return getRuleContext<Parser::WhereClauseContext>(0);
+RxParser::WhereClauseContext* RxParser::StructDefinitionContext::whereClause() {
+  return getRuleContext<RxParser::WhereClauseContext>(0);
 }
 
-std::vector<Parser::StructFieldContext *> Parser::StructDefinitionContext::structField() {
-  return getRuleContexts<Parser::StructFieldContext>();
+std::vector<RxParser::StructFieldContext *> RxParser::StructDefinitionContext::structField() {
+  return getRuleContexts<RxParser::StructFieldContext>();
 }
 
-Parser::StructFieldContext* Parser::StructDefinitionContext::structField(size_t i) {
-  return getRuleContext<Parser::StructFieldContext>(i);
+RxParser::StructFieldContext* RxParser::StructDefinitionContext::structField(size_t i) {
+  return getRuleContext<RxParser::StructFieldContext>(i);
 }
 
-std::vector<tree::TerminalNode *> Parser::StructDefinitionContext::COMMA() {
-  return getTokens(Parser::COMMA);
+std::vector<tree::TerminalNode *> RxParser::StructDefinitionContext::COMMA() {
+  return getTokens(RxParser::COMMA);
 }
 
-tree::TerminalNode* Parser::StructDefinitionContext::COMMA(size_t i) {
-  return getToken(Parser::COMMA, i);
-}
-
-
-size_t Parser::StructDefinitionContext::getRuleIndex() const {
-  return Parser::RuleStructDefinition;
+tree::TerminalNode* RxParser::StructDefinitionContext::COMMA(size_t i) {
+  return getToken(RxParser::COMMA, i);
 }
 
 
-std::any Parser::StructDefinitionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::StructDefinitionContext::getRuleIndex() const {
+  return RxParser::RuleStructDefinition;
+}
+
+
+std::any RxParser::StructDefinitionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitStructDefinition(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::StructDefinitionContext* Parser::structDefinition() {
+RxParser::StructDefinitionContext* RxParser::structDefinition() {
   StructDefinitionContext *_localctx = _tracker.createInstance<StructDefinitionContext>(_ctx, getState());
-  enterRule(_localctx, 20, Parser::RuleStructDefinition);
+  enterRule(_localctx, 20, RxParser::RuleStructDefinition);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -1952,7 +1952,7 @@ Parser::StructDefinitionContext* Parser::structDefinition() {
     setState(425);
     _errHandler->sync(this);
     _la = _input->LA(1);
-    while (_la == Parser::HASH) {
+    while (_la == RxParser::HASH) {
       setState(422);
       outerAttribute();
       setState(427);
@@ -1960,14 +1960,14 @@ Parser::StructDefinitionContext* Parser::structDefinition() {
       _la = _input->LA(1);
     }
     setState(428);
-    match(Parser::STRUCT);
+    match(RxParser::STRUCT);
     setState(429);
     identifier();
     setState(431);
     _errHandler->sync(this);
 
     _la = _input->LA(1);
-    if (_la == Parser::LT) {
+    if (_la == RxParser::LT) {
       setState(430);
       genericParams();
     }
@@ -1975,12 +1975,12 @@ Parser::StructDefinitionContext* Parser::structDefinition() {
     _errHandler->sync(this);
 
     _la = _input->LA(1);
-    if (_la == Parser::WHERE) {
+    if (_la == RxParser::WHERE) {
       setState(433);
       whereClause();
     }
     setState(436);
-    match(Parser::LBRACE);
+    match(RxParser::LBRACE);
     setState(448);
     _errHandler->sync(this);
 
@@ -1995,7 +1995,7 @@ Parser::StructDefinitionContext* Parser::structDefinition() {
       while (alt != 2 && alt != atn::ATN::INVALID_ALT_NUMBER) {
         if (alt == 1) {
           setState(438);
-          match(Parser::COMMA);
+          match(RxParser::COMMA);
           setState(439);
           structField(); 
         }
@@ -2007,13 +2007,13 @@ Parser::StructDefinitionContext* Parser::structDefinition() {
       _errHandler->sync(this);
 
       _la = _input->LA(1);
-      if (_la == Parser::COMMA) {
+      if (_la == RxParser::COMMA) {
         setState(445);
-        match(Parser::COMMA);
+        match(RxParser::COMMA);
       }
     }
     setState(450);
-    match(Parser::RBRACE);
+    match(RxParser::RBRACE);
    
   }
   catch (RecognitionException &e) {
@@ -2027,38 +2027,38 @@ Parser::StructDefinitionContext* Parser::structDefinition() {
 
 //----------------- StructFieldContext ------------------------------------------------------------------
 
-Parser::StructFieldContext::StructFieldContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::StructFieldContext::StructFieldContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::IdentifierContext* Parser::StructFieldContext::identifier() {
-  return getRuleContext<Parser::IdentifierContext>(0);
+RxParser::IdentifierContext* RxParser::StructFieldContext::identifier() {
+  return getRuleContext<RxParser::IdentifierContext>(0);
 }
 
-tree::TerminalNode* Parser::StructFieldContext::COLON() {
-  return getToken(Parser::COLON, 0);
+tree::TerminalNode* RxParser::StructFieldContext::COLON() {
+  return getToken(RxParser::COLON, 0);
 }
 
-Parser::TypeRefContext* Parser::StructFieldContext::typeRef() {
-  return getRuleContext<Parser::TypeRefContext>(0);
-}
-
-
-size_t Parser::StructFieldContext::getRuleIndex() const {
-  return Parser::RuleStructField;
+RxParser::TypeRefContext* RxParser::StructFieldContext::typeRef() {
+  return getRuleContext<RxParser::TypeRefContext>(0);
 }
 
 
-std::any Parser::StructFieldContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::StructFieldContext::getRuleIndex() const {
+  return RxParser::RuleStructField;
+}
+
+
+std::any RxParser::StructFieldContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitStructField(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::StructFieldContext* Parser::structField() {
+RxParser::StructFieldContext* RxParser::structField() {
   StructFieldContext *_localctx = _tracker.createInstance<StructFieldContext>(_ctx, getState());
-  enterRule(_localctx, 22, Parser::RuleStructField);
+  enterRule(_localctx, 22, RxParser::RuleStructField);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -2072,7 +2072,7 @@ Parser::StructFieldContext* Parser::structField() {
     setState(452);
     identifier();
     setState(453);
-    match(Parser::COLON);
+    match(RxParser::COLON);
     setState(454);
     typeRef();
    
@@ -2088,66 +2088,66 @@ Parser::StructFieldContext* Parser::structField() {
 
 //----------------- OuterAttributeContext ------------------------------------------------------------------
 
-Parser::OuterAttributeContext::OuterAttributeContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::OuterAttributeContext::OuterAttributeContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-tree::TerminalNode* Parser::OuterAttributeContext::HASH() {
-  return getToken(Parser::HASH, 0);
+tree::TerminalNode* RxParser::OuterAttributeContext::HASH() {
+  return getToken(RxParser::HASH, 0);
 }
 
-tree::TerminalNode* Parser::OuterAttributeContext::LBRACKET() {
-  return getToken(Parser::LBRACKET, 0);
+tree::TerminalNode* RxParser::OuterAttributeContext::LBRACKET() {
+  return getToken(RxParser::LBRACKET, 0);
 }
 
-tree::TerminalNode* Parser::OuterAttributeContext::DERIVE() {
-  return getToken(Parser::DERIVE, 0);
+tree::TerminalNode* RxParser::OuterAttributeContext::DERIVE() {
+  return getToken(RxParser::DERIVE, 0);
 }
 
-tree::TerminalNode* Parser::OuterAttributeContext::LPAREN() {
-  return getToken(Parser::LPAREN, 0);
+tree::TerminalNode* RxParser::OuterAttributeContext::LPAREN() {
+  return getToken(RxParser::LPAREN, 0);
 }
 
-tree::TerminalNode* Parser::OuterAttributeContext::RPAREN() {
-  return getToken(Parser::RPAREN, 0);
+tree::TerminalNode* RxParser::OuterAttributeContext::RPAREN() {
+  return getToken(RxParser::RPAREN, 0);
 }
 
-tree::TerminalNode* Parser::OuterAttributeContext::RBRACKET() {
-  return getToken(Parser::RBRACKET, 0);
+tree::TerminalNode* RxParser::OuterAttributeContext::RBRACKET() {
+  return getToken(RxParser::RBRACKET, 0);
 }
 
-std::vector<Parser::DeriveNameContext *> Parser::OuterAttributeContext::deriveName() {
-  return getRuleContexts<Parser::DeriveNameContext>();
+std::vector<RxParser::DeriveNameContext *> RxParser::OuterAttributeContext::deriveName() {
+  return getRuleContexts<RxParser::DeriveNameContext>();
 }
 
-Parser::DeriveNameContext* Parser::OuterAttributeContext::deriveName(size_t i) {
-  return getRuleContext<Parser::DeriveNameContext>(i);
+RxParser::DeriveNameContext* RxParser::OuterAttributeContext::deriveName(size_t i) {
+  return getRuleContext<RxParser::DeriveNameContext>(i);
 }
 
-std::vector<tree::TerminalNode *> Parser::OuterAttributeContext::COMMA() {
-  return getTokens(Parser::COMMA);
+std::vector<tree::TerminalNode *> RxParser::OuterAttributeContext::COMMA() {
+  return getTokens(RxParser::COMMA);
 }
 
-tree::TerminalNode* Parser::OuterAttributeContext::COMMA(size_t i) {
-  return getToken(Parser::COMMA, i);
-}
-
-
-size_t Parser::OuterAttributeContext::getRuleIndex() const {
-  return Parser::RuleOuterAttribute;
+tree::TerminalNode* RxParser::OuterAttributeContext::COMMA(size_t i) {
+  return getToken(RxParser::COMMA, i);
 }
 
 
-std::any Parser::OuterAttributeContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::OuterAttributeContext::getRuleIndex() const {
+  return RxParser::RuleOuterAttribute;
+}
+
+
+std::any RxParser::OuterAttributeContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitOuterAttribute(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::OuterAttributeContext* Parser::outerAttribute() {
+RxParser::OuterAttributeContext* RxParser::outerAttribute() {
   OuterAttributeContext *_localctx = _tracker.createInstance<OuterAttributeContext>(_ctx, getState());
-  enterRule(_localctx, 24, Parser::RuleOuterAttribute);
+  enterRule(_localctx, 24, RxParser::RuleOuterAttribute);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -2161,13 +2161,13 @@ Parser::OuterAttributeContext* Parser::outerAttribute() {
     size_t alt;
     enterOuterAlt(_localctx, 1);
     setState(456);
-    match(Parser::HASH);
+    match(RxParser::HASH);
     setState(457);
-    match(Parser::LBRACKET);
+    match(RxParser::LBRACKET);
     setState(458);
-    match(Parser::DERIVE);
+    match(RxParser::DERIVE);
     setState(459);
-    match(Parser::LPAREN);
+    match(RxParser::LPAREN);
     setState(471);
     _errHandler->sync(this);
 
@@ -2182,7 +2182,7 @@ Parser::OuterAttributeContext* Parser::outerAttribute() {
       while (alt != 2 && alt != atn::ATN::INVALID_ALT_NUMBER) {
         if (alt == 1) {
           setState(461);
-          match(Parser::COMMA);
+          match(RxParser::COMMA);
           setState(462);
           deriveName(); 
         }
@@ -2194,15 +2194,15 @@ Parser::OuterAttributeContext* Parser::outerAttribute() {
       _errHandler->sync(this);
 
       _la = _input->LA(1);
-      if (_la == Parser::COMMA) {
+      if (_la == RxParser::COMMA) {
         setState(468);
-        match(Parser::COMMA);
+        match(RxParser::COMMA);
       }
     }
     setState(473);
-    match(Parser::RPAREN);
+    match(RxParser::RPAREN);
     setState(474);
-    match(Parser::RBRACKET);
+    match(RxParser::RBRACKET);
    
   }
   catch (RecognitionException &e) {
@@ -2216,42 +2216,42 @@ Parser::OuterAttributeContext* Parser::outerAttribute() {
 
 //----------------- DeriveNameContext ------------------------------------------------------------------
 
-Parser::DeriveNameContext::DeriveNameContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::DeriveNameContext::DeriveNameContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-tree::TerminalNode* Parser::DeriveNameContext::COPY() {
-  return getToken(Parser::COPY, 0);
+tree::TerminalNode* RxParser::DeriveNameContext::COPY() {
+  return getToken(RxParser::COPY, 0);
 }
 
-tree::TerminalNode* Parser::DeriveNameContext::CLONE() {
-  return getToken(Parser::CLONE, 0);
+tree::TerminalNode* RxParser::DeriveNameContext::CLONE() {
+  return getToken(RxParser::CLONE, 0);
 }
 
-tree::TerminalNode* Parser::DeriveNameContext::PARTIAL_EQ() {
-  return getToken(Parser::PARTIAL_EQ, 0);
+tree::TerminalNode* RxParser::DeriveNameContext::PARTIAL_EQ() {
+  return getToken(RxParser::PARTIAL_EQ, 0);
 }
 
-tree::TerminalNode* Parser::DeriveNameContext::EQ() {
-  return getToken(Parser::EQ, 0);
-}
-
-
-size_t Parser::DeriveNameContext::getRuleIndex() const {
-  return Parser::RuleDeriveName;
+tree::TerminalNode* RxParser::DeriveNameContext::EQ() {
+  return getToken(RxParser::EQ, 0);
 }
 
 
-std::any Parser::DeriveNameContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::DeriveNameContext::getRuleIndex() const {
+  return RxParser::RuleDeriveName;
+}
+
+
+std::any RxParser::DeriveNameContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitDeriveName(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::DeriveNameContext* Parser::deriveName() {
+RxParser::DeriveNameContext* RxParser::deriveName() {
   DeriveNameContext *_localctx = _tracker.createInstance<DeriveNameContext>(_ctx, getState());
-  enterRule(_localctx, 26, Parser::RuleDeriveName);
+  enterRule(_localctx, 26, RxParser::RuleDeriveName);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -2286,54 +2286,54 @@ Parser::DeriveNameContext* Parser::deriveName() {
 
 //----------------- ConstantItemContext ------------------------------------------------------------------
 
-Parser::ConstantItemContext::ConstantItemContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ConstantItemContext::ConstantItemContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-tree::TerminalNode* Parser::ConstantItemContext::CONST() {
-  return getToken(Parser::CONST, 0);
+tree::TerminalNode* RxParser::ConstantItemContext::CONST() {
+  return getToken(RxParser::CONST, 0);
 }
 
-Parser::IdentifierContext* Parser::ConstantItemContext::identifier() {
-  return getRuleContext<Parser::IdentifierContext>(0);
+RxParser::IdentifierContext* RxParser::ConstantItemContext::identifier() {
+  return getRuleContext<RxParser::IdentifierContext>(0);
 }
 
-tree::TerminalNode* Parser::ConstantItemContext::COLON() {
-  return getToken(Parser::COLON, 0);
+tree::TerminalNode* RxParser::ConstantItemContext::COLON() {
+  return getToken(RxParser::COLON, 0);
 }
 
-Parser::TypeRefContext* Parser::ConstantItemContext::typeRef() {
-  return getRuleContext<Parser::TypeRefContext>(0);
+RxParser::TypeRefContext* RxParser::ConstantItemContext::typeRef() {
+  return getRuleContext<RxParser::TypeRefContext>(0);
 }
 
-Parser::EqualsSignContext* Parser::ConstantItemContext::equalsSign() {
-  return getRuleContext<Parser::EqualsSignContext>(0);
+RxParser::EqualsSignContext* RxParser::ConstantItemContext::equalsSign() {
+  return getRuleContext<RxParser::EqualsSignContext>(0);
 }
 
-Parser::ConstValueContext* Parser::ConstantItemContext::constValue() {
-  return getRuleContext<Parser::ConstValueContext>(0);
+RxParser::ConstValueContext* RxParser::ConstantItemContext::constValue() {
+  return getRuleContext<RxParser::ConstValueContext>(0);
 }
 
-tree::TerminalNode* Parser::ConstantItemContext::SEMI() {
-  return getToken(Parser::SEMI, 0);
-}
-
-
-size_t Parser::ConstantItemContext::getRuleIndex() const {
-  return Parser::RuleConstantItem;
+tree::TerminalNode* RxParser::ConstantItemContext::SEMI() {
+  return getToken(RxParser::SEMI, 0);
 }
 
 
-std::any Parser::ConstantItemContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ConstantItemContext::getRuleIndex() const {
+  return RxParser::RuleConstantItem;
+}
+
+
+std::any RxParser::ConstantItemContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitConstantItem(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ConstantItemContext* Parser::constantItem() {
+RxParser::ConstantItemContext* RxParser::constantItem() {
   ConstantItemContext *_localctx = _tracker.createInstance<ConstantItemContext>(_ctx, getState());
-  enterRule(_localctx, 28, Parser::RuleConstantItem);
+  enterRule(_localctx, 28, RxParser::RuleConstantItem);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -2345,11 +2345,11 @@ Parser::ConstantItemContext* Parser::constantItem() {
   try {
     enterOuterAlt(_localctx, 1);
     setState(478);
-    match(Parser::CONST);
+    match(RxParser::CONST);
     setState(479);
     identifier();
     setState(480);
-    match(Parser::COLON);
+    match(RxParser::COLON);
     setState(481);
     typeRef();
     setState(482);
@@ -2357,7 +2357,7 @@ Parser::ConstantItemContext* Parser::constantItem() {
     setState(483);
     constValue();
     setState(484);
-    match(Parser::SEMI);
+    match(RxParser::SEMI);
    
   }
   catch (RecognitionException &e) {
@@ -2371,58 +2371,58 @@ Parser::ConstantItemContext* Parser::constantItem() {
 
 //----------------- InherentImplContext ------------------------------------------------------------------
 
-Parser::InherentImplContext::InherentImplContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::InherentImplContext::InherentImplContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-tree::TerminalNode* Parser::InherentImplContext::IMPL() {
-  return getToken(Parser::IMPL, 0);
+tree::TerminalNode* RxParser::InherentImplContext::IMPL() {
+  return getToken(RxParser::IMPL, 0);
 }
 
-Parser::TypeRefContext* Parser::InherentImplContext::typeRef() {
-  return getRuleContext<Parser::TypeRefContext>(0);
+RxParser::TypeRefContext* RxParser::InherentImplContext::typeRef() {
+  return getRuleContext<RxParser::TypeRefContext>(0);
 }
 
-tree::TerminalNode* Parser::InherentImplContext::LBRACE() {
-  return getToken(Parser::LBRACE, 0);
+tree::TerminalNode* RxParser::InherentImplContext::LBRACE() {
+  return getToken(RxParser::LBRACE, 0);
 }
 
-tree::TerminalNode* Parser::InherentImplContext::RBRACE() {
-  return getToken(Parser::RBRACE, 0);
+tree::TerminalNode* RxParser::InherentImplContext::RBRACE() {
+  return getToken(RxParser::RBRACE, 0);
 }
 
-Parser::GenericParamsContext* Parser::InherentImplContext::genericParams() {
-  return getRuleContext<Parser::GenericParamsContext>(0);
+RxParser::GenericParamsContext* RxParser::InherentImplContext::genericParams() {
+  return getRuleContext<RxParser::GenericParamsContext>(0);
 }
 
-Parser::WhereClauseContext* Parser::InherentImplContext::whereClause() {
-  return getRuleContext<Parser::WhereClauseContext>(0);
+RxParser::WhereClauseContext* RxParser::InherentImplContext::whereClause() {
+  return getRuleContext<RxParser::WhereClauseContext>(0);
 }
 
-std::vector<Parser::AssociatedItemContext *> Parser::InherentImplContext::associatedItem() {
-  return getRuleContexts<Parser::AssociatedItemContext>();
+std::vector<RxParser::AssociatedItemContext *> RxParser::InherentImplContext::associatedItem() {
+  return getRuleContexts<RxParser::AssociatedItemContext>();
 }
 
-Parser::AssociatedItemContext* Parser::InherentImplContext::associatedItem(size_t i) {
-  return getRuleContext<Parser::AssociatedItemContext>(i);
-}
-
-
-size_t Parser::InherentImplContext::getRuleIndex() const {
-  return Parser::RuleInherentImpl;
+RxParser::AssociatedItemContext* RxParser::InherentImplContext::associatedItem(size_t i) {
+  return getRuleContext<RxParser::AssociatedItemContext>(i);
 }
 
 
-std::any Parser::InherentImplContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::InherentImplContext::getRuleIndex() const {
+  return RxParser::RuleInherentImpl;
+}
+
+
+std::any RxParser::InherentImplContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitInherentImpl(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::InherentImplContext* Parser::inherentImpl() {
+RxParser::InherentImplContext* RxParser::inherentImpl() {
   InherentImplContext *_localctx = _tracker.createInstance<InherentImplContext>(_ctx, getState());
-  enterRule(_localctx, 30, Parser::RuleInherentImpl);
+  enterRule(_localctx, 30, RxParser::RuleInherentImpl);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -2435,12 +2435,12 @@ Parser::InherentImplContext* Parser::inherentImpl() {
   try {
     enterOuterAlt(_localctx, 1);
     setState(486);
-    match(Parser::IMPL);
+    match(RxParser::IMPL);
     setState(488);
     _errHandler->sync(this);
 
     _la = _input->LA(1);
-    if (_la == Parser::LT) {
+    if (_la == RxParser::LT) {
       setState(487);
       genericParams();
     }
@@ -2450,18 +2450,18 @@ Parser::InherentImplContext* Parser::inherentImpl() {
     _errHandler->sync(this);
 
     _la = _input->LA(1);
-    if (_la == Parser::WHERE) {
+    if (_la == RxParser::WHERE) {
       setState(491);
       whereClause();
     }
     setState(494);
-    match(Parser::LBRACE);
+    match(RxParser::LBRACE);
     setState(498);
     _errHandler->sync(this);
     _la = _input->LA(1);
-    while (_la == Parser::CONST
+    while (_la == RxParser::CONST
 
-    || _la == Parser::FN) {
+    || _la == RxParser::FN) {
       setState(495);
       associatedItem();
       setState(500);
@@ -2469,7 +2469,7 @@ Parser::InherentImplContext* Parser::inherentImpl() {
       _la = _input->LA(1);
     }
     setState(501);
-    match(Parser::RBRACE);
+    match(RxParser::RBRACE);
    
   }
   catch (RecognitionException &e) {
@@ -2483,34 +2483,34 @@ Parser::InherentImplContext* Parser::inherentImpl() {
 
 //----------------- AssociatedItemContext ------------------------------------------------------------------
 
-Parser::AssociatedItemContext::AssociatedItemContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::AssociatedItemContext::AssociatedItemContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::ConstantItemContext* Parser::AssociatedItemContext::constantItem() {
-  return getRuleContext<Parser::ConstantItemContext>(0);
+RxParser::ConstantItemContext* RxParser::AssociatedItemContext::constantItem() {
+  return getRuleContext<RxParser::ConstantItemContext>(0);
 }
 
-Parser::FunctionDefinitionContext* Parser::AssociatedItemContext::functionDefinition() {
-  return getRuleContext<Parser::FunctionDefinitionContext>(0);
-}
-
-
-size_t Parser::AssociatedItemContext::getRuleIndex() const {
-  return Parser::RuleAssociatedItem;
+RxParser::FunctionDefinitionContext* RxParser::AssociatedItemContext::functionDefinition() {
+  return getRuleContext<RxParser::FunctionDefinitionContext>(0);
 }
 
 
-std::any Parser::AssociatedItemContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::AssociatedItemContext::getRuleIndex() const {
+  return RxParser::RuleAssociatedItem;
+}
+
+
+std::any RxParser::AssociatedItemContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitAssociatedItem(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::AssociatedItemContext* Parser::associatedItem() {
+RxParser::AssociatedItemContext* RxParser::associatedItem() {
   AssociatedItemContext *_localctx = _tracker.createInstance<AssociatedItemContext>(_ctx, getState());
-  enterRule(_localctx, 32, Parser::RuleAssociatedItem);
+  enterRule(_localctx, 32, RxParser::RuleAssociatedItem);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -2523,14 +2523,14 @@ Parser::AssociatedItemContext* Parser::associatedItem() {
     setState(505);
     _errHandler->sync(this);
     switch (_input->LA(1)) {
-      case Parser::CONST: {
+      case RxParser::CONST: {
         enterOuterAlt(_localctx, 1);
         setState(503);
         constantItem();
         break;
       }
 
-      case Parser::FN: {
+      case RxParser::FN: {
         enterOuterAlt(_localctx, 2);
         setState(504);
         functionDefinition();
@@ -2553,50 +2553,50 @@ Parser::AssociatedItemContext* Parser::associatedItem() {
 
 //----------------- GenericParamsContext ------------------------------------------------------------------
 
-Parser::GenericParamsContext::GenericParamsContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::GenericParamsContext::GenericParamsContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-tree::TerminalNode* Parser::GenericParamsContext::LT() {
-  return getToken(Parser::LT, 0);
+tree::TerminalNode* RxParser::GenericParamsContext::LT() {
+  return getToken(RxParser::LT, 0);
 }
 
-Parser::GenericCloseContext* Parser::GenericParamsContext::genericClose() {
-  return getRuleContext<Parser::GenericCloseContext>(0);
+RxParser::GenericCloseContext* RxParser::GenericParamsContext::genericClose() {
+  return getRuleContext<RxParser::GenericCloseContext>(0);
 }
 
-std::vector<Parser::LifetimeParamContext *> Parser::GenericParamsContext::lifetimeParam() {
-  return getRuleContexts<Parser::LifetimeParamContext>();
+std::vector<RxParser::LifetimeParamContext *> RxParser::GenericParamsContext::lifetimeParam() {
+  return getRuleContexts<RxParser::LifetimeParamContext>();
 }
 
-Parser::LifetimeParamContext* Parser::GenericParamsContext::lifetimeParam(size_t i) {
-  return getRuleContext<Parser::LifetimeParamContext>(i);
+RxParser::LifetimeParamContext* RxParser::GenericParamsContext::lifetimeParam(size_t i) {
+  return getRuleContext<RxParser::LifetimeParamContext>(i);
 }
 
-std::vector<tree::TerminalNode *> Parser::GenericParamsContext::COMMA() {
-  return getTokens(Parser::COMMA);
+std::vector<tree::TerminalNode *> RxParser::GenericParamsContext::COMMA() {
+  return getTokens(RxParser::COMMA);
 }
 
-tree::TerminalNode* Parser::GenericParamsContext::COMMA(size_t i) {
-  return getToken(Parser::COMMA, i);
-}
-
-
-size_t Parser::GenericParamsContext::getRuleIndex() const {
-  return Parser::RuleGenericParams;
+tree::TerminalNode* RxParser::GenericParamsContext::COMMA(size_t i) {
+  return getToken(RxParser::COMMA, i);
 }
 
 
-std::any Parser::GenericParamsContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::GenericParamsContext::getRuleIndex() const {
+  return RxParser::RuleGenericParams;
+}
+
+
+std::any RxParser::GenericParamsContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitGenericParams(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::GenericParamsContext* Parser::genericParams() {
+RxParser::GenericParamsContext* RxParser::genericParams() {
   GenericParamsContext *_localctx = _tracker.createInstance<GenericParamsContext>(_ctx, getState());
-  enterRule(_localctx, 34, Parser::RuleGenericParams);
+  enterRule(_localctx, 34, RxParser::RuleGenericParams);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -2610,12 +2610,12 @@ Parser::GenericParamsContext* Parser::genericParams() {
     size_t alt;
     enterOuterAlt(_localctx, 1);
     setState(507);
-    match(Parser::LT);
+    match(RxParser::LT);
     setState(519);
     _errHandler->sync(this);
 
     _la = _input->LA(1);
-    if (_la == Parser::LIFETIME) {
+    if (_la == RxParser::LIFETIME) {
       setState(508);
       lifetimeParam();
       setState(513);
@@ -2624,7 +2624,7 @@ Parser::GenericParamsContext* Parser::genericParams() {
       while (alt != 2 && alt != atn::ATN::INVALID_ALT_NUMBER) {
         if (alt == 1) {
           setState(509);
-          match(Parser::COMMA);
+          match(RxParser::COMMA);
           setState(510);
           lifetimeParam(); 
         }
@@ -2636,9 +2636,9 @@ Parser::GenericParamsContext* Parser::genericParams() {
       _errHandler->sync(this);
 
       _la = _input->LA(1);
-      if (_la == Parser::COMMA) {
+      if (_la == RxParser::COMMA) {
         setState(516);
-        match(Parser::COMMA);
+        match(RxParser::COMMA);
       }
     }
     setState(521);
@@ -2656,38 +2656,38 @@ Parser::GenericParamsContext* Parser::genericParams() {
 
 //----------------- LifetimeParamContext ------------------------------------------------------------------
 
-Parser::LifetimeParamContext::LifetimeParamContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::LifetimeParamContext::LifetimeParamContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::LifetimeContext* Parser::LifetimeParamContext::lifetime() {
-  return getRuleContext<Parser::LifetimeContext>(0);
+RxParser::LifetimeContext* RxParser::LifetimeParamContext::lifetime() {
+  return getRuleContext<RxParser::LifetimeContext>(0);
 }
 
-tree::TerminalNode* Parser::LifetimeParamContext::COLON() {
-  return getToken(Parser::COLON, 0);
+tree::TerminalNode* RxParser::LifetimeParamContext::COLON() {
+  return getToken(RxParser::COLON, 0);
 }
 
-Parser::LifetimeBoundsContext* Parser::LifetimeParamContext::lifetimeBounds() {
-  return getRuleContext<Parser::LifetimeBoundsContext>(0);
-}
-
-
-size_t Parser::LifetimeParamContext::getRuleIndex() const {
-  return Parser::RuleLifetimeParam;
+RxParser::LifetimeBoundsContext* RxParser::LifetimeParamContext::lifetimeBounds() {
+  return getRuleContext<RxParser::LifetimeBoundsContext>(0);
 }
 
 
-std::any Parser::LifetimeParamContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::LifetimeParamContext::getRuleIndex() const {
+  return RxParser::RuleLifetimeParam;
+}
+
+
+std::any RxParser::LifetimeParamContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitLifetimeParam(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::LifetimeParamContext* Parser::lifetimeParam() {
+RxParser::LifetimeParamContext* RxParser::lifetimeParam() {
   LifetimeParamContext *_localctx = _tracker.createInstance<LifetimeParamContext>(_ctx, getState());
-  enterRule(_localctx, 36, Parser::RuleLifetimeParam);
+  enterRule(_localctx, 36, RxParser::RuleLifetimeParam);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -2705,9 +2705,9 @@ Parser::LifetimeParamContext* Parser::lifetimeParam() {
     _errHandler->sync(this);
 
     _la = _input->LA(1);
-    if (_la == Parser::COLON) {
+    if (_la == RxParser::COLON) {
       setState(524);
-      match(Parser::COLON);
+      match(RxParser::COLON);
       setState(525);
       lifetimeBounds();
     }
@@ -2724,30 +2724,30 @@ Parser::LifetimeParamContext* Parser::lifetimeParam() {
 
 //----------------- LifetimeContext ------------------------------------------------------------------
 
-Parser::LifetimeContext::LifetimeContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::LifetimeContext::LifetimeContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-tree::TerminalNode* Parser::LifetimeContext::LIFETIME() {
-  return getToken(Parser::LIFETIME, 0);
+tree::TerminalNode* RxParser::LifetimeContext::LIFETIME() {
+  return getToken(RxParser::LIFETIME, 0);
 }
 
 
-size_t Parser::LifetimeContext::getRuleIndex() const {
-  return Parser::RuleLifetime;
+size_t RxParser::LifetimeContext::getRuleIndex() const {
+  return RxParser::RuleLifetime;
 }
 
 
-std::any Parser::LifetimeContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+std::any RxParser::LifetimeContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitLifetime(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::LifetimeContext* Parser::lifetime() {
+RxParser::LifetimeContext* RxParser::lifetime() {
   LifetimeContext *_localctx = _tracker.createInstance<LifetimeContext>(_ctx, getState());
-  enterRule(_localctx, 38, Parser::RuleLifetime);
+  enterRule(_localctx, 38, RxParser::RuleLifetime);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -2759,7 +2759,7 @@ Parser::LifetimeContext* Parser::lifetime() {
   try {
     enterOuterAlt(_localctx, 1);
     setState(528);
-    match(Parser::LIFETIME);
+    match(RxParser::LIFETIME);
    
   }
   catch (RecognitionException &e) {
@@ -2773,42 +2773,42 @@ Parser::LifetimeContext* Parser::lifetime() {
 
 //----------------- LifetimeBoundsContext ------------------------------------------------------------------
 
-Parser::LifetimeBoundsContext::LifetimeBoundsContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::LifetimeBoundsContext::LifetimeBoundsContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-std::vector<Parser::LifetimeContext *> Parser::LifetimeBoundsContext::lifetime() {
-  return getRuleContexts<Parser::LifetimeContext>();
+std::vector<RxParser::LifetimeContext *> RxParser::LifetimeBoundsContext::lifetime() {
+  return getRuleContexts<RxParser::LifetimeContext>();
 }
 
-Parser::LifetimeContext* Parser::LifetimeBoundsContext::lifetime(size_t i) {
-  return getRuleContext<Parser::LifetimeContext>(i);
+RxParser::LifetimeContext* RxParser::LifetimeBoundsContext::lifetime(size_t i) {
+  return getRuleContext<RxParser::LifetimeContext>(i);
 }
 
-std::vector<tree::TerminalNode *> Parser::LifetimeBoundsContext::PLUS() {
-  return getTokens(Parser::PLUS);
+std::vector<tree::TerminalNode *> RxParser::LifetimeBoundsContext::PLUS() {
+  return getTokens(RxParser::PLUS);
 }
 
-tree::TerminalNode* Parser::LifetimeBoundsContext::PLUS(size_t i) {
-  return getToken(Parser::PLUS, i);
-}
-
-
-size_t Parser::LifetimeBoundsContext::getRuleIndex() const {
-  return Parser::RuleLifetimeBounds;
+tree::TerminalNode* RxParser::LifetimeBoundsContext::PLUS(size_t i) {
+  return getToken(RxParser::PLUS, i);
 }
 
 
-std::any Parser::LifetimeBoundsContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::LifetimeBoundsContext::getRuleIndex() const {
+  return RxParser::RuleLifetimeBounds;
+}
+
+
+std::any RxParser::LifetimeBoundsContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitLifetimeBounds(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::LifetimeBoundsContext* Parser::lifetimeBounds() {
+RxParser::LifetimeBoundsContext* RxParser::lifetimeBounds() {
   LifetimeBoundsContext *_localctx = _tracker.createInstance<LifetimeBoundsContext>(_ctx, getState());
-  enterRule(_localctx, 40, Parser::RuleLifetimeBounds);
+  enterRule(_localctx, 40, RxParser::RuleLifetimeBounds);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -2829,7 +2829,7 @@ Parser::LifetimeBoundsContext* Parser::lifetimeBounds() {
         setState(530);
         lifetime();
         setState(531);
-        match(Parser::PLUS); 
+        match(RxParser::PLUS); 
       }
       setState(537);
       _errHandler->sync(this);
@@ -2839,7 +2839,7 @@ Parser::LifetimeBoundsContext* Parser::lifetimeBounds() {
     _errHandler->sync(this);
 
     _la = _input->LA(1);
-    if (_la == Parser::LIFETIME) {
+    if (_la == RxParser::LIFETIME) {
       setState(538);
       lifetime();
     }
@@ -2856,42 +2856,42 @@ Parser::LifetimeBoundsContext* Parser::lifetimeBounds() {
 
 //----------------- TypeParamBoundsContext ------------------------------------------------------------------
 
-Parser::TypeParamBoundsContext::TypeParamBoundsContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::TypeParamBoundsContext::TypeParamBoundsContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-std::vector<Parser::LifetimeContext *> Parser::TypeParamBoundsContext::lifetime() {
-  return getRuleContexts<Parser::LifetimeContext>();
+std::vector<RxParser::LifetimeContext *> RxParser::TypeParamBoundsContext::lifetime() {
+  return getRuleContexts<RxParser::LifetimeContext>();
 }
 
-Parser::LifetimeContext* Parser::TypeParamBoundsContext::lifetime(size_t i) {
-  return getRuleContext<Parser::LifetimeContext>(i);
+RxParser::LifetimeContext* RxParser::TypeParamBoundsContext::lifetime(size_t i) {
+  return getRuleContext<RxParser::LifetimeContext>(i);
 }
 
-std::vector<tree::TerminalNode *> Parser::TypeParamBoundsContext::PLUS() {
-  return getTokens(Parser::PLUS);
+std::vector<tree::TerminalNode *> RxParser::TypeParamBoundsContext::PLUS() {
+  return getTokens(RxParser::PLUS);
 }
 
-tree::TerminalNode* Parser::TypeParamBoundsContext::PLUS(size_t i) {
-  return getToken(Parser::PLUS, i);
-}
-
-
-size_t Parser::TypeParamBoundsContext::getRuleIndex() const {
-  return Parser::RuleTypeParamBounds;
+tree::TerminalNode* RxParser::TypeParamBoundsContext::PLUS(size_t i) {
+  return getToken(RxParser::PLUS, i);
 }
 
 
-std::any Parser::TypeParamBoundsContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::TypeParamBoundsContext::getRuleIndex() const {
+  return RxParser::RuleTypeParamBounds;
+}
+
+
+std::any RxParser::TypeParamBoundsContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitTypeParamBounds(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::TypeParamBoundsContext* Parser::typeParamBounds() {
+RxParser::TypeParamBoundsContext* RxParser::typeParamBounds() {
   TypeParamBoundsContext *_localctx = _tracker.createInstance<TypeParamBoundsContext>(_ctx, getState());
-  enterRule(_localctx, 42, Parser::RuleTypeParamBounds);
+  enterRule(_localctx, 42, RxParser::RuleTypeParamBounds);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -2912,7 +2912,7 @@ Parser::TypeParamBoundsContext* Parser::typeParamBounds() {
     while (alt != 2 && alt != atn::ATN::INVALID_ALT_NUMBER) {
       if (alt == 1) {
         setState(542);
-        match(Parser::PLUS);
+        match(RxParser::PLUS);
         setState(543);
         lifetime(); 
       }
@@ -2924,9 +2924,9 @@ Parser::TypeParamBoundsContext* Parser::typeParamBounds() {
     _errHandler->sync(this);
 
     _la = _input->LA(1);
-    if (_la == Parser::PLUS) {
+    if (_la == RxParser::PLUS) {
       setState(549);
-      match(Parser::PLUS);
+      match(RxParser::PLUS);
     }
    
   }
@@ -2941,46 +2941,46 @@ Parser::TypeParamBoundsContext* Parser::typeParamBounds() {
 
 //----------------- WhereClauseContext ------------------------------------------------------------------
 
-Parser::WhereClauseContext::WhereClauseContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::WhereClauseContext::WhereClauseContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-tree::TerminalNode* Parser::WhereClauseContext::WHERE() {
-  return getToken(Parser::WHERE, 0);
+tree::TerminalNode* RxParser::WhereClauseContext::WHERE() {
+  return getToken(RxParser::WHERE, 0);
 }
 
-std::vector<Parser::WhereClauseItemContext *> Parser::WhereClauseContext::whereClauseItem() {
-  return getRuleContexts<Parser::WhereClauseItemContext>();
+std::vector<RxParser::WhereClauseItemContext *> RxParser::WhereClauseContext::whereClauseItem() {
+  return getRuleContexts<RxParser::WhereClauseItemContext>();
 }
 
-Parser::WhereClauseItemContext* Parser::WhereClauseContext::whereClauseItem(size_t i) {
-  return getRuleContext<Parser::WhereClauseItemContext>(i);
+RxParser::WhereClauseItemContext* RxParser::WhereClauseContext::whereClauseItem(size_t i) {
+  return getRuleContext<RxParser::WhereClauseItemContext>(i);
 }
 
-std::vector<tree::TerminalNode *> Parser::WhereClauseContext::COMMA() {
-  return getTokens(Parser::COMMA);
+std::vector<tree::TerminalNode *> RxParser::WhereClauseContext::COMMA() {
+  return getTokens(RxParser::COMMA);
 }
 
-tree::TerminalNode* Parser::WhereClauseContext::COMMA(size_t i) {
-  return getToken(Parser::COMMA, i);
-}
-
-
-size_t Parser::WhereClauseContext::getRuleIndex() const {
-  return Parser::RuleWhereClause;
+tree::TerminalNode* RxParser::WhereClauseContext::COMMA(size_t i) {
+  return getToken(RxParser::COMMA, i);
 }
 
 
-std::any Parser::WhereClauseContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::WhereClauseContext::getRuleIndex() const {
+  return RxParser::RuleWhereClause;
+}
+
+
+std::any RxParser::WhereClauseContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitWhereClause(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::WhereClauseContext* Parser::whereClause() {
+RxParser::WhereClauseContext* RxParser::whereClause() {
   WhereClauseContext *_localctx = _tracker.createInstance<WhereClauseContext>(_ctx, getState());
-  enterRule(_localctx, 44, Parser::RuleWhereClause);
+  enterRule(_localctx, 44, RxParser::RuleWhereClause);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -2994,7 +2994,7 @@ Parser::WhereClauseContext* Parser::whereClause() {
     size_t alt;
     enterOuterAlt(_localctx, 1);
     setState(552);
-    match(Parser::WHERE);
+    match(RxParser::WHERE);
     setState(564);
     _errHandler->sync(this);
 
@@ -3009,7 +3009,7 @@ Parser::WhereClauseContext* Parser::whereClause() {
       while (alt != 2 && alt != atn::ATN::INVALID_ALT_NUMBER) {
         if (alt == 1) {
           setState(554);
-          match(Parser::COMMA);
+          match(RxParser::COMMA);
           setState(555);
           whereClauseItem(); 
         }
@@ -3021,9 +3021,9 @@ Parser::WhereClauseContext* Parser::whereClause() {
       _errHandler->sync(this);
 
       _la = _input->LA(1);
-      if (_la == Parser::COMMA) {
+      if (_la == RxParser::COMMA) {
         setState(561);
-        match(Parser::COMMA);
+        match(RxParser::COMMA);
       }
     }
    
@@ -3039,46 +3039,46 @@ Parser::WhereClauseContext* Parser::whereClause() {
 
 //----------------- WhereClauseItemContext ------------------------------------------------------------------
 
-Parser::WhereClauseItemContext::WhereClauseItemContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::WhereClauseItemContext::WhereClauseItemContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::LifetimeContext* Parser::WhereClauseItemContext::lifetime() {
-  return getRuleContext<Parser::LifetimeContext>(0);
+RxParser::LifetimeContext* RxParser::WhereClauseItemContext::lifetime() {
+  return getRuleContext<RxParser::LifetimeContext>(0);
 }
 
-tree::TerminalNode* Parser::WhereClauseItemContext::COLON() {
-  return getToken(Parser::COLON, 0);
+tree::TerminalNode* RxParser::WhereClauseItemContext::COLON() {
+  return getToken(RxParser::COLON, 0);
 }
 
-Parser::LifetimeBoundsContext* Parser::WhereClauseItemContext::lifetimeBounds() {
-  return getRuleContext<Parser::LifetimeBoundsContext>(0);
+RxParser::LifetimeBoundsContext* RxParser::WhereClauseItemContext::lifetimeBounds() {
+  return getRuleContext<RxParser::LifetimeBoundsContext>(0);
 }
 
-Parser::TypeRefContext* Parser::WhereClauseItemContext::typeRef() {
-  return getRuleContext<Parser::TypeRefContext>(0);
+RxParser::TypeRefContext* RxParser::WhereClauseItemContext::typeRef() {
+  return getRuleContext<RxParser::TypeRefContext>(0);
 }
 
-Parser::TypeParamBoundsContext* Parser::WhereClauseItemContext::typeParamBounds() {
-  return getRuleContext<Parser::TypeParamBoundsContext>(0);
-}
-
-
-size_t Parser::WhereClauseItemContext::getRuleIndex() const {
-  return Parser::RuleWhereClauseItem;
+RxParser::TypeParamBoundsContext* RxParser::WhereClauseItemContext::typeParamBounds() {
+  return getRuleContext<RxParser::TypeParamBoundsContext>(0);
 }
 
 
-std::any Parser::WhereClauseItemContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::WhereClauseItemContext::getRuleIndex() const {
+  return RxParser::RuleWhereClauseItem;
+}
+
+
+std::any RxParser::WhereClauseItemContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitWhereClauseItem(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::WhereClauseItemContext* Parser::whereClauseItem() {
+RxParser::WhereClauseItemContext* RxParser::whereClauseItem() {
   WhereClauseItemContext *_localctx = _tracker.createInstance<WhereClauseItemContext>(_ctx, getState());
-  enterRule(_localctx, 46, Parser::RuleWhereClauseItem);
+  enterRule(_localctx, 46, RxParser::RuleWhereClauseItem);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -3092,39 +3092,39 @@ Parser::WhereClauseItemContext* Parser::whereClauseItem() {
     setState(575);
     _errHandler->sync(this);
     switch (_input->LA(1)) {
-      case Parser::LIFETIME: {
+      case RxParser::LIFETIME: {
         enterOuterAlt(_localctx, 1);
         setState(566);
         lifetime();
         setState(567);
-        match(Parser::COLON);
+        match(RxParser::COLON);
         setState(568);
         lifetimeBounds();
         break;
       }
 
-      case Parser::SELF_VALUE:
-      case Parser::SELF_TYPE:
-      case Parser::DERIVE:
-      case Parser::COPY:
-      case Parser::CLONE:
-      case Parser::PARTIAL_EQ:
-      case Parser::EQ:
-      case Parser::IDENTIFIER:
-      case Parser::ANDAND:
-      case Parser::AMP:
-      case Parser::LBRACKET:
-      case Parser::LPAREN: {
+      case RxParser::SELF_VALUE:
+      case RxParser::SELF_TYPE:
+      case RxParser::DERIVE:
+      case RxParser::COPY:
+      case RxParser::CLONE:
+      case RxParser::PARTIAL_EQ:
+      case RxParser::EQ:
+      case RxParser::IDENTIFIER:
+      case RxParser::ANDAND:
+      case RxParser::AMP:
+      case RxParser::LBRACKET:
+      case RxParser::LPAREN: {
         enterOuterAlt(_localctx, 2);
         setState(570);
         typeRef();
         setState(571);
-        match(Parser::COLON);
+        match(RxParser::COLON);
         setState(573);
         _errHandler->sync(this);
 
         _la = _input->LA(1);
-        if (_la == Parser::LIFETIME) {
+        if (_la == RxParser::LIFETIME) {
           setState(572);
           typeParamBounds();
         }
@@ -3147,50 +3147,50 @@ Parser::WhereClauseItemContext* Parser::whereClauseItem() {
 
 //----------------- TypeRefContext ------------------------------------------------------------------
 
-Parser::TypeRefContext::TypeRefContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::TypeRefContext::TypeRefContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-tree::TerminalNode* Parser::TypeRefContext::LPAREN() {
-  return getToken(Parser::LPAREN, 0);
+tree::TerminalNode* RxParser::TypeRefContext::LPAREN() {
+  return getToken(RxParser::LPAREN, 0);
 }
 
-Parser::TypeRefContext* Parser::TypeRefContext::typeRef() {
-  return getRuleContext<Parser::TypeRefContext>(0);
+RxParser::TypeRefContext* RxParser::TypeRefContext::typeRef() {
+  return getRuleContext<RxParser::TypeRefContext>(0);
 }
 
-tree::TerminalNode* Parser::TypeRefContext::RPAREN() {
-  return getToken(Parser::RPAREN, 0);
+tree::TerminalNode* RxParser::TypeRefContext::RPAREN() {
+  return getToken(RxParser::RPAREN, 0);
 }
 
-Parser::TypePathContext* Parser::TypeRefContext::typePath() {
-  return getRuleContext<Parser::TypePathContext>(0);
+RxParser::TypePathContext* RxParser::TypeRefContext::typePath() {
+  return getRuleContext<RxParser::TypePathContext>(0);
 }
 
-Parser::ReferenceTypeContext* Parser::TypeRefContext::referenceType() {
-  return getRuleContext<Parser::ReferenceTypeContext>(0);
+RxParser::ReferenceTypeContext* RxParser::TypeRefContext::referenceType() {
+  return getRuleContext<RxParser::ReferenceTypeContext>(0);
 }
 
-Parser::ArrayTypeContext* Parser::TypeRefContext::arrayType() {
-  return getRuleContext<Parser::ArrayTypeContext>(0);
-}
-
-
-size_t Parser::TypeRefContext::getRuleIndex() const {
-  return Parser::RuleTypeRef;
+RxParser::ArrayTypeContext* RxParser::TypeRefContext::arrayType() {
+  return getRuleContext<RxParser::ArrayTypeContext>(0);
 }
 
 
-std::any Parser::TypeRefContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::TypeRefContext::getRuleIndex() const {
+  return RxParser::RuleTypeRef;
+}
+
+
+std::any RxParser::TypeRefContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitTypeRef(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::TypeRefContext* Parser::typeRef() {
+RxParser::TypeRefContext* RxParser::typeRef() {
   TypeRefContext *_localctx = _tracker.createInstance<TypeRefContext>(_ctx, getState());
-  enterRule(_localctx, 48, Parser::RuleTypeRef);
+  enterRule(_localctx, 48, RxParser::RuleTypeRef);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -3206,20 +3206,20 @@ Parser::TypeRefContext* Parser::typeRef() {
     case 1: {
       enterOuterAlt(_localctx, 1);
       setState(577);
-      match(Parser::LPAREN);
+      match(RxParser::LPAREN);
       setState(578);
       typeRef();
       setState(579);
-      match(Parser::RPAREN);
+      match(RxParser::RPAREN);
       break;
     }
 
     case 2: {
       enterOuterAlt(_localctx, 2);
       setState(581);
-      match(Parser::LPAREN);
+      match(RxParser::LPAREN);
       setState(582);
-      match(Parser::RPAREN);
+      match(RxParser::RPAREN);
       break;
     }
 
@@ -3260,46 +3260,46 @@ Parser::TypeRefContext* Parser::typeRef() {
 
 //----------------- ReferenceTypeContext ------------------------------------------------------------------
 
-Parser::ReferenceTypeContext::ReferenceTypeContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ReferenceTypeContext::ReferenceTypeContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::TypeRefContext* Parser::ReferenceTypeContext::typeRef() {
-  return getRuleContext<Parser::TypeRefContext>(0);
+RxParser::TypeRefContext* RxParser::ReferenceTypeContext::typeRef() {
+  return getRuleContext<RxParser::TypeRefContext>(0);
 }
 
-tree::TerminalNode* Parser::ReferenceTypeContext::AMP() {
-  return getToken(Parser::AMP, 0);
+tree::TerminalNode* RxParser::ReferenceTypeContext::AMP() {
+  return getToken(RxParser::AMP, 0);
 }
 
-tree::TerminalNode* Parser::ReferenceTypeContext::ANDAND() {
-  return getToken(Parser::ANDAND, 0);
+tree::TerminalNode* RxParser::ReferenceTypeContext::ANDAND() {
+  return getToken(RxParser::ANDAND, 0);
 }
 
-Parser::LifetimeContext* Parser::ReferenceTypeContext::lifetime() {
-  return getRuleContext<Parser::LifetimeContext>(0);
+RxParser::LifetimeContext* RxParser::ReferenceTypeContext::lifetime() {
+  return getRuleContext<RxParser::LifetimeContext>(0);
 }
 
-tree::TerminalNode* Parser::ReferenceTypeContext::MUT() {
-  return getToken(Parser::MUT, 0);
-}
-
-
-size_t Parser::ReferenceTypeContext::getRuleIndex() const {
-  return Parser::RuleReferenceType;
+tree::TerminalNode* RxParser::ReferenceTypeContext::MUT() {
+  return getToken(RxParser::MUT, 0);
 }
 
 
-std::any Parser::ReferenceTypeContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ReferenceTypeContext::getRuleIndex() const {
+  return RxParser::RuleReferenceType;
+}
+
+
+std::any RxParser::ReferenceTypeContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitReferenceType(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ReferenceTypeContext* Parser::referenceType() {
+RxParser::ReferenceTypeContext* RxParser::referenceType() {
   ReferenceTypeContext *_localctx = _tracker.createInstance<ReferenceTypeContext>(_ctx, getState());
-  enterRule(_localctx, 50, Parser::RuleReferenceType);
+  enterRule(_localctx, 50, RxParser::RuleReferenceType);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -3313,9 +3313,9 @@ Parser::ReferenceTypeContext* Parser::referenceType() {
     enterOuterAlt(_localctx, 1);
     setState(588);
     _la = _input->LA(1);
-    if (!(_la == Parser::ANDAND
+    if (!(_la == RxParser::ANDAND
 
-    || _la == Parser::AMP)) {
+    || _la == RxParser::AMP)) {
     _errHandler->recoverInline(this);
     }
     else {
@@ -3326,7 +3326,7 @@ Parser::ReferenceTypeContext* Parser::referenceType() {
     _errHandler->sync(this);
 
     _la = _input->LA(1);
-    if (_la == Parser::LIFETIME) {
+    if (_la == RxParser::LIFETIME) {
       setState(589);
       lifetime();
     }
@@ -3334,9 +3334,9 @@ Parser::ReferenceTypeContext* Parser::referenceType() {
     _errHandler->sync(this);
 
     _la = _input->LA(1);
-    if (_la == Parser::MUT) {
+    if (_la == RxParser::MUT) {
       setState(592);
-      match(Parser::MUT);
+      match(RxParser::MUT);
     }
     setState(595);
     typeRef();
@@ -3353,46 +3353,46 @@ Parser::ReferenceTypeContext* Parser::referenceType() {
 
 //----------------- ArrayTypeContext ------------------------------------------------------------------
 
-Parser::ArrayTypeContext::ArrayTypeContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ArrayTypeContext::ArrayTypeContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-tree::TerminalNode* Parser::ArrayTypeContext::LBRACKET() {
-  return getToken(Parser::LBRACKET, 0);
+tree::TerminalNode* RxParser::ArrayTypeContext::LBRACKET() {
+  return getToken(RxParser::LBRACKET, 0);
 }
 
-Parser::TypeRefContext* Parser::ArrayTypeContext::typeRef() {
-  return getRuleContext<Parser::TypeRefContext>(0);
+RxParser::TypeRefContext* RxParser::ArrayTypeContext::typeRef() {
+  return getRuleContext<RxParser::TypeRefContext>(0);
 }
 
-tree::TerminalNode* Parser::ArrayTypeContext::SEMI() {
-  return getToken(Parser::SEMI, 0);
+tree::TerminalNode* RxParser::ArrayTypeContext::SEMI() {
+  return getToken(RxParser::SEMI, 0);
 }
 
-Parser::ConstValueContext* Parser::ArrayTypeContext::constValue() {
-  return getRuleContext<Parser::ConstValueContext>(0);
+RxParser::ConstValueContext* RxParser::ArrayTypeContext::constValue() {
+  return getRuleContext<RxParser::ConstValueContext>(0);
 }
 
-tree::TerminalNode* Parser::ArrayTypeContext::RBRACKET() {
-  return getToken(Parser::RBRACKET, 0);
-}
-
-
-size_t Parser::ArrayTypeContext::getRuleIndex() const {
-  return Parser::RuleArrayType;
+tree::TerminalNode* RxParser::ArrayTypeContext::RBRACKET() {
+  return getToken(RxParser::RBRACKET, 0);
 }
 
 
-std::any Parser::ArrayTypeContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ArrayTypeContext::getRuleIndex() const {
+  return RxParser::RuleArrayType;
+}
+
+
+std::any RxParser::ArrayTypeContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitArrayType(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ArrayTypeContext* Parser::arrayType() {
+RxParser::ArrayTypeContext* RxParser::arrayType() {
   ArrayTypeContext *_localctx = _tracker.createInstance<ArrayTypeContext>(_ctx, getState());
-  enterRule(_localctx, 52, Parser::RuleArrayType);
+  enterRule(_localctx, 52, RxParser::RuleArrayType);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -3404,15 +3404,15 @@ Parser::ArrayTypeContext* Parser::arrayType() {
   try {
     enterOuterAlt(_localctx, 1);
     setState(597);
-    match(Parser::LBRACKET);
+    match(RxParser::LBRACKET);
     setState(598);
     typeRef();
     setState(599);
-    match(Parser::SEMI);
+    match(RxParser::SEMI);
     setState(600);
     constValue();
     setState(601);
-    match(Parser::RBRACKET);
+    match(RxParser::RBRACKET);
    
   }
   catch (RecognitionException &e) {
@@ -3426,42 +3426,42 @@ Parser::ArrayTypeContext* Parser::arrayType() {
 
 //----------------- TypePathContext ------------------------------------------------------------------
 
-Parser::TypePathContext::TypePathContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::TypePathContext::TypePathContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-std::vector<Parser::TypePathSegmentContext *> Parser::TypePathContext::typePathSegment() {
-  return getRuleContexts<Parser::TypePathSegmentContext>();
+std::vector<RxParser::TypePathSegmentContext *> RxParser::TypePathContext::typePathSegment() {
+  return getRuleContexts<RxParser::TypePathSegmentContext>();
 }
 
-Parser::TypePathSegmentContext* Parser::TypePathContext::typePathSegment(size_t i) {
-  return getRuleContext<Parser::TypePathSegmentContext>(i);
+RxParser::TypePathSegmentContext* RxParser::TypePathContext::typePathSegment(size_t i) {
+  return getRuleContext<RxParser::TypePathSegmentContext>(i);
 }
 
-std::vector<tree::TerminalNode *> Parser::TypePathContext::PATHSEP() {
-  return getTokens(Parser::PATHSEP);
+std::vector<tree::TerminalNode *> RxParser::TypePathContext::PATHSEP() {
+  return getTokens(RxParser::PATHSEP);
 }
 
-tree::TerminalNode* Parser::TypePathContext::PATHSEP(size_t i) {
-  return getToken(Parser::PATHSEP, i);
-}
-
-
-size_t Parser::TypePathContext::getRuleIndex() const {
-  return Parser::RuleTypePath;
+tree::TerminalNode* RxParser::TypePathContext::PATHSEP(size_t i) {
+  return getToken(RxParser::PATHSEP, i);
 }
 
 
-std::any Parser::TypePathContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::TypePathContext::getRuleIndex() const {
+  return RxParser::RuleTypePath;
+}
+
+
+std::any RxParser::TypePathContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitTypePath(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::TypePathContext* Parser::typePath() {
+RxParser::TypePathContext* RxParser::typePath() {
   TypePathContext *_localctx = _tracker.createInstance<TypePathContext>(_ctx, getState());
-  enterRule(_localctx, 54, Parser::RuleTypePath);
+  enterRule(_localctx, 54, RxParser::RuleTypePath);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -3478,9 +3478,9 @@ Parser::TypePathContext* Parser::typePath() {
     setState(608);
     _errHandler->sync(this);
     _la = _input->LA(1);
-    while (_la == Parser::PATHSEP) {
+    while (_la == RxParser::PATHSEP) {
       setState(604);
-      match(Parser::PATHSEP);
+      match(RxParser::PATHSEP);
       setState(605);
       typePathSegment();
       setState(610);
@@ -3500,38 +3500,38 @@ Parser::TypePathContext* Parser::typePath() {
 
 //----------------- TypePathSegmentContext ------------------------------------------------------------------
 
-Parser::TypePathSegmentContext::TypePathSegmentContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::TypePathSegmentContext::TypePathSegmentContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::PathIdentSegmentContext* Parser::TypePathSegmentContext::pathIdentSegment() {
-  return getRuleContext<Parser::PathIdentSegmentContext>(0);
+RxParser::PathIdentSegmentContext* RxParser::TypePathSegmentContext::pathIdentSegment() {
+  return getRuleContext<RxParser::PathIdentSegmentContext>(0);
 }
 
-Parser::GenericArgsContext* Parser::TypePathSegmentContext::genericArgs() {
-  return getRuleContext<Parser::GenericArgsContext>(0);
+RxParser::GenericArgsContext* RxParser::TypePathSegmentContext::genericArgs() {
+  return getRuleContext<RxParser::GenericArgsContext>(0);
 }
 
-tree::TerminalNode* Parser::TypePathSegmentContext::PATHSEP() {
-  return getToken(Parser::PATHSEP, 0);
-}
-
-
-size_t Parser::TypePathSegmentContext::getRuleIndex() const {
-  return Parser::RuleTypePathSegment;
+tree::TerminalNode* RxParser::TypePathSegmentContext::PATHSEP() {
+  return getToken(RxParser::PATHSEP, 0);
 }
 
 
-std::any Parser::TypePathSegmentContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::TypePathSegmentContext::getRuleIndex() const {
+  return RxParser::RuleTypePathSegment;
+}
+
+
+std::any RxParser::TypePathSegmentContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitTypePathSegment(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::TypePathSegmentContext* Parser::typePathSegment() {
+RxParser::TypePathSegmentContext* RxParser::typePathSegment() {
   TypePathSegmentContext *_localctx = _tracker.createInstance<TypePathSegmentContext>(_ctx, getState());
-  enterRule(_localctx, 56, Parser::RuleTypePathSegment);
+  enterRule(_localctx, 56, RxParser::RuleTypePathSegment);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -3554,9 +3554,9 @@ Parser::TypePathSegmentContext* Parser::typePathSegment() {
       _errHandler->sync(this);
 
       _la = _input->LA(1);
-      if (_la == Parser::PATHSEP) {
+      if (_la == RxParser::PATHSEP) {
         setState(612);
-        match(Parser::PATHSEP);
+        match(RxParser::PATHSEP);
       }
       setState(615);
       genericArgs();
@@ -3579,42 +3579,42 @@ Parser::TypePathSegmentContext* Parser::typePathSegment() {
 
 //----------------- PathInExpressionContext ------------------------------------------------------------------
 
-Parser::PathInExpressionContext::PathInExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::PathInExpressionContext::PathInExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-std::vector<Parser::PathExprSegmentContext *> Parser::PathInExpressionContext::pathExprSegment() {
-  return getRuleContexts<Parser::PathExprSegmentContext>();
+std::vector<RxParser::PathExprSegmentContext *> RxParser::PathInExpressionContext::pathExprSegment() {
+  return getRuleContexts<RxParser::PathExprSegmentContext>();
 }
 
-Parser::PathExprSegmentContext* Parser::PathInExpressionContext::pathExprSegment(size_t i) {
-  return getRuleContext<Parser::PathExprSegmentContext>(i);
+RxParser::PathExprSegmentContext* RxParser::PathInExpressionContext::pathExprSegment(size_t i) {
+  return getRuleContext<RxParser::PathExprSegmentContext>(i);
 }
 
-std::vector<tree::TerminalNode *> Parser::PathInExpressionContext::PATHSEP() {
-  return getTokens(Parser::PATHSEP);
+std::vector<tree::TerminalNode *> RxParser::PathInExpressionContext::PATHSEP() {
+  return getTokens(RxParser::PATHSEP);
 }
 
-tree::TerminalNode* Parser::PathInExpressionContext::PATHSEP(size_t i) {
-  return getToken(Parser::PATHSEP, i);
-}
-
-
-size_t Parser::PathInExpressionContext::getRuleIndex() const {
-  return Parser::RulePathInExpression;
+tree::TerminalNode* RxParser::PathInExpressionContext::PATHSEP(size_t i) {
+  return getToken(RxParser::PATHSEP, i);
 }
 
 
-std::any Parser::PathInExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::PathInExpressionContext::getRuleIndex() const {
+  return RxParser::RulePathInExpression;
+}
+
+
+std::any RxParser::PathInExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitPathInExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::PathInExpressionContext* Parser::pathInExpression() {
+RxParser::PathInExpressionContext* RxParser::pathInExpression() {
   PathInExpressionContext *_localctx = _tracker.createInstance<PathInExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 58, Parser::RulePathInExpression);
+  enterRule(_localctx, 58, RxParser::RulePathInExpression);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -3631,9 +3631,9 @@ Parser::PathInExpressionContext* Parser::pathInExpression() {
     setState(623);
     _errHandler->sync(this);
     _la = _input->LA(1);
-    while (_la == Parser::PATHSEP) {
+    while (_la == RxParser::PATHSEP) {
       setState(619);
-      match(Parser::PATHSEP);
+      match(RxParser::PATHSEP);
       setState(620);
       pathExprSegment();
       setState(625);
@@ -3653,38 +3653,38 @@ Parser::PathInExpressionContext* Parser::pathInExpression() {
 
 //----------------- PathExprSegmentContext ------------------------------------------------------------------
 
-Parser::PathExprSegmentContext::PathExprSegmentContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::PathExprSegmentContext::PathExprSegmentContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::PathIdentSegmentContext* Parser::PathExprSegmentContext::pathIdentSegment() {
-  return getRuleContext<Parser::PathIdentSegmentContext>(0);
+RxParser::PathIdentSegmentContext* RxParser::PathExprSegmentContext::pathIdentSegment() {
+  return getRuleContext<RxParser::PathIdentSegmentContext>(0);
 }
 
-tree::TerminalNode* Parser::PathExprSegmentContext::PATHSEP() {
-  return getToken(Parser::PATHSEP, 0);
+tree::TerminalNode* RxParser::PathExprSegmentContext::PATHSEP() {
+  return getToken(RxParser::PATHSEP, 0);
 }
 
-Parser::GenericArgsContext* Parser::PathExprSegmentContext::genericArgs() {
-  return getRuleContext<Parser::GenericArgsContext>(0);
-}
-
-
-size_t Parser::PathExprSegmentContext::getRuleIndex() const {
-  return Parser::RulePathExprSegment;
+RxParser::GenericArgsContext* RxParser::PathExprSegmentContext::genericArgs() {
+  return getRuleContext<RxParser::GenericArgsContext>(0);
 }
 
 
-std::any Parser::PathExprSegmentContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::PathExprSegmentContext::getRuleIndex() const {
+  return RxParser::RulePathExprSegment;
+}
+
+
+std::any RxParser::PathExprSegmentContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitPathExprSegment(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::PathExprSegmentContext* Parser::pathExprSegment() {
+RxParser::PathExprSegmentContext* RxParser::pathExprSegment() {
   PathExprSegmentContext *_localctx = _tracker.createInstance<PathExprSegmentContext>(_ctx, getState());
-  enterRule(_localctx, 60, Parser::RulePathExprSegment);
+  enterRule(_localctx, 60, RxParser::RulePathExprSegment);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -3703,7 +3703,7 @@ Parser::PathExprSegmentContext* Parser::pathExprSegment() {
     switch (getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 59, _ctx)) {
     case 1: {
       setState(627);
-      match(Parser::PATHSEP);
+      match(RxParser::PATHSEP);
       setState(628);
       genericArgs();
       break;
@@ -3725,38 +3725,38 @@ Parser::PathExprSegmentContext* Parser::pathExprSegment() {
 
 //----------------- PathIdentSegmentContext ------------------------------------------------------------------
 
-Parser::PathIdentSegmentContext::PathIdentSegmentContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::PathIdentSegmentContext::PathIdentSegmentContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::IdentifierContext* Parser::PathIdentSegmentContext::identifier() {
-  return getRuleContext<Parser::IdentifierContext>(0);
+RxParser::IdentifierContext* RxParser::PathIdentSegmentContext::identifier() {
+  return getRuleContext<RxParser::IdentifierContext>(0);
 }
 
-tree::TerminalNode* Parser::PathIdentSegmentContext::SELF_VALUE() {
-  return getToken(Parser::SELF_VALUE, 0);
+tree::TerminalNode* RxParser::PathIdentSegmentContext::SELF_VALUE() {
+  return getToken(RxParser::SELF_VALUE, 0);
 }
 
-tree::TerminalNode* Parser::PathIdentSegmentContext::SELF_TYPE() {
-  return getToken(Parser::SELF_TYPE, 0);
-}
-
-
-size_t Parser::PathIdentSegmentContext::getRuleIndex() const {
-  return Parser::RulePathIdentSegment;
+tree::TerminalNode* RxParser::PathIdentSegmentContext::SELF_TYPE() {
+  return getToken(RxParser::SELF_TYPE, 0);
 }
 
 
-std::any Parser::PathIdentSegmentContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::PathIdentSegmentContext::getRuleIndex() const {
+  return RxParser::RulePathIdentSegment;
+}
+
+
+std::any RxParser::PathIdentSegmentContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitPathIdentSegment(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::PathIdentSegmentContext* Parser::pathIdentSegment() {
+RxParser::PathIdentSegmentContext* RxParser::pathIdentSegment() {
   PathIdentSegmentContext *_localctx = _tracker.createInstance<PathIdentSegmentContext>(_ctx, getState());
-  enterRule(_localctx, 62, Parser::RulePathIdentSegment);
+  enterRule(_localctx, 62, RxParser::RulePathIdentSegment);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -3769,29 +3769,29 @@ Parser::PathIdentSegmentContext* Parser::pathIdentSegment() {
     setState(634);
     _errHandler->sync(this);
     switch (_input->LA(1)) {
-      case Parser::DERIVE:
-      case Parser::COPY:
-      case Parser::CLONE:
-      case Parser::PARTIAL_EQ:
-      case Parser::EQ:
-      case Parser::IDENTIFIER: {
+      case RxParser::DERIVE:
+      case RxParser::COPY:
+      case RxParser::CLONE:
+      case RxParser::PARTIAL_EQ:
+      case RxParser::EQ:
+      case RxParser::IDENTIFIER: {
         enterOuterAlt(_localctx, 1);
         setState(631);
         identifier();
         break;
       }
 
-      case Parser::SELF_VALUE: {
+      case RxParser::SELF_VALUE: {
         enterOuterAlt(_localctx, 2);
         setState(632);
-        match(Parser::SELF_VALUE);
+        match(RxParser::SELF_VALUE);
         break;
       }
 
-      case Parser::SELF_TYPE: {
+      case RxParser::SELF_TYPE: {
         enterOuterAlt(_localctx, 3);
         setState(633);
-        match(Parser::SELF_TYPE);
+        match(RxParser::SELF_TYPE);
         break;
       }
 
@@ -3811,50 +3811,50 @@ Parser::PathIdentSegmentContext* Parser::pathIdentSegment() {
 
 //----------------- GenericArgsContext ------------------------------------------------------------------
 
-Parser::GenericArgsContext::GenericArgsContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::GenericArgsContext::GenericArgsContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-tree::TerminalNode* Parser::GenericArgsContext::LT() {
-  return getToken(Parser::LT, 0);
+tree::TerminalNode* RxParser::GenericArgsContext::LT() {
+  return getToken(RxParser::LT, 0);
 }
 
-Parser::GenericCloseContext* Parser::GenericArgsContext::genericClose() {
-  return getRuleContext<Parser::GenericCloseContext>(0);
+RxParser::GenericCloseContext* RxParser::GenericArgsContext::genericClose() {
+  return getRuleContext<RxParser::GenericCloseContext>(0);
 }
 
-std::vector<Parser::GenericArgContext *> Parser::GenericArgsContext::genericArg() {
-  return getRuleContexts<Parser::GenericArgContext>();
+std::vector<RxParser::GenericArgContext *> RxParser::GenericArgsContext::genericArg() {
+  return getRuleContexts<RxParser::GenericArgContext>();
 }
 
-Parser::GenericArgContext* Parser::GenericArgsContext::genericArg(size_t i) {
-  return getRuleContext<Parser::GenericArgContext>(i);
+RxParser::GenericArgContext* RxParser::GenericArgsContext::genericArg(size_t i) {
+  return getRuleContext<RxParser::GenericArgContext>(i);
 }
 
-std::vector<tree::TerminalNode *> Parser::GenericArgsContext::COMMA() {
-  return getTokens(Parser::COMMA);
+std::vector<tree::TerminalNode *> RxParser::GenericArgsContext::COMMA() {
+  return getTokens(RxParser::COMMA);
 }
 
-tree::TerminalNode* Parser::GenericArgsContext::COMMA(size_t i) {
-  return getToken(Parser::COMMA, i);
-}
-
-
-size_t Parser::GenericArgsContext::getRuleIndex() const {
-  return Parser::RuleGenericArgs;
+tree::TerminalNode* RxParser::GenericArgsContext::COMMA(size_t i) {
+  return getToken(RxParser::COMMA, i);
 }
 
 
-std::any Parser::GenericArgsContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::GenericArgsContext::getRuleIndex() const {
+  return RxParser::RuleGenericArgs;
+}
+
+
+std::any RxParser::GenericArgsContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitGenericArgs(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::GenericArgsContext* Parser::genericArgs() {
+RxParser::GenericArgsContext* RxParser::genericArgs() {
   GenericArgsContext *_localctx = _tracker.createInstance<GenericArgsContext>(_ctx, getState());
-  enterRule(_localctx, 64, Parser::RuleGenericArgs);
+  enterRule(_localctx, 64, RxParser::RuleGenericArgs);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -3868,7 +3868,7 @@ Parser::GenericArgsContext* Parser::genericArgs() {
     size_t alt;
     enterOuterAlt(_localctx, 1);
     setState(636);
-    match(Parser::LT);
+    match(RxParser::LT);
     setState(648);
     _errHandler->sync(this);
 
@@ -3883,7 +3883,7 @@ Parser::GenericArgsContext* Parser::genericArgs() {
       while (alt != 2 && alt != atn::ATN::INVALID_ALT_NUMBER) {
         if (alt == 1) {
           setState(638);
-          match(Parser::COMMA);
+          match(RxParser::COMMA);
           setState(639);
           genericArg(); 
         }
@@ -3895,9 +3895,9 @@ Parser::GenericArgsContext* Parser::genericArgs() {
       _errHandler->sync(this);
 
       _la = _input->LA(1);
-      if (_la == Parser::COMMA) {
+      if (_la == RxParser::COMMA) {
         setState(645);
-        match(Parser::COMMA);
+        match(RxParser::COMMA);
       }
     }
     setState(650);
@@ -3915,34 +3915,34 @@ Parser::GenericArgsContext* Parser::genericArgs() {
 
 //----------------- GenericArgContext ------------------------------------------------------------------
 
-Parser::GenericArgContext::GenericArgContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::GenericArgContext::GenericArgContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::LifetimeContext* Parser::GenericArgContext::lifetime() {
-  return getRuleContext<Parser::LifetimeContext>(0);
+RxParser::LifetimeContext* RxParser::GenericArgContext::lifetime() {
+  return getRuleContext<RxParser::LifetimeContext>(0);
 }
 
-Parser::TypeRefContext* Parser::GenericArgContext::typeRef() {
-  return getRuleContext<Parser::TypeRefContext>(0);
-}
-
-
-size_t Parser::GenericArgContext::getRuleIndex() const {
-  return Parser::RuleGenericArg;
+RxParser::TypeRefContext* RxParser::GenericArgContext::typeRef() {
+  return getRuleContext<RxParser::TypeRefContext>(0);
 }
 
 
-std::any Parser::GenericArgContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::GenericArgContext::getRuleIndex() const {
+  return RxParser::RuleGenericArg;
+}
+
+
+std::any RxParser::GenericArgContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitGenericArg(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::GenericArgContext* Parser::genericArg() {
+RxParser::GenericArgContext* RxParser::genericArg() {
   GenericArgContext *_localctx = _tracker.createInstance<GenericArgContext>(_ctx, getState());
-  enterRule(_localctx, 66, Parser::RuleGenericArg);
+  enterRule(_localctx, 66, RxParser::RuleGenericArg);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -3955,25 +3955,25 @@ Parser::GenericArgContext* Parser::genericArg() {
     setState(654);
     _errHandler->sync(this);
     switch (_input->LA(1)) {
-      case Parser::LIFETIME: {
+      case RxParser::LIFETIME: {
         enterOuterAlt(_localctx, 1);
         setState(652);
         lifetime();
         break;
       }
 
-      case Parser::SELF_VALUE:
-      case Parser::SELF_TYPE:
-      case Parser::DERIVE:
-      case Parser::COPY:
-      case Parser::CLONE:
-      case Parser::PARTIAL_EQ:
-      case Parser::EQ:
-      case Parser::IDENTIFIER:
-      case Parser::ANDAND:
-      case Parser::AMP:
-      case Parser::LBRACKET:
-      case Parser::LPAREN: {
+      case RxParser::SELF_VALUE:
+      case RxParser::SELF_TYPE:
+      case RxParser::DERIVE:
+      case RxParser::COPY:
+      case RxParser::CLONE:
+      case RxParser::PARTIAL_EQ:
+      case RxParser::EQ:
+      case RxParser::IDENTIFIER:
+      case RxParser::ANDAND:
+      case RxParser::AMP:
+      case RxParser::LBRACKET:
+      case RxParser::LPAREN: {
         enterOuterAlt(_localctx, 2);
         setState(653);
         typeRef();
@@ -3996,34 +3996,34 @@ Parser::GenericArgContext* Parser::genericArg() {
 
 //----------------- GenericCloseContext ------------------------------------------------------------------
 
-Parser::GenericCloseContext::GenericCloseContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::GenericCloseContext::GenericCloseContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-tree::TerminalNode* Parser::GenericCloseContext::GT() {
-  return getToken(Parser::GT, 0);
+tree::TerminalNode* RxParser::GenericCloseContext::GT() {
+  return getToken(RxParser::GT, 0);
 }
 
-tree::TerminalNode* Parser::GenericCloseContext::GT_SECOND() {
-  return getToken(Parser::GT_SECOND, 0);
-}
-
-
-size_t Parser::GenericCloseContext::getRuleIndex() const {
-  return Parser::RuleGenericClose;
+tree::TerminalNode* RxParser::GenericCloseContext::GT_SECOND() {
+  return getToken(RxParser::GT_SECOND, 0);
 }
 
 
-std::any Parser::GenericCloseContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::GenericCloseContext::getRuleIndex() const {
+  return RxParser::RuleGenericClose;
+}
+
+
+std::any RxParser::GenericCloseContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitGenericClose(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::GenericCloseContext* Parser::genericClose() {
+RxParser::GenericCloseContext* RxParser::genericClose() {
   GenericCloseContext *_localctx = _tracker.createInstance<GenericCloseContext>(_ctx, getState());
-  enterRule(_localctx, 68, Parser::RuleGenericClose);
+  enterRule(_localctx, 68, RxParser::RuleGenericClose);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -4037,9 +4037,9 @@ Parser::GenericCloseContext* Parser::genericClose() {
     enterOuterAlt(_localctx, 1);
     setState(656);
     _la = _input->LA(1);
-    if (!(_la == Parser::GT
+    if (!(_la == RxParser::GT
 
-    || _la == Parser::GT_SECOND)) {
+    || _la == RxParser::GT_SECOND)) {
     _errHandler->recoverInline(this);
     }
     else {
@@ -4059,86 +4059,86 @@ Parser::GenericCloseContext* Parser::genericClose() {
 
 //----------------- ClosedCastTypeContext ------------------------------------------------------------------
 
-Parser::ClosedCastTypeContext::ClosedCastTypeContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ClosedCastTypeContext::ClosedCastTypeContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-tree::TerminalNode* Parser::ClosedCastTypeContext::LPAREN() {
-  return getToken(Parser::LPAREN, 0);
+tree::TerminalNode* RxParser::ClosedCastTypeContext::LPAREN() {
+  return getToken(RxParser::LPAREN, 0);
 }
 
-tree::TerminalNode* Parser::ClosedCastTypeContext::RPAREN() {
-  return getToken(Parser::RPAREN, 0);
+tree::TerminalNode* RxParser::ClosedCastTypeContext::RPAREN() {
+  return getToken(RxParser::RPAREN, 0);
 }
 
-Parser::TypeRefContext* Parser::ClosedCastTypeContext::typeRef() {
-  return getRuleContext<Parser::TypeRefContext>(0);
+RxParser::TypeRefContext* RxParser::ClosedCastTypeContext::typeRef() {
+  return getRuleContext<RxParser::TypeRefContext>(0);
 }
 
-Parser::ArrayTypeContext* Parser::ClosedCastTypeContext::arrayType() {
-  return getRuleContext<Parser::ArrayTypeContext>(0);
+RxParser::ArrayTypeContext* RxParser::ClosedCastTypeContext::arrayType() {
+  return getRuleContext<RxParser::ArrayTypeContext>(0);
 }
 
-Parser::ClosedCastTypeContext* Parser::ClosedCastTypeContext::closedCastType() {
-  return getRuleContext<Parser::ClosedCastTypeContext>(0);
+RxParser::ClosedCastTypeContext* RxParser::ClosedCastTypeContext::closedCastType() {
+  return getRuleContext<RxParser::ClosedCastTypeContext>(0);
 }
 
-tree::TerminalNode* Parser::ClosedCastTypeContext::AMP() {
-  return getToken(Parser::AMP, 0);
+tree::TerminalNode* RxParser::ClosedCastTypeContext::AMP() {
+  return getToken(RxParser::AMP, 0);
 }
 
-tree::TerminalNode* Parser::ClosedCastTypeContext::ANDAND() {
-  return getToken(Parser::ANDAND, 0);
+tree::TerminalNode* RxParser::ClosedCastTypeContext::ANDAND() {
+  return getToken(RxParser::ANDAND, 0);
 }
 
-Parser::LifetimeContext* Parser::ClosedCastTypeContext::lifetime() {
-  return getRuleContext<Parser::LifetimeContext>(0);
+RxParser::LifetimeContext* RxParser::ClosedCastTypeContext::lifetime() {
+  return getRuleContext<RxParser::LifetimeContext>(0);
 }
 
-tree::TerminalNode* Parser::ClosedCastTypeContext::MUT() {
-  return getToken(Parser::MUT, 0);
+tree::TerminalNode* RxParser::ClosedCastTypeContext::MUT() {
+  return getToken(RxParser::MUT, 0);
 }
 
-Parser::PathIdentSegmentContext* Parser::ClosedCastTypeContext::pathIdentSegment() {
-  return getRuleContext<Parser::PathIdentSegmentContext>(0);
+RxParser::PathIdentSegmentContext* RxParser::ClosedCastTypeContext::pathIdentSegment() {
+  return getRuleContext<RxParser::PathIdentSegmentContext>(0);
 }
 
-Parser::GenericArgsContext* Parser::ClosedCastTypeContext::genericArgs() {
-  return getRuleContext<Parser::GenericArgsContext>(0);
+RxParser::GenericArgsContext* RxParser::ClosedCastTypeContext::genericArgs() {
+  return getRuleContext<RxParser::GenericArgsContext>(0);
 }
 
-std::vector<Parser::TypePathSegmentContext *> Parser::ClosedCastTypeContext::typePathSegment() {
-  return getRuleContexts<Parser::TypePathSegmentContext>();
+std::vector<RxParser::TypePathSegmentContext *> RxParser::ClosedCastTypeContext::typePathSegment() {
+  return getRuleContexts<RxParser::TypePathSegmentContext>();
 }
 
-Parser::TypePathSegmentContext* Parser::ClosedCastTypeContext::typePathSegment(size_t i) {
-  return getRuleContext<Parser::TypePathSegmentContext>(i);
+RxParser::TypePathSegmentContext* RxParser::ClosedCastTypeContext::typePathSegment(size_t i) {
+  return getRuleContext<RxParser::TypePathSegmentContext>(i);
 }
 
-std::vector<tree::TerminalNode *> Parser::ClosedCastTypeContext::PATHSEP() {
-  return getTokens(Parser::PATHSEP);
+std::vector<tree::TerminalNode *> RxParser::ClosedCastTypeContext::PATHSEP() {
+  return getTokens(RxParser::PATHSEP);
 }
 
-tree::TerminalNode* Parser::ClosedCastTypeContext::PATHSEP(size_t i) {
-  return getToken(Parser::PATHSEP, i);
-}
-
-
-size_t Parser::ClosedCastTypeContext::getRuleIndex() const {
-  return Parser::RuleClosedCastType;
+tree::TerminalNode* RxParser::ClosedCastTypeContext::PATHSEP(size_t i) {
+  return getToken(RxParser::PATHSEP, i);
 }
 
 
-std::any Parser::ClosedCastTypeContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ClosedCastTypeContext::getRuleIndex() const {
+  return RxParser::RuleClosedCastType;
+}
+
+
+std::any RxParser::ClosedCastTypeContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitClosedCastType(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ClosedCastTypeContext* Parser::closedCastType() {
+RxParser::ClosedCastTypeContext* RxParser::closedCastType() {
   ClosedCastTypeContext *_localctx = _tracker.createInstance<ClosedCastTypeContext>(_ctx, getState());
-  enterRule(_localctx, 70, Parser::RuleClosedCastType);
+  enterRule(_localctx, 70, RxParser::RuleClosedCastType);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -4153,10 +4153,10 @@ Parser::ClosedCastTypeContext* Parser::closedCastType() {
     setState(686);
     _errHandler->sync(this);
     switch (_input->LA(1)) {
-      case Parser::LPAREN: {
+      case RxParser::LPAREN: {
         enterOuterAlt(_localctx, 1);
         setState(658);
-        match(Parser::LPAREN);
+        match(RxParser::LPAREN);
         setState(660);
         _errHandler->sync(this);
 
@@ -4167,25 +4167,25 @@ Parser::ClosedCastTypeContext* Parser::closedCastType() {
           typeRef();
         }
         setState(662);
-        match(Parser::RPAREN);
+        match(RxParser::RPAREN);
         break;
       }
 
-      case Parser::LBRACKET: {
+      case RxParser::LBRACKET: {
         enterOuterAlt(_localctx, 2);
         setState(663);
         arrayType();
         break;
       }
 
-      case Parser::ANDAND:
-      case Parser::AMP: {
+      case RxParser::ANDAND:
+      case RxParser::AMP: {
         enterOuterAlt(_localctx, 3);
         setState(664);
         _la = _input->LA(1);
-        if (!(_la == Parser::ANDAND
+        if (!(_la == RxParser::ANDAND
 
-        || _la == Parser::AMP)) {
+        || _la == RxParser::AMP)) {
         _errHandler->recoverInline(this);
         }
         else {
@@ -4196,7 +4196,7 @@ Parser::ClosedCastTypeContext* Parser::closedCastType() {
         _errHandler->sync(this);
 
         _la = _input->LA(1);
-        if (_la == Parser::LIFETIME) {
+        if (_la == RxParser::LIFETIME) {
           setState(665);
           lifetime();
         }
@@ -4204,23 +4204,23 @@ Parser::ClosedCastTypeContext* Parser::closedCastType() {
         _errHandler->sync(this);
 
         _la = _input->LA(1);
-        if (_la == Parser::MUT) {
+        if (_la == RxParser::MUT) {
           setState(668);
-          match(Parser::MUT);
+          match(RxParser::MUT);
         }
         setState(671);
         closedCastType();
         break;
       }
 
-      case Parser::SELF_VALUE:
-      case Parser::SELF_TYPE:
-      case Parser::DERIVE:
-      case Parser::COPY:
-      case Parser::CLONE:
-      case Parser::PARTIAL_EQ:
-      case Parser::EQ:
-      case Parser::IDENTIFIER: {
+      case RxParser::SELF_VALUE:
+      case RxParser::SELF_TYPE:
+      case RxParser::DERIVE:
+      case RxParser::COPY:
+      case RxParser::CLONE:
+      case RxParser::PARTIAL_EQ:
+      case RxParser::EQ:
+      case RxParser::IDENTIFIER: {
         enterOuterAlt(_localctx, 4);
         setState(677);
         _errHandler->sync(this);
@@ -4230,7 +4230,7 @@ Parser::ClosedCastTypeContext* Parser::closedCastType() {
             setState(672);
             typePathSegment();
             setState(673);
-            match(Parser::PATHSEP); 
+            match(RxParser::PATHSEP); 
           }
           setState(679);
           _errHandler->sync(this);
@@ -4242,9 +4242,9 @@ Parser::ClosedCastTypeContext* Parser::closedCastType() {
         _errHandler->sync(this);
 
         _la = _input->LA(1);
-        if (_la == Parser::PATHSEP) {
+        if (_la == RxParser::PATHSEP) {
           setState(681);
-          match(Parser::PATHSEP);
+          match(RxParser::PATHSEP);
         }
         setState(684);
         genericArgs();
@@ -4267,62 +4267,62 @@ Parser::ClosedCastTypeContext* Parser::closedCastType() {
 
 //----------------- ConstValueContext ------------------------------------------------------------------
 
-Parser::ConstValueContext::ConstValueContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ConstValueContext::ConstValueContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-tree::TerminalNode* Parser::ConstValueContext::INTEGER_LITERAL() {
-  return getToken(Parser::INTEGER_LITERAL, 0);
+tree::TerminalNode* RxParser::ConstValueContext::INTEGER_LITERAL() {
+  return getToken(RxParser::INTEGER_LITERAL, 0);
 }
 
-tree::TerminalNode* Parser::ConstValueContext::TRUE() {
-  return getToken(Parser::TRUE, 0);
+tree::TerminalNode* RxParser::ConstValueContext::TRUE() {
+  return getToken(RxParser::TRUE, 0);
 }
 
-tree::TerminalNode* Parser::ConstValueContext::FALSE() {
-  return getToken(Parser::FALSE, 0);
+tree::TerminalNode* RxParser::ConstValueContext::FALSE() {
+  return getToken(RxParser::FALSE, 0);
 }
 
-Parser::PathInExpressionContext* Parser::ConstValueContext::pathInExpression() {
-  return getRuleContext<Parser::PathInExpressionContext>(0);
+RxParser::PathInExpressionContext* RxParser::ConstValueContext::pathInExpression() {
+  return getRuleContext<RxParser::PathInExpressionContext>(0);
 }
 
-tree::TerminalNode* Parser::ConstValueContext::MINUS() {
-  return getToken(Parser::MINUS, 0);
+tree::TerminalNode* RxParser::ConstValueContext::MINUS() {
+  return getToken(RxParser::MINUS, 0);
 }
 
-Parser::MagnitudeContext* Parser::ConstValueContext::magnitude() {
-  return getRuleContext<Parser::MagnitudeContext>(0);
+RxParser::MagnitudeContext* RxParser::ConstValueContext::magnitude() {
+  return getRuleContext<RxParser::MagnitudeContext>(0);
 }
 
-tree::TerminalNode* Parser::ConstValueContext::LPAREN() {
-  return getToken(Parser::LPAREN, 0);
+tree::TerminalNode* RxParser::ConstValueContext::LPAREN() {
+  return getToken(RxParser::LPAREN, 0);
 }
 
-Parser::ConstValueContext* Parser::ConstValueContext::constValue() {
-  return getRuleContext<Parser::ConstValueContext>(0);
+RxParser::ConstValueContext* RxParser::ConstValueContext::constValue() {
+  return getRuleContext<RxParser::ConstValueContext>(0);
 }
 
-tree::TerminalNode* Parser::ConstValueContext::RPAREN() {
-  return getToken(Parser::RPAREN, 0);
-}
-
-
-size_t Parser::ConstValueContext::getRuleIndex() const {
-  return Parser::RuleConstValue;
+tree::TerminalNode* RxParser::ConstValueContext::RPAREN() {
+  return getToken(RxParser::RPAREN, 0);
 }
 
 
-std::any Parser::ConstValueContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ConstValueContext::getRuleIndex() const {
+  return RxParser::RuleConstValue;
+}
+
+
+std::any RxParser::ConstValueContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitConstValue(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ConstValueContext* Parser::constValue() {
+RxParser::ConstValueContext* RxParser::constValue() {
   ConstValueContext *_localctx = _tracker.createInstance<ConstValueContext>(_ctx, getState());
-  enterRule(_localctx, 72, Parser::RuleConstValue);
+  enterRule(_localctx, 72, RxParser::RuleConstValue);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -4335,58 +4335,58 @@ Parser::ConstValueContext* Parser::constValue() {
     setState(698);
     _errHandler->sync(this);
     switch (_input->LA(1)) {
-      case Parser::INTEGER_LITERAL: {
+      case RxParser::INTEGER_LITERAL: {
         enterOuterAlt(_localctx, 1);
         setState(688);
-        match(Parser::INTEGER_LITERAL);
+        match(RxParser::INTEGER_LITERAL);
         break;
       }
 
-      case Parser::TRUE: {
+      case RxParser::TRUE: {
         enterOuterAlt(_localctx, 2);
         setState(689);
-        match(Parser::TRUE);
+        match(RxParser::TRUE);
         break;
       }
 
-      case Parser::FALSE: {
+      case RxParser::FALSE: {
         enterOuterAlt(_localctx, 3);
         setState(690);
-        match(Parser::FALSE);
+        match(RxParser::FALSE);
         break;
       }
 
-      case Parser::SELF_VALUE:
-      case Parser::SELF_TYPE:
-      case Parser::DERIVE:
-      case Parser::COPY:
-      case Parser::CLONE:
-      case Parser::PARTIAL_EQ:
-      case Parser::EQ:
-      case Parser::IDENTIFIER: {
+      case RxParser::SELF_VALUE:
+      case RxParser::SELF_TYPE:
+      case RxParser::DERIVE:
+      case RxParser::COPY:
+      case RxParser::CLONE:
+      case RxParser::PARTIAL_EQ:
+      case RxParser::EQ:
+      case RxParser::IDENTIFIER: {
         enterOuterAlt(_localctx, 4);
         setState(691);
         pathInExpression();
         break;
       }
 
-      case Parser::MINUS: {
+      case RxParser::MINUS: {
         enterOuterAlt(_localctx, 5);
         setState(692);
-        match(Parser::MINUS);
+        match(RxParser::MINUS);
         setState(693);
         magnitude();
         break;
       }
 
-      case Parser::LPAREN: {
+      case RxParser::LPAREN: {
         enterOuterAlt(_localctx, 6);
         setState(694);
-        match(Parser::LPAREN);
+        match(RxParser::LPAREN);
         setState(695);
         constValue();
         setState(696);
-        match(Parser::RPAREN);
+        match(RxParser::RPAREN);
         break;
       }
 
@@ -4406,46 +4406,46 @@ Parser::ConstValueContext* Parser::constValue() {
 
 //----------------- MagnitudeContext ------------------------------------------------------------------
 
-Parser::MagnitudeContext::MagnitudeContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::MagnitudeContext::MagnitudeContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-tree::TerminalNode* Parser::MagnitudeContext::INTEGER_LITERAL() {
-  return getToken(Parser::INTEGER_LITERAL, 0);
+tree::TerminalNode* RxParser::MagnitudeContext::INTEGER_LITERAL() {
+  return getToken(RxParser::INTEGER_LITERAL, 0);
 }
 
-Parser::PathInExpressionContext* Parser::MagnitudeContext::pathInExpression() {
-  return getRuleContext<Parser::PathInExpressionContext>(0);
+RxParser::PathInExpressionContext* RxParser::MagnitudeContext::pathInExpression() {
+  return getRuleContext<RxParser::PathInExpressionContext>(0);
 }
 
-tree::TerminalNode* Parser::MagnitudeContext::LPAREN() {
-  return getToken(Parser::LPAREN, 0);
+tree::TerminalNode* RxParser::MagnitudeContext::LPAREN() {
+  return getToken(RxParser::LPAREN, 0);
 }
 
-Parser::MagnitudeContext* Parser::MagnitudeContext::magnitude() {
-  return getRuleContext<Parser::MagnitudeContext>(0);
+RxParser::MagnitudeContext* RxParser::MagnitudeContext::magnitude() {
+  return getRuleContext<RxParser::MagnitudeContext>(0);
 }
 
-tree::TerminalNode* Parser::MagnitudeContext::RPAREN() {
-  return getToken(Parser::RPAREN, 0);
-}
-
-
-size_t Parser::MagnitudeContext::getRuleIndex() const {
-  return Parser::RuleMagnitude;
+tree::TerminalNode* RxParser::MagnitudeContext::RPAREN() {
+  return getToken(RxParser::RPAREN, 0);
 }
 
 
-std::any Parser::MagnitudeContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::MagnitudeContext::getRuleIndex() const {
+  return RxParser::RuleMagnitude;
+}
+
+
+std::any RxParser::MagnitudeContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitMagnitude(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::MagnitudeContext* Parser::magnitude() {
+RxParser::MagnitudeContext* RxParser::magnitude() {
   MagnitudeContext *_localctx = _tracker.createInstance<MagnitudeContext>(_ctx, getState());
-  enterRule(_localctx, 74, Parser::RuleMagnitude);
+  enterRule(_localctx, 74, RxParser::RuleMagnitude);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -4458,35 +4458,35 @@ Parser::MagnitudeContext* Parser::magnitude() {
     setState(706);
     _errHandler->sync(this);
     switch (_input->LA(1)) {
-      case Parser::INTEGER_LITERAL: {
+      case RxParser::INTEGER_LITERAL: {
         enterOuterAlt(_localctx, 1);
         setState(700);
-        match(Parser::INTEGER_LITERAL);
+        match(RxParser::INTEGER_LITERAL);
         break;
       }
 
-      case Parser::SELF_VALUE:
-      case Parser::SELF_TYPE:
-      case Parser::DERIVE:
-      case Parser::COPY:
-      case Parser::CLONE:
-      case Parser::PARTIAL_EQ:
-      case Parser::EQ:
-      case Parser::IDENTIFIER: {
+      case RxParser::SELF_VALUE:
+      case RxParser::SELF_TYPE:
+      case RxParser::DERIVE:
+      case RxParser::COPY:
+      case RxParser::CLONE:
+      case RxParser::PARTIAL_EQ:
+      case RxParser::EQ:
+      case RxParser::IDENTIFIER: {
         enterOuterAlt(_localctx, 2);
         setState(701);
         pathInExpression();
         break;
       }
 
-      case Parser::LPAREN: {
+      case RxParser::LPAREN: {
         enterOuterAlt(_localctx, 3);
         setState(702);
-        match(Parser::LPAREN);
+        match(RxParser::LPAREN);
         setState(703);
         magnitude();
         setState(704);
-        match(Parser::RPAREN);
+        match(RxParser::RPAREN);
         break;
       }
 
@@ -4506,34 +4506,34 @@ Parser::MagnitudeContext* Parser::magnitude() {
 
 //----------------- IdentifierBindingContext ------------------------------------------------------------------
 
-Parser::IdentifierBindingContext::IdentifierBindingContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::IdentifierBindingContext::IdentifierBindingContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::IdentifierContext* Parser::IdentifierBindingContext::identifier() {
-  return getRuleContext<Parser::IdentifierContext>(0);
+RxParser::IdentifierContext* RxParser::IdentifierBindingContext::identifier() {
+  return getRuleContext<RxParser::IdentifierContext>(0);
 }
 
-tree::TerminalNode* Parser::IdentifierBindingContext::MUT() {
-  return getToken(Parser::MUT, 0);
-}
-
-
-size_t Parser::IdentifierBindingContext::getRuleIndex() const {
-  return Parser::RuleIdentifierBinding;
+tree::TerminalNode* RxParser::IdentifierBindingContext::MUT() {
+  return getToken(RxParser::MUT, 0);
 }
 
 
-std::any Parser::IdentifierBindingContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::IdentifierBindingContext::getRuleIndex() const {
+  return RxParser::RuleIdentifierBinding;
+}
+
+
+std::any RxParser::IdentifierBindingContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitIdentifierBinding(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::IdentifierBindingContext* Parser::identifierBinding() {
+RxParser::IdentifierBindingContext* RxParser::identifierBinding() {
   IdentifierBindingContext *_localctx = _tracker.createInstance<IdentifierBindingContext>(_ctx, getState());
-  enterRule(_localctx, 76, Parser::RuleIdentifierBinding);
+  enterRule(_localctx, 76, RxParser::RuleIdentifierBinding);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -4549,9 +4549,9 @@ Parser::IdentifierBindingContext* Parser::identifierBinding() {
     _errHandler->sync(this);
 
     _la = _input->LA(1);
-    if (_la == Parser::MUT) {
+    if (_la == RxParser::MUT) {
       setState(708);
-      match(Parser::MUT);
+      match(RxParser::MUT);
     }
     setState(711);
     identifier();
@@ -4568,54 +4568,54 @@ Parser::IdentifierBindingContext* Parser::identifierBinding() {
 
 //----------------- LetStatementContext ------------------------------------------------------------------
 
-Parser::LetStatementContext::LetStatementContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::LetStatementContext::LetStatementContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-tree::TerminalNode* Parser::LetStatementContext::LET() {
-  return getToken(Parser::LET, 0);
+tree::TerminalNode* RxParser::LetStatementContext::LET() {
+  return getToken(RxParser::LET, 0);
 }
 
-Parser::IdentifierBindingContext* Parser::LetStatementContext::identifierBinding() {
-  return getRuleContext<Parser::IdentifierBindingContext>(0);
+RxParser::IdentifierBindingContext* RxParser::LetStatementContext::identifierBinding() {
+  return getRuleContext<RxParser::IdentifierBindingContext>(0);
 }
 
-Parser::EqualsSignContext* Parser::LetStatementContext::equalsSign() {
-  return getRuleContext<Parser::EqualsSignContext>(0);
+RxParser::EqualsSignContext* RxParser::LetStatementContext::equalsSign() {
+  return getRuleContext<RxParser::EqualsSignContext>(0);
 }
 
-Parser::ExpressionContext* Parser::LetStatementContext::expression() {
-  return getRuleContext<Parser::ExpressionContext>(0);
+RxParser::ExpressionContext* RxParser::LetStatementContext::expression() {
+  return getRuleContext<RxParser::ExpressionContext>(0);
 }
 
-tree::TerminalNode* Parser::LetStatementContext::SEMI() {
-  return getToken(Parser::SEMI, 0);
+tree::TerminalNode* RxParser::LetStatementContext::SEMI() {
+  return getToken(RxParser::SEMI, 0);
 }
 
-tree::TerminalNode* Parser::LetStatementContext::COLON() {
-  return getToken(Parser::COLON, 0);
+tree::TerminalNode* RxParser::LetStatementContext::COLON() {
+  return getToken(RxParser::COLON, 0);
 }
 
-Parser::TypeRefContext* Parser::LetStatementContext::typeRef() {
-  return getRuleContext<Parser::TypeRefContext>(0);
-}
-
-
-size_t Parser::LetStatementContext::getRuleIndex() const {
-  return Parser::RuleLetStatement;
+RxParser::TypeRefContext* RxParser::LetStatementContext::typeRef() {
+  return getRuleContext<RxParser::TypeRefContext>(0);
 }
 
 
-std::any Parser::LetStatementContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::LetStatementContext::getRuleIndex() const {
+  return RxParser::RuleLetStatement;
+}
+
+
+std::any RxParser::LetStatementContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitLetStatement(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::LetStatementContext* Parser::letStatement() {
+RxParser::LetStatementContext* RxParser::letStatement() {
   LetStatementContext *_localctx = _tracker.createInstance<LetStatementContext>(_ctx, getState());
-  enterRule(_localctx, 78, Parser::RuleLetStatement);
+  enterRule(_localctx, 78, RxParser::RuleLetStatement);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -4628,16 +4628,16 @@ Parser::LetStatementContext* Parser::letStatement() {
   try {
     enterOuterAlt(_localctx, 1);
     setState(713);
-    match(Parser::LET);
+    match(RxParser::LET);
     setState(714);
     identifierBinding();
     setState(717);
     _errHandler->sync(this);
 
     _la = _input->LA(1);
-    if (_la == Parser::COLON) {
+    if (_la == RxParser::COLON) {
       setState(715);
-      match(Parser::COLON);
+      match(RxParser::COLON);
       setState(716);
       typeRef();
     }
@@ -4646,7 +4646,7 @@ Parser::LetStatementContext* Parser::letStatement() {
     setState(720);
     expression();
     setState(721);
-    match(Parser::SEMI);
+    match(RxParser::SEMI);
    
   }
   catch (RecognitionException &e) {
@@ -4660,46 +4660,46 @@ Parser::LetStatementContext* Parser::letStatement() {
 
 //----------------- BlockExpressionContext ------------------------------------------------------------------
 
-Parser::BlockExpressionContext::BlockExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::BlockExpressionContext::BlockExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-tree::TerminalNode* Parser::BlockExpressionContext::LBRACE() {
-  return getToken(Parser::LBRACE, 0);
+tree::TerminalNode* RxParser::BlockExpressionContext::LBRACE() {
+  return getToken(RxParser::LBRACE, 0);
 }
 
-tree::TerminalNode* Parser::BlockExpressionContext::RBRACE() {
-  return getToken(Parser::RBRACE, 0);
+tree::TerminalNode* RxParser::BlockExpressionContext::RBRACE() {
+  return getToken(RxParser::RBRACE, 0);
 }
 
-std::vector<Parser::StatementContext *> Parser::BlockExpressionContext::statement() {
-  return getRuleContexts<Parser::StatementContext>();
+std::vector<RxParser::StatementContext *> RxParser::BlockExpressionContext::statement() {
+  return getRuleContexts<RxParser::StatementContext>();
 }
 
-Parser::StatementContext* Parser::BlockExpressionContext::statement(size_t i) {
-  return getRuleContext<Parser::StatementContext>(i);
+RxParser::StatementContext* RxParser::BlockExpressionContext::statement(size_t i) {
+  return getRuleContext<RxParser::StatementContext>(i);
 }
 
-Parser::StatementExpressionContext* Parser::BlockExpressionContext::statementExpression() {
-  return getRuleContext<Parser::StatementExpressionContext>(0);
-}
-
-
-size_t Parser::BlockExpressionContext::getRuleIndex() const {
-  return Parser::RuleBlockExpression;
+RxParser::StatementExpressionContext* RxParser::BlockExpressionContext::statementExpression() {
+  return getRuleContext<RxParser::StatementExpressionContext>(0);
 }
 
 
-std::any Parser::BlockExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::BlockExpressionContext::getRuleIndex() const {
+  return RxParser::RuleBlockExpression;
+}
+
+
+std::any RxParser::BlockExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitBlockExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::BlockExpressionContext* Parser::blockExpression() {
+RxParser::BlockExpressionContext* RxParser::blockExpression() {
   BlockExpressionContext *_localctx = _tracker.createInstance<BlockExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 80, Parser::RuleBlockExpression);
+  enterRule(_localctx, 80, RxParser::RuleBlockExpression);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -4713,7 +4713,7 @@ Parser::BlockExpressionContext* Parser::blockExpression() {
     size_t alt;
     enterOuterAlt(_localctx, 1);
     setState(723);
-    match(Parser::LBRACE);
+    match(RxParser::LBRACE);
     setState(727);
     _errHandler->sync(this);
     alt = getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 75, _ctx);
@@ -4737,7 +4737,7 @@ Parser::BlockExpressionContext* Parser::blockExpression() {
       statementExpression();
     }
     setState(733);
-    match(Parser::RBRACE);
+    match(RxParser::RBRACE);
    
   }
   catch (RecognitionException &e) {
@@ -4751,42 +4751,42 @@ Parser::BlockExpressionContext* Parser::blockExpression() {
 
 //----------------- StatementContext ------------------------------------------------------------------
 
-Parser::StatementContext::StatementContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::StatementContext::StatementContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-tree::TerminalNode* Parser::StatementContext::SEMI() {
-  return getToken(Parser::SEMI, 0);
+tree::TerminalNode* RxParser::StatementContext::SEMI() {
+  return getToken(RxParser::SEMI, 0);
 }
 
-Parser::LetStatementContext* Parser::StatementContext::letStatement() {
-  return getRuleContext<Parser::LetStatementContext>(0);
+RxParser::LetStatementContext* RxParser::StatementContext::letStatement() {
+  return getRuleContext<RxParser::LetStatementContext>(0);
 }
 
-Parser::ExpressionWithBlockContext* Parser::StatementContext::expressionWithBlock() {
-  return getRuleContext<Parser::ExpressionWithBlockContext>(0);
+RxParser::ExpressionWithBlockContext* RxParser::StatementContext::expressionWithBlock() {
+  return getRuleContext<RxParser::ExpressionWithBlockContext>(0);
 }
 
-Parser::StatementExpressionContext* Parser::StatementContext::statementExpression() {
-  return getRuleContext<Parser::StatementExpressionContext>(0);
-}
-
-
-size_t Parser::StatementContext::getRuleIndex() const {
-  return Parser::RuleStatement;
+RxParser::StatementExpressionContext* RxParser::StatementContext::statementExpression() {
+  return getRuleContext<RxParser::StatementExpressionContext>(0);
 }
 
 
-std::any Parser::StatementContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::StatementContext::getRuleIndex() const {
+  return RxParser::RuleStatement;
+}
+
+
+std::any RxParser::StatementContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitStatement(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::StatementContext* Parser::statement() {
+RxParser::StatementContext* RxParser::statement() {
   StatementContext *_localctx = _tracker.createInstance<StatementContext>(_ctx, getState());
-  enterRule(_localctx, 82, Parser::RuleStatement);
+  enterRule(_localctx, 82, RxParser::RuleStatement);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -4802,7 +4802,7 @@ Parser::StatementContext* Parser::statement() {
     case 1: {
       enterOuterAlt(_localctx, 1);
       setState(735);
-      match(Parser::SEMI);
+      match(RxParser::SEMI);
       break;
     }
 
@@ -4823,7 +4823,7 @@ Parser::StatementContext* Parser::statement() {
       switch (getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 77, _ctx)) {
       case 1: {
         setState(738);
-        match(Parser::SEMI);
+        match(RxParser::SEMI);
         break;
       }
 
@@ -4838,7 +4838,7 @@ Parser::StatementContext* Parser::statement() {
       setState(741);
       statementExpression();
       setState(742);
-      match(Parser::SEMI);
+      match(RxParser::SEMI);
       break;
     }
 
@@ -4858,46 +4858,46 @@ Parser::StatementContext* Parser::statement() {
 
 //----------------- ExpressionWithBlockContext ------------------------------------------------------------------
 
-Parser::ExpressionWithBlockContext::ExpressionWithBlockContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ExpressionWithBlockContext::ExpressionWithBlockContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::BlockExpressionContext* Parser::ExpressionWithBlockContext::blockExpression() {
-  return getRuleContext<Parser::BlockExpressionContext>(0);
+RxParser::BlockExpressionContext* RxParser::ExpressionWithBlockContext::blockExpression() {
+  return getRuleContext<RxParser::BlockExpressionContext>(0);
 }
 
-Parser::IfExpressionContext* Parser::ExpressionWithBlockContext::ifExpression() {
-  return getRuleContext<Parser::IfExpressionContext>(0);
+RxParser::IfExpressionContext* RxParser::ExpressionWithBlockContext::ifExpression() {
+  return getRuleContext<RxParser::IfExpressionContext>(0);
 }
 
-tree::TerminalNode* Parser::ExpressionWithBlockContext::LOOP() {
-  return getToken(Parser::LOOP, 0);
+tree::TerminalNode* RxParser::ExpressionWithBlockContext::LOOP() {
+  return getToken(RxParser::LOOP, 0);
 }
 
-tree::TerminalNode* Parser::ExpressionWithBlockContext::WHILE() {
-  return getToken(Parser::WHILE, 0);
+tree::TerminalNode* RxParser::ExpressionWithBlockContext::WHILE() {
+  return getToken(RxParser::WHILE, 0);
 }
 
-Parser::ConditionExpressionContext* Parser::ExpressionWithBlockContext::conditionExpression() {
-  return getRuleContext<Parser::ConditionExpressionContext>(0);
-}
-
-
-size_t Parser::ExpressionWithBlockContext::getRuleIndex() const {
-  return Parser::RuleExpressionWithBlock;
+RxParser::ConditionExpressionContext* RxParser::ExpressionWithBlockContext::conditionExpression() {
+  return getRuleContext<RxParser::ConditionExpressionContext>(0);
 }
 
 
-std::any Parser::ExpressionWithBlockContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ExpressionWithBlockContext::getRuleIndex() const {
+  return RxParser::RuleExpressionWithBlock;
+}
+
+
+std::any RxParser::ExpressionWithBlockContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitExpressionWithBlock(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ExpressionWithBlockContext* Parser::expressionWithBlock() {
+RxParser::ExpressionWithBlockContext* RxParser::expressionWithBlock() {
   ExpressionWithBlockContext *_localctx = _tracker.createInstance<ExpressionWithBlockContext>(_ctx, getState());
-  enterRule(_localctx, 84, Parser::RuleExpressionWithBlock);
+  enterRule(_localctx, 84, RxParser::RuleExpressionWithBlock);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -4910,33 +4910,33 @@ Parser::ExpressionWithBlockContext* Parser::expressionWithBlock() {
     setState(754);
     _errHandler->sync(this);
     switch (_input->LA(1)) {
-      case Parser::LBRACE: {
+      case RxParser::LBRACE: {
         enterOuterAlt(_localctx, 1);
         setState(746);
         blockExpression();
         break;
       }
 
-      case Parser::IF: {
+      case RxParser::IF: {
         enterOuterAlt(_localctx, 2);
         setState(747);
         ifExpression();
         break;
       }
 
-      case Parser::LOOP: {
+      case RxParser::LOOP: {
         enterOuterAlt(_localctx, 3);
         setState(748);
-        match(Parser::LOOP);
+        match(RxParser::LOOP);
         setState(749);
         blockExpression();
         break;
       }
 
-      case Parser::WHILE: {
+      case RxParser::WHILE: {
         enterOuterAlt(_localctx, 4);
         setState(750);
-        match(Parser::WHILE);
+        match(RxParser::WHILE);
         setState(751);
         conditionExpression();
         setState(752);
@@ -4960,50 +4960,50 @@ Parser::ExpressionWithBlockContext* Parser::expressionWithBlock() {
 
 //----------------- IfExpressionContext ------------------------------------------------------------------
 
-Parser::IfExpressionContext::IfExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::IfExpressionContext::IfExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-tree::TerminalNode* Parser::IfExpressionContext::IF() {
-  return getToken(Parser::IF, 0);
+tree::TerminalNode* RxParser::IfExpressionContext::IF() {
+  return getToken(RxParser::IF, 0);
 }
 
-Parser::ConditionExpressionContext* Parser::IfExpressionContext::conditionExpression() {
-  return getRuleContext<Parser::ConditionExpressionContext>(0);
+RxParser::ConditionExpressionContext* RxParser::IfExpressionContext::conditionExpression() {
+  return getRuleContext<RxParser::ConditionExpressionContext>(0);
 }
 
-std::vector<Parser::BlockExpressionContext *> Parser::IfExpressionContext::blockExpression() {
-  return getRuleContexts<Parser::BlockExpressionContext>();
+std::vector<RxParser::BlockExpressionContext *> RxParser::IfExpressionContext::blockExpression() {
+  return getRuleContexts<RxParser::BlockExpressionContext>();
 }
 
-Parser::BlockExpressionContext* Parser::IfExpressionContext::blockExpression(size_t i) {
-  return getRuleContext<Parser::BlockExpressionContext>(i);
+RxParser::BlockExpressionContext* RxParser::IfExpressionContext::blockExpression(size_t i) {
+  return getRuleContext<RxParser::BlockExpressionContext>(i);
 }
 
-tree::TerminalNode* Parser::IfExpressionContext::ELSE() {
-  return getToken(Parser::ELSE, 0);
+tree::TerminalNode* RxParser::IfExpressionContext::ELSE() {
+  return getToken(RxParser::ELSE, 0);
 }
 
-Parser::IfExpressionContext* Parser::IfExpressionContext::ifExpression() {
-  return getRuleContext<Parser::IfExpressionContext>(0);
-}
-
-
-size_t Parser::IfExpressionContext::getRuleIndex() const {
-  return Parser::RuleIfExpression;
+RxParser::IfExpressionContext* RxParser::IfExpressionContext::ifExpression() {
+  return getRuleContext<RxParser::IfExpressionContext>(0);
 }
 
 
-std::any Parser::IfExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::IfExpressionContext::getRuleIndex() const {
+  return RxParser::RuleIfExpression;
+}
+
+
+std::any RxParser::IfExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitIfExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::IfExpressionContext* Parser::ifExpression() {
+RxParser::IfExpressionContext* RxParser::ifExpression() {
   IfExpressionContext *_localctx = _tracker.createInstance<IfExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 86, Parser::RuleIfExpression);
+  enterRule(_localctx, 86, RxParser::RuleIfExpression);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -5016,7 +5016,7 @@ Parser::IfExpressionContext* Parser::ifExpression() {
   try {
     enterOuterAlt(_localctx, 1);
     setState(756);
-    match(Parser::IF);
+    match(RxParser::IF);
     setState(757);
     conditionExpression();
     setState(758);
@@ -5025,19 +5025,19 @@ Parser::IfExpressionContext* Parser::ifExpression() {
     _errHandler->sync(this);
 
     _la = _input->LA(1);
-    if (_la == Parser::ELSE) {
+    if (_la == RxParser::ELSE) {
       setState(759);
-      match(Parser::ELSE);
+      match(RxParser::ELSE);
       setState(762);
       _errHandler->sync(this);
       switch (_input->LA(1)) {
-        case Parser::LBRACE: {
+        case RxParser::LBRACE: {
           setState(760);
           blockExpression();
           break;
         }
 
-        case Parser::IF: {
+        case RxParser::IF: {
           setState(761);
           ifExpression();
           break;
@@ -5060,30 +5060,30 @@ Parser::IfExpressionContext* Parser::ifExpression() {
 
 //----------------- ExpressionContext ------------------------------------------------------------------
 
-Parser::ExpressionContext::ExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ExpressionContext::ExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::AssignmentExpressionContext* Parser::ExpressionContext::assignmentExpression() {
-  return getRuleContext<Parser::AssignmentExpressionContext>(0);
+RxParser::AssignmentExpressionContext* RxParser::ExpressionContext::assignmentExpression() {
+  return getRuleContext<RxParser::AssignmentExpressionContext>(0);
 }
 
 
-size_t Parser::ExpressionContext::getRuleIndex() const {
-  return Parser::RuleExpression;
+size_t RxParser::ExpressionContext::getRuleIndex() const {
+  return RxParser::RuleExpression;
 }
 
 
-std::any Parser::ExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+std::any RxParser::ExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ExpressionContext* Parser::expression() {
+RxParser::ExpressionContext* RxParser::expression() {
   ExpressionContext *_localctx = _tracker.createInstance<ExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 88, Parser::RuleExpression);
+  enterRule(_localctx, 88, RxParser::RuleExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -5109,38 +5109,38 @@ Parser::ExpressionContext* Parser::expression() {
 
 //----------------- AssignmentExpressionContext ------------------------------------------------------------------
 
-Parser::AssignmentExpressionContext::AssignmentExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::AssignmentExpressionContext::AssignmentExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::LogicalOrExpressionContext* Parser::AssignmentExpressionContext::logicalOrExpression() {
-  return getRuleContext<Parser::LogicalOrExpressionContext>(0);
+RxParser::LogicalOrExpressionContext* RxParser::AssignmentExpressionContext::logicalOrExpression() {
+  return getRuleContext<RxParser::LogicalOrExpressionContext>(0);
 }
 
-Parser::AssignmentOperatorContext* Parser::AssignmentExpressionContext::assignmentOperator() {
-  return getRuleContext<Parser::AssignmentOperatorContext>(0);
+RxParser::AssignmentOperatorContext* RxParser::AssignmentExpressionContext::assignmentOperator() {
+  return getRuleContext<RxParser::AssignmentOperatorContext>(0);
 }
 
-Parser::ExpressionContext* Parser::AssignmentExpressionContext::expression() {
-  return getRuleContext<Parser::ExpressionContext>(0);
-}
-
-
-size_t Parser::AssignmentExpressionContext::getRuleIndex() const {
-  return Parser::RuleAssignmentExpression;
+RxParser::ExpressionContext* RxParser::AssignmentExpressionContext::expression() {
+  return getRuleContext<RxParser::ExpressionContext>(0);
 }
 
 
-std::any Parser::AssignmentExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::AssignmentExpressionContext::getRuleIndex() const {
+  return RxParser::RuleAssignmentExpression;
+}
+
+
+std::any RxParser::AssignmentExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitAssignmentExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::AssignmentExpressionContext* Parser::assignmentExpression() {
+RxParser::AssignmentExpressionContext* RxParser::assignmentExpression() {
   AssignmentExpressionContext *_localctx = _tracker.createInstance<AssignmentExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 90, Parser::RuleAssignmentExpression);
+  enterRule(_localctx, 90, RxParser::RuleAssignmentExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -5181,42 +5181,42 @@ Parser::AssignmentExpressionContext* Parser::assignmentExpression() {
 
 //----------------- LogicalOrExpressionContext ------------------------------------------------------------------
 
-Parser::LogicalOrExpressionContext::LogicalOrExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::LogicalOrExpressionContext::LogicalOrExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-std::vector<Parser::LogicalAndExpressionContext *> Parser::LogicalOrExpressionContext::logicalAndExpression() {
-  return getRuleContexts<Parser::LogicalAndExpressionContext>();
+std::vector<RxParser::LogicalAndExpressionContext *> RxParser::LogicalOrExpressionContext::logicalAndExpression() {
+  return getRuleContexts<RxParser::LogicalAndExpressionContext>();
 }
 
-Parser::LogicalAndExpressionContext* Parser::LogicalOrExpressionContext::logicalAndExpression(size_t i) {
-  return getRuleContext<Parser::LogicalAndExpressionContext>(i);
+RxParser::LogicalAndExpressionContext* RxParser::LogicalOrExpressionContext::logicalAndExpression(size_t i) {
+  return getRuleContext<RxParser::LogicalAndExpressionContext>(i);
 }
 
-std::vector<tree::TerminalNode *> Parser::LogicalOrExpressionContext::OROR() {
-  return getTokens(Parser::OROR);
+std::vector<tree::TerminalNode *> RxParser::LogicalOrExpressionContext::OROR() {
+  return getTokens(RxParser::OROR);
 }
 
-tree::TerminalNode* Parser::LogicalOrExpressionContext::OROR(size_t i) {
-  return getToken(Parser::OROR, i);
-}
-
-
-size_t Parser::LogicalOrExpressionContext::getRuleIndex() const {
-  return Parser::RuleLogicalOrExpression;
+tree::TerminalNode* RxParser::LogicalOrExpressionContext::OROR(size_t i) {
+  return getToken(RxParser::OROR, i);
 }
 
 
-std::any Parser::LogicalOrExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::LogicalOrExpressionContext::getRuleIndex() const {
+  return RxParser::RuleLogicalOrExpression;
+}
+
+
+std::any RxParser::LogicalOrExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitLogicalOrExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::LogicalOrExpressionContext* Parser::logicalOrExpression() {
+RxParser::LogicalOrExpressionContext* RxParser::logicalOrExpression() {
   LogicalOrExpressionContext *_localctx = _tracker.createInstance<LogicalOrExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 92, Parser::RuleLogicalOrExpression);
+  enterRule(_localctx, 92, RxParser::RuleLogicalOrExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -5236,7 +5236,7 @@ Parser::LogicalOrExpressionContext* Parser::logicalOrExpression() {
     while (alt != 2 && alt != atn::ATN::INVALID_ALT_NUMBER) {
       if (alt == 1) {
         setState(775);
-        match(Parser::OROR);
+        match(RxParser::OROR);
         setState(776);
         logicalAndExpression(); 
       }
@@ -5257,42 +5257,42 @@ Parser::LogicalOrExpressionContext* Parser::logicalOrExpression() {
 
 //----------------- LogicalAndExpressionContext ------------------------------------------------------------------
 
-Parser::LogicalAndExpressionContext::LogicalAndExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::LogicalAndExpressionContext::LogicalAndExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-std::vector<Parser::ComparisonExpressionContext *> Parser::LogicalAndExpressionContext::comparisonExpression() {
-  return getRuleContexts<Parser::ComparisonExpressionContext>();
+std::vector<RxParser::ComparisonExpressionContext *> RxParser::LogicalAndExpressionContext::comparisonExpression() {
+  return getRuleContexts<RxParser::ComparisonExpressionContext>();
 }
 
-Parser::ComparisonExpressionContext* Parser::LogicalAndExpressionContext::comparisonExpression(size_t i) {
-  return getRuleContext<Parser::ComparisonExpressionContext>(i);
+RxParser::ComparisonExpressionContext* RxParser::LogicalAndExpressionContext::comparisonExpression(size_t i) {
+  return getRuleContext<RxParser::ComparisonExpressionContext>(i);
 }
 
-std::vector<tree::TerminalNode *> Parser::LogicalAndExpressionContext::ANDAND() {
-  return getTokens(Parser::ANDAND);
+std::vector<tree::TerminalNode *> RxParser::LogicalAndExpressionContext::ANDAND() {
+  return getTokens(RxParser::ANDAND);
 }
 
-tree::TerminalNode* Parser::LogicalAndExpressionContext::ANDAND(size_t i) {
-  return getToken(Parser::ANDAND, i);
-}
-
-
-size_t Parser::LogicalAndExpressionContext::getRuleIndex() const {
-  return Parser::RuleLogicalAndExpression;
+tree::TerminalNode* RxParser::LogicalAndExpressionContext::ANDAND(size_t i) {
+  return getToken(RxParser::ANDAND, i);
 }
 
 
-std::any Parser::LogicalAndExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::LogicalAndExpressionContext::getRuleIndex() const {
+  return RxParser::RuleLogicalAndExpression;
+}
+
+
+std::any RxParser::LogicalAndExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitLogicalAndExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::LogicalAndExpressionContext* Parser::logicalAndExpression() {
+RxParser::LogicalAndExpressionContext* RxParser::logicalAndExpression() {
   LogicalAndExpressionContext *_localctx = _tracker.createInstance<LogicalAndExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 94, Parser::RuleLogicalAndExpression);
+  enterRule(_localctx, 94, RxParser::RuleLogicalAndExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -5312,7 +5312,7 @@ Parser::LogicalAndExpressionContext* Parser::logicalAndExpression() {
     while (alt != 2 && alt != atn::ATN::INVALID_ALT_NUMBER) {
       if (alt == 1) {
         setState(783);
-        match(Parser::ANDAND);
+        match(RxParser::ANDAND);
         setState(784);
         comparisonExpression(); 
       }
@@ -5333,46 +5333,46 @@ Parser::LogicalAndExpressionContext* Parser::logicalAndExpression() {
 
 //----------------- ComparisonExpressionContext ------------------------------------------------------------------
 
-Parser::ComparisonExpressionContext::ComparisonExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ComparisonExpressionContext::ComparisonExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-std::vector<Parser::BitOrExpressionContext *> Parser::ComparisonExpressionContext::bitOrExpression() {
-  return getRuleContexts<Parser::BitOrExpressionContext>();
+std::vector<RxParser::BitOrExpressionContext *> RxParser::ComparisonExpressionContext::bitOrExpression() {
+  return getRuleContexts<RxParser::BitOrExpressionContext>();
 }
 
-Parser::BitOrExpressionContext* Parser::ComparisonExpressionContext::bitOrExpression(size_t i) {
-  return getRuleContext<Parser::BitOrExpressionContext>(i);
+RxParser::BitOrExpressionContext* RxParser::ComparisonExpressionContext::bitOrExpression(size_t i) {
+  return getRuleContext<RxParser::BitOrExpressionContext>(i);
 }
 
-Parser::ComparisonExceptLtContext* Parser::ComparisonExpressionContext::comparisonExceptLt() {
-  return getRuleContext<Parser::ComparisonExceptLtContext>(0);
+RxParser::ComparisonExceptLtContext* RxParser::ComparisonExpressionContext::comparisonExceptLt() {
+  return getRuleContext<RxParser::ComparisonExceptLtContext>(0);
 }
 
-Parser::ClosedBitOrExpressionContext* Parser::ComparisonExpressionContext::closedBitOrExpression() {
-  return getRuleContext<Parser::ClosedBitOrExpressionContext>(0);
+RxParser::ClosedBitOrExpressionContext* RxParser::ComparisonExpressionContext::closedBitOrExpression() {
+  return getRuleContext<RxParser::ClosedBitOrExpressionContext>(0);
 }
 
-tree::TerminalNode* Parser::ComparisonExpressionContext::LT() {
-  return getToken(Parser::LT, 0);
-}
-
-
-size_t Parser::ComparisonExpressionContext::getRuleIndex() const {
-  return Parser::RuleComparisonExpression;
+tree::TerminalNode* RxParser::ComparisonExpressionContext::LT() {
+  return getToken(RxParser::LT, 0);
 }
 
 
-std::any Parser::ComparisonExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ComparisonExpressionContext::getRuleIndex() const {
+  return RxParser::RuleComparisonExpression;
+}
+
+
+std::any RxParser::ComparisonExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitComparisonExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ComparisonExpressionContext* Parser::comparisonExpression() {
+RxParser::ComparisonExpressionContext* RxParser::comparisonExpression() {
   ComparisonExpressionContext *_localctx = _tracker.createInstance<ComparisonExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 96, Parser::RuleComparisonExpression);
+  enterRule(_localctx, 96, RxParser::RuleComparisonExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -5412,7 +5412,7 @@ Parser::ComparisonExpressionContext* Parser::comparisonExpression() {
       setState(796);
       closedBitOrExpression();
       setState(797);
-      match(Parser::LT);
+      match(RxParser::LT);
       setState(798);
       bitOrExpression();
       break;
@@ -5434,42 +5434,42 @@ Parser::ComparisonExpressionContext* Parser::comparisonExpression() {
 
 //----------------- BitOrExpressionContext ------------------------------------------------------------------
 
-Parser::BitOrExpressionContext::BitOrExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::BitOrExpressionContext::BitOrExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-std::vector<Parser::BitXorExpressionContext *> Parser::BitOrExpressionContext::bitXorExpression() {
-  return getRuleContexts<Parser::BitXorExpressionContext>();
+std::vector<RxParser::BitXorExpressionContext *> RxParser::BitOrExpressionContext::bitXorExpression() {
+  return getRuleContexts<RxParser::BitXorExpressionContext>();
 }
 
-Parser::BitXorExpressionContext* Parser::BitOrExpressionContext::bitXorExpression(size_t i) {
-  return getRuleContext<Parser::BitXorExpressionContext>(i);
+RxParser::BitXorExpressionContext* RxParser::BitOrExpressionContext::bitXorExpression(size_t i) {
+  return getRuleContext<RxParser::BitXorExpressionContext>(i);
 }
 
-std::vector<tree::TerminalNode *> Parser::BitOrExpressionContext::PIPE() {
-  return getTokens(Parser::PIPE);
+std::vector<tree::TerminalNode *> RxParser::BitOrExpressionContext::PIPE() {
+  return getTokens(RxParser::PIPE);
 }
 
-tree::TerminalNode* Parser::BitOrExpressionContext::PIPE(size_t i) {
-  return getToken(Parser::PIPE, i);
-}
-
-
-size_t Parser::BitOrExpressionContext::getRuleIndex() const {
-  return Parser::RuleBitOrExpression;
+tree::TerminalNode* RxParser::BitOrExpressionContext::PIPE(size_t i) {
+  return getToken(RxParser::PIPE, i);
 }
 
 
-std::any Parser::BitOrExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::BitOrExpressionContext::getRuleIndex() const {
+  return RxParser::RuleBitOrExpression;
+}
+
+
+std::any RxParser::BitOrExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitBitOrExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::BitOrExpressionContext* Parser::bitOrExpression() {
+RxParser::BitOrExpressionContext* RxParser::bitOrExpression() {
   BitOrExpressionContext *_localctx = _tracker.createInstance<BitOrExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 98, Parser::RuleBitOrExpression);
+  enterRule(_localctx, 98, RxParser::RuleBitOrExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -5489,7 +5489,7 @@ Parser::BitOrExpressionContext* Parser::bitOrExpression() {
     while (alt != 2 && alt != atn::ATN::INVALID_ALT_NUMBER) {
       if (alt == 1) {
         setState(803);
-        match(Parser::PIPE);
+        match(RxParser::PIPE);
         setState(804);
         bitXorExpression(); 
       }
@@ -5510,46 +5510,46 @@ Parser::BitOrExpressionContext* Parser::bitOrExpression() {
 
 //----------------- ClosedBitOrExpressionContext ------------------------------------------------------------------
 
-Parser::ClosedBitOrExpressionContext::ClosedBitOrExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ClosedBitOrExpressionContext::ClosedBitOrExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::ClosedBitXorExpressionContext* Parser::ClosedBitOrExpressionContext::closedBitXorExpression() {
-  return getRuleContext<Parser::ClosedBitXorExpressionContext>(0);
+RxParser::ClosedBitXorExpressionContext* RxParser::ClosedBitOrExpressionContext::closedBitXorExpression() {
+  return getRuleContext<RxParser::ClosedBitXorExpressionContext>(0);
 }
 
-std::vector<Parser::BitXorExpressionContext *> Parser::ClosedBitOrExpressionContext::bitXorExpression() {
-  return getRuleContexts<Parser::BitXorExpressionContext>();
+std::vector<RxParser::BitXorExpressionContext *> RxParser::ClosedBitOrExpressionContext::bitXorExpression() {
+  return getRuleContexts<RxParser::BitXorExpressionContext>();
 }
 
-Parser::BitXorExpressionContext* Parser::ClosedBitOrExpressionContext::bitXorExpression(size_t i) {
-  return getRuleContext<Parser::BitXorExpressionContext>(i);
+RxParser::BitXorExpressionContext* RxParser::ClosedBitOrExpressionContext::bitXorExpression(size_t i) {
+  return getRuleContext<RxParser::BitXorExpressionContext>(i);
 }
 
-std::vector<tree::TerminalNode *> Parser::ClosedBitOrExpressionContext::PIPE() {
-  return getTokens(Parser::PIPE);
+std::vector<tree::TerminalNode *> RxParser::ClosedBitOrExpressionContext::PIPE() {
+  return getTokens(RxParser::PIPE);
 }
 
-tree::TerminalNode* Parser::ClosedBitOrExpressionContext::PIPE(size_t i) {
-  return getToken(Parser::PIPE, i);
-}
-
-
-size_t Parser::ClosedBitOrExpressionContext::getRuleIndex() const {
-  return Parser::RuleClosedBitOrExpression;
+tree::TerminalNode* RxParser::ClosedBitOrExpressionContext::PIPE(size_t i) {
+  return getToken(RxParser::PIPE, i);
 }
 
 
-std::any Parser::ClosedBitOrExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ClosedBitOrExpressionContext::getRuleIndex() const {
+  return RxParser::RuleClosedBitOrExpression;
+}
+
+
+std::any RxParser::ClosedBitOrExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitClosedBitOrExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ClosedBitOrExpressionContext* Parser::closedBitOrExpression() {
+RxParser::ClosedBitOrExpressionContext* RxParser::closedBitOrExpression() {
   ClosedBitOrExpressionContext *_localctx = _tracker.createInstance<ClosedBitOrExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 100, Parser::RuleClosedBitOrExpression);
+  enterRule(_localctx, 100, RxParser::RuleClosedBitOrExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -5569,7 +5569,7 @@ Parser::ClosedBitOrExpressionContext* Parser::closedBitOrExpression() {
         setState(810);
         bitXorExpression();
         setState(811);
-        match(Parser::PIPE); 
+        match(RxParser::PIPE); 
       }
       setState(817);
       _errHandler->sync(this);
@@ -5590,42 +5590,42 @@ Parser::ClosedBitOrExpressionContext* Parser::closedBitOrExpression() {
 
 //----------------- BitXorExpressionContext ------------------------------------------------------------------
 
-Parser::BitXorExpressionContext::BitXorExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::BitXorExpressionContext::BitXorExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-std::vector<Parser::BitAndExpressionContext *> Parser::BitXorExpressionContext::bitAndExpression() {
-  return getRuleContexts<Parser::BitAndExpressionContext>();
+std::vector<RxParser::BitAndExpressionContext *> RxParser::BitXorExpressionContext::bitAndExpression() {
+  return getRuleContexts<RxParser::BitAndExpressionContext>();
 }
 
-Parser::BitAndExpressionContext* Parser::BitXorExpressionContext::bitAndExpression(size_t i) {
-  return getRuleContext<Parser::BitAndExpressionContext>(i);
+RxParser::BitAndExpressionContext* RxParser::BitXorExpressionContext::bitAndExpression(size_t i) {
+  return getRuleContext<RxParser::BitAndExpressionContext>(i);
 }
 
-std::vector<tree::TerminalNode *> Parser::BitXorExpressionContext::CARET() {
-  return getTokens(Parser::CARET);
+std::vector<tree::TerminalNode *> RxParser::BitXorExpressionContext::CARET() {
+  return getTokens(RxParser::CARET);
 }
 
-tree::TerminalNode* Parser::BitXorExpressionContext::CARET(size_t i) {
-  return getToken(Parser::CARET, i);
-}
-
-
-size_t Parser::BitXorExpressionContext::getRuleIndex() const {
-  return Parser::RuleBitXorExpression;
+tree::TerminalNode* RxParser::BitXorExpressionContext::CARET(size_t i) {
+  return getToken(RxParser::CARET, i);
 }
 
 
-std::any Parser::BitXorExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::BitXorExpressionContext::getRuleIndex() const {
+  return RxParser::RuleBitXorExpression;
+}
+
+
+std::any RxParser::BitXorExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitBitXorExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::BitXorExpressionContext* Parser::bitXorExpression() {
+RxParser::BitXorExpressionContext* RxParser::bitXorExpression() {
   BitXorExpressionContext *_localctx = _tracker.createInstance<BitXorExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 102, Parser::RuleBitXorExpression);
+  enterRule(_localctx, 102, RxParser::RuleBitXorExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -5645,7 +5645,7 @@ Parser::BitXorExpressionContext* Parser::bitXorExpression() {
     while (alt != 2 && alt != atn::ATN::INVALID_ALT_NUMBER) {
       if (alt == 1) {
         setState(821);
-        match(Parser::CARET);
+        match(RxParser::CARET);
         setState(822);
         bitAndExpression(); 
       }
@@ -5666,46 +5666,46 @@ Parser::BitXorExpressionContext* Parser::bitXorExpression() {
 
 //----------------- ClosedBitXorExpressionContext ------------------------------------------------------------------
 
-Parser::ClosedBitXorExpressionContext::ClosedBitXorExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ClosedBitXorExpressionContext::ClosedBitXorExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::ClosedBitAndExpressionContext* Parser::ClosedBitXorExpressionContext::closedBitAndExpression() {
-  return getRuleContext<Parser::ClosedBitAndExpressionContext>(0);
+RxParser::ClosedBitAndExpressionContext* RxParser::ClosedBitXorExpressionContext::closedBitAndExpression() {
+  return getRuleContext<RxParser::ClosedBitAndExpressionContext>(0);
 }
 
-std::vector<Parser::BitAndExpressionContext *> Parser::ClosedBitXorExpressionContext::bitAndExpression() {
-  return getRuleContexts<Parser::BitAndExpressionContext>();
+std::vector<RxParser::BitAndExpressionContext *> RxParser::ClosedBitXorExpressionContext::bitAndExpression() {
+  return getRuleContexts<RxParser::BitAndExpressionContext>();
 }
 
-Parser::BitAndExpressionContext* Parser::ClosedBitXorExpressionContext::bitAndExpression(size_t i) {
-  return getRuleContext<Parser::BitAndExpressionContext>(i);
+RxParser::BitAndExpressionContext* RxParser::ClosedBitXorExpressionContext::bitAndExpression(size_t i) {
+  return getRuleContext<RxParser::BitAndExpressionContext>(i);
 }
 
-std::vector<tree::TerminalNode *> Parser::ClosedBitXorExpressionContext::CARET() {
-  return getTokens(Parser::CARET);
+std::vector<tree::TerminalNode *> RxParser::ClosedBitXorExpressionContext::CARET() {
+  return getTokens(RxParser::CARET);
 }
 
-tree::TerminalNode* Parser::ClosedBitXorExpressionContext::CARET(size_t i) {
-  return getToken(Parser::CARET, i);
-}
-
-
-size_t Parser::ClosedBitXorExpressionContext::getRuleIndex() const {
-  return Parser::RuleClosedBitXorExpression;
+tree::TerminalNode* RxParser::ClosedBitXorExpressionContext::CARET(size_t i) {
+  return getToken(RxParser::CARET, i);
 }
 
 
-std::any Parser::ClosedBitXorExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ClosedBitXorExpressionContext::getRuleIndex() const {
+  return RxParser::RuleClosedBitXorExpression;
+}
+
+
+std::any RxParser::ClosedBitXorExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitClosedBitXorExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ClosedBitXorExpressionContext* Parser::closedBitXorExpression() {
+RxParser::ClosedBitXorExpressionContext* RxParser::closedBitXorExpression() {
   ClosedBitXorExpressionContext *_localctx = _tracker.createInstance<ClosedBitXorExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 104, Parser::RuleClosedBitXorExpression);
+  enterRule(_localctx, 104, RxParser::RuleClosedBitXorExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -5725,7 +5725,7 @@ Parser::ClosedBitXorExpressionContext* Parser::closedBitXorExpression() {
         setState(828);
         bitAndExpression();
         setState(829);
-        match(Parser::CARET); 
+        match(RxParser::CARET); 
       }
       setState(835);
       _errHandler->sync(this);
@@ -5746,42 +5746,42 @@ Parser::ClosedBitXorExpressionContext* Parser::closedBitXorExpression() {
 
 //----------------- BitAndExpressionContext ------------------------------------------------------------------
 
-Parser::BitAndExpressionContext::BitAndExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::BitAndExpressionContext::BitAndExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-std::vector<Parser::ShiftExpressionContext *> Parser::BitAndExpressionContext::shiftExpression() {
-  return getRuleContexts<Parser::ShiftExpressionContext>();
+std::vector<RxParser::ShiftExpressionContext *> RxParser::BitAndExpressionContext::shiftExpression() {
+  return getRuleContexts<RxParser::ShiftExpressionContext>();
 }
 
-Parser::ShiftExpressionContext* Parser::BitAndExpressionContext::shiftExpression(size_t i) {
-  return getRuleContext<Parser::ShiftExpressionContext>(i);
+RxParser::ShiftExpressionContext* RxParser::BitAndExpressionContext::shiftExpression(size_t i) {
+  return getRuleContext<RxParser::ShiftExpressionContext>(i);
 }
 
-std::vector<tree::TerminalNode *> Parser::BitAndExpressionContext::AMP() {
-  return getTokens(Parser::AMP);
+std::vector<tree::TerminalNode *> RxParser::BitAndExpressionContext::AMP() {
+  return getTokens(RxParser::AMP);
 }
 
-tree::TerminalNode* Parser::BitAndExpressionContext::AMP(size_t i) {
-  return getToken(Parser::AMP, i);
-}
-
-
-size_t Parser::BitAndExpressionContext::getRuleIndex() const {
-  return Parser::RuleBitAndExpression;
+tree::TerminalNode* RxParser::BitAndExpressionContext::AMP(size_t i) {
+  return getToken(RxParser::AMP, i);
 }
 
 
-std::any Parser::BitAndExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::BitAndExpressionContext::getRuleIndex() const {
+  return RxParser::RuleBitAndExpression;
+}
+
+
+std::any RxParser::BitAndExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitBitAndExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::BitAndExpressionContext* Parser::bitAndExpression() {
+RxParser::BitAndExpressionContext* RxParser::bitAndExpression() {
   BitAndExpressionContext *_localctx = _tracker.createInstance<BitAndExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 106, Parser::RuleBitAndExpression);
+  enterRule(_localctx, 106, RxParser::RuleBitAndExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -5801,7 +5801,7 @@ Parser::BitAndExpressionContext* Parser::bitAndExpression() {
     while (alt != 2 && alt != atn::ATN::INVALID_ALT_NUMBER) {
       if (alt == 1) {
         setState(839);
-        match(Parser::AMP);
+        match(RxParser::AMP);
         setState(840);
         shiftExpression(); 
       }
@@ -5822,46 +5822,46 @@ Parser::BitAndExpressionContext* Parser::bitAndExpression() {
 
 //----------------- ClosedBitAndExpressionContext ------------------------------------------------------------------
 
-Parser::ClosedBitAndExpressionContext::ClosedBitAndExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ClosedBitAndExpressionContext::ClosedBitAndExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::ClosedShiftExpressionContext* Parser::ClosedBitAndExpressionContext::closedShiftExpression() {
-  return getRuleContext<Parser::ClosedShiftExpressionContext>(0);
+RxParser::ClosedShiftExpressionContext* RxParser::ClosedBitAndExpressionContext::closedShiftExpression() {
+  return getRuleContext<RxParser::ClosedShiftExpressionContext>(0);
 }
 
-std::vector<Parser::ShiftExpressionContext *> Parser::ClosedBitAndExpressionContext::shiftExpression() {
-  return getRuleContexts<Parser::ShiftExpressionContext>();
+std::vector<RxParser::ShiftExpressionContext *> RxParser::ClosedBitAndExpressionContext::shiftExpression() {
+  return getRuleContexts<RxParser::ShiftExpressionContext>();
 }
 
-Parser::ShiftExpressionContext* Parser::ClosedBitAndExpressionContext::shiftExpression(size_t i) {
-  return getRuleContext<Parser::ShiftExpressionContext>(i);
+RxParser::ShiftExpressionContext* RxParser::ClosedBitAndExpressionContext::shiftExpression(size_t i) {
+  return getRuleContext<RxParser::ShiftExpressionContext>(i);
 }
 
-std::vector<tree::TerminalNode *> Parser::ClosedBitAndExpressionContext::AMP() {
-  return getTokens(Parser::AMP);
+std::vector<tree::TerminalNode *> RxParser::ClosedBitAndExpressionContext::AMP() {
+  return getTokens(RxParser::AMP);
 }
 
-tree::TerminalNode* Parser::ClosedBitAndExpressionContext::AMP(size_t i) {
-  return getToken(Parser::AMP, i);
-}
-
-
-size_t Parser::ClosedBitAndExpressionContext::getRuleIndex() const {
-  return Parser::RuleClosedBitAndExpression;
+tree::TerminalNode* RxParser::ClosedBitAndExpressionContext::AMP(size_t i) {
+  return getToken(RxParser::AMP, i);
 }
 
 
-std::any Parser::ClosedBitAndExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ClosedBitAndExpressionContext::getRuleIndex() const {
+  return RxParser::RuleClosedBitAndExpression;
+}
+
+
+std::any RxParser::ClosedBitAndExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitClosedBitAndExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ClosedBitAndExpressionContext* Parser::closedBitAndExpression() {
+RxParser::ClosedBitAndExpressionContext* RxParser::closedBitAndExpression() {
   ClosedBitAndExpressionContext *_localctx = _tracker.createInstance<ClosedBitAndExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 108, Parser::RuleClosedBitAndExpression);
+  enterRule(_localctx, 108, RxParser::RuleClosedBitAndExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -5881,7 +5881,7 @@ Parser::ClosedBitAndExpressionContext* Parser::closedBitAndExpression() {
         setState(846);
         shiftExpression();
         setState(847);
-        match(Parser::AMP); 
+        match(RxParser::AMP); 
       }
       setState(853);
       _errHandler->sync(this);
@@ -5902,58 +5902,58 @@ Parser::ClosedBitAndExpressionContext* Parser::closedBitAndExpression() {
 
 //----------------- ShiftExpressionContext ------------------------------------------------------------------
 
-Parser::ShiftExpressionContext::ShiftExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ShiftExpressionContext::ShiftExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-std::vector<Parser::AdditiveExpressionContext *> Parser::ShiftExpressionContext::additiveExpression() {
-  return getRuleContexts<Parser::AdditiveExpressionContext>();
+std::vector<RxParser::AdditiveExpressionContext *> RxParser::ShiftExpressionContext::additiveExpression() {
+  return getRuleContexts<RxParser::AdditiveExpressionContext>();
 }
 
-Parser::AdditiveExpressionContext* Parser::ShiftExpressionContext::additiveExpression(size_t i) {
-  return getRuleContext<Parser::AdditiveExpressionContext>(i);
+RxParser::AdditiveExpressionContext* RxParser::ShiftExpressionContext::additiveExpression(size_t i) {
+  return getRuleContext<RxParser::AdditiveExpressionContext>(i);
 }
 
-std::vector<Parser::ClosedAdditiveExpressionContext *> Parser::ShiftExpressionContext::closedAdditiveExpression() {
-  return getRuleContexts<Parser::ClosedAdditiveExpressionContext>();
+std::vector<RxParser::ClosedAdditiveExpressionContext *> RxParser::ShiftExpressionContext::closedAdditiveExpression() {
+  return getRuleContexts<RxParser::ClosedAdditiveExpressionContext>();
 }
 
-Parser::ClosedAdditiveExpressionContext* Parser::ShiftExpressionContext::closedAdditiveExpression(size_t i) {
-  return getRuleContext<Parser::ClosedAdditiveExpressionContext>(i);
+RxParser::ClosedAdditiveExpressionContext* RxParser::ShiftExpressionContext::closedAdditiveExpression(size_t i) {
+  return getRuleContext<RxParser::ClosedAdditiveExpressionContext>(i);
 }
 
-std::vector<tree::TerminalNode *> Parser::ShiftExpressionContext::SHL() {
-  return getTokens(Parser::SHL);
+std::vector<tree::TerminalNode *> RxParser::ShiftExpressionContext::SHL() {
+  return getTokens(RxParser::SHL);
 }
 
-tree::TerminalNode* Parser::ShiftExpressionContext::SHL(size_t i) {
-  return getToken(Parser::SHL, i);
+tree::TerminalNode* RxParser::ShiftExpressionContext::SHL(size_t i) {
+  return getToken(RxParser::SHL, i);
 }
 
-std::vector<Parser::ShiftRightContext *> Parser::ShiftExpressionContext::shiftRight() {
-  return getRuleContexts<Parser::ShiftRightContext>();
+std::vector<RxParser::ShiftRightContext *> RxParser::ShiftExpressionContext::shiftRight() {
+  return getRuleContexts<RxParser::ShiftRightContext>();
 }
 
-Parser::ShiftRightContext* Parser::ShiftExpressionContext::shiftRight(size_t i) {
-  return getRuleContext<Parser::ShiftRightContext>(i);
-}
-
-
-size_t Parser::ShiftExpressionContext::getRuleIndex() const {
-  return Parser::RuleShiftExpression;
+RxParser::ShiftRightContext* RxParser::ShiftExpressionContext::shiftRight(size_t i) {
+  return getRuleContext<RxParser::ShiftRightContext>(i);
 }
 
 
-std::any Parser::ShiftExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ShiftExpressionContext::getRuleIndex() const {
+  return RxParser::RuleShiftExpression;
+}
+
+
+std::any RxParser::ShiftExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitShiftExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ShiftExpressionContext* Parser::shiftExpression() {
+RxParser::ShiftExpressionContext* RxParser::shiftExpression() {
   ShiftExpressionContext *_localctx = _tracker.createInstance<ShiftExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 110, Parser::RuleShiftExpression);
+  enterRule(_localctx, 110, RxParser::RuleShiftExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -5977,7 +5977,7 @@ Parser::ShiftExpressionContext* Parser::shiftExpression() {
           setState(856);
           closedAdditiveExpression();
           setState(857);
-          match(Parser::SHL);
+          match(RxParser::SHL);
           break;
         }
 
@@ -6012,58 +6012,58 @@ Parser::ShiftExpressionContext* Parser::shiftExpression() {
 
 //----------------- ClosedShiftExpressionContext ------------------------------------------------------------------
 
-Parser::ClosedShiftExpressionContext::ClosedShiftExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ClosedShiftExpressionContext::ClosedShiftExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-std::vector<Parser::ClosedAdditiveExpressionContext *> Parser::ClosedShiftExpressionContext::closedAdditiveExpression() {
-  return getRuleContexts<Parser::ClosedAdditiveExpressionContext>();
+std::vector<RxParser::ClosedAdditiveExpressionContext *> RxParser::ClosedShiftExpressionContext::closedAdditiveExpression() {
+  return getRuleContexts<RxParser::ClosedAdditiveExpressionContext>();
 }
 
-Parser::ClosedAdditiveExpressionContext* Parser::ClosedShiftExpressionContext::closedAdditiveExpression(size_t i) {
-  return getRuleContext<Parser::ClosedAdditiveExpressionContext>(i);
+RxParser::ClosedAdditiveExpressionContext* RxParser::ClosedShiftExpressionContext::closedAdditiveExpression(size_t i) {
+  return getRuleContext<RxParser::ClosedAdditiveExpressionContext>(i);
 }
 
-std::vector<tree::TerminalNode *> Parser::ClosedShiftExpressionContext::SHL() {
-  return getTokens(Parser::SHL);
+std::vector<tree::TerminalNode *> RxParser::ClosedShiftExpressionContext::SHL() {
+  return getTokens(RxParser::SHL);
 }
 
-tree::TerminalNode* Parser::ClosedShiftExpressionContext::SHL(size_t i) {
-  return getToken(Parser::SHL, i);
+tree::TerminalNode* RxParser::ClosedShiftExpressionContext::SHL(size_t i) {
+  return getToken(RxParser::SHL, i);
 }
 
-std::vector<Parser::AdditiveExpressionContext *> Parser::ClosedShiftExpressionContext::additiveExpression() {
-  return getRuleContexts<Parser::AdditiveExpressionContext>();
+std::vector<RxParser::AdditiveExpressionContext *> RxParser::ClosedShiftExpressionContext::additiveExpression() {
+  return getRuleContexts<RxParser::AdditiveExpressionContext>();
 }
 
-Parser::AdditiveExpressionContext* Parser::ClosedShiftExpressionContext::additiveExpression(size_t i) {
-  return getRuleContext<Parser::AdditiveExpressionContext>(i);
+RxParser::AdditiveExpressionContext* RxParser::ClosedShiftExpressionContext::additiveExpression(size_t i) {
+  return getRuleContext<RxParser::AdditiveExpressionContext>(i);
 }
 
-std::vector<Parser::ShiftRightContext *> Parser::ClosedShiftExpressionContext::shiftRight() {
-  return getRuleContexts<Parser::ShiftRightContext>();
+std::vector<RxParser::ShiftRightContext *> RxParser::ClosedShiftExpressionContext::shiftRight() {
+  return getRuleContexts<RxParser::ShiftRightContext>();
 }
 
-Parser::ShiftRightContext* Parser::ClosedShiftExpressionContext::shiftRight(size_t i) {
-  return getRuleContext<Parser::ShiftRightContext>(i);
-}
-
-
-size_t Parser::ClosedShiftExpressionContext::getRuleIndex() const {
-  return Parser::RuleClosedShiftExpression;
+RxParser::ShiftRightContext* RxParser::ClosedShiftExpressionContext::shiftRight(size_t i) {
+  return getRuleContext<RxParser::ShiftRightContext>(i);
 }
 
 
-std::any Parser::ClosedShiftExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ClosedShiftExpressionContext::getRuleIndex() const {
+  return RxParser::RuleClosedShiftExpression;
+}
+
+
+std::any RxParser::ClosedShiftExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitClosedShiftExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ClosedShiftExpressionContext* Parser::closedShiftExpression() {
+RxParser::ClosedShiftExpressionContext* RxParser::closedShiftExpression() {
   ClosedShiftExpressionContext *_localctx = _tracker.createInstance<ClosedShiftExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 112, Parser::RuleClosedShiftExpression);
+  enterRule(_localctx, 112, RxParser::RuleClosedShiftExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -6087,7 +6087,7 @@ Parser::ClosedShiftExpressionContext* Parser::closedShiftExpression() {
           setState(869);
           closedAdditiveExpression();
           setState(870);
-          match(Parser::SHL);
+          match(RxParser::SHL);
           break;
         }
 
@@ -6122,42 +6122,42 @@ Parser::ClosedShiftExpressionContext* Parser::closedShiftExpression() {
 
 //----------------- AdditiveExpressionContext ------------------------------------------------------------------
 
-Parser::AdditiveExpressionContext::AdditiveExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::AdditiveExpressionContext::AdditiveExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-std::vector<Parser::MultiplicativeExpressionContext *> Parser::AdditiveExpressionContext::multiplicativeExpression() {
-  return getRuleContexts<Parser::MultiplicativeExpressionContext>();
+std::vector<RxParser::MultiplicativeExpressionContext *> RxParser::AdditiveExpressionContext::multiplicativeExpression() {
+  return getRuleContexts<RxParser::MultiplicativeExpressionContext>();
 }
 
-Parser::MultiplicativeExpressionContext* Parser::AdditiveExpressionContext::multiplicativeExpression(size_t i) {
-  return getRuleContext<Parser::MultiplicativeExpressionContext>(i);
+RxParser::MultiplicativeExpressionContext* RxParser::AdditiveExpressionContext::multiplicativeExpression(size_t i) {
+  return getRuleContext<RxParser::MultiplicativeExpressionContext>(i);
 }
 
-std::vector<Parser::AdditiveOperatorContext *> Parser::AdditiveExpressionContext::additiveOperator() {
-  return getRuleContexts<Parser::AdditiveOperatorContext>();
+std::vector<RxParser::AdditiveOperatorContext *> RxParser::AdditiveExpressionContext::additiveOperator() {
+  return getRuleContexts<RxParser::AdditiveOperatorContext>();
 }
 
-Parser::AdditiveOperatorContext* Parser::AdditiveExpressionContext::additiveOperator(size_t i) {
-  return getRuleContext<Parser::AdditiveOperatorContext>(i);
-}
-
-
-size_t Parser::AdditiveExpressionContext::getRuleIndex() const {
-  return Parser::RuleAdditiveExpression;
+RxParser::AdditiveOperatorContext* RxParser::AdditiveExpressionContext::additiveOperator(size_t i) {
+  return getRuleContext<RxParser::AdditiveOperatorContext>(i);
 }
 
 
-std::any Parser::AdditiveExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::AdditiveExpressionContext::getRuleIndex() const {
+  return RxParser::RuleAdditiveExpression;
+}
+
+
+std::any RxParser::AdditiveExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitAdditiveExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::AdditiveExpressionContext* Parser::additiveExpression() {
+RxParser::AdditiveExpressionContext* RxParser::additiveExpression() {
   AdditiveExpressionContext *_localctx = _tracker.createInstance<AdditiveExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 114, Parser::RuleAdditiveExpression);
+  enterRule(_localctx, 114, RxParser::RuleAdditiveExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -6198,46 +6198,46 @@ Parser::AdditiveExpressionContext* Parser::additiveExpression() {
 
 //----------------- ClosedAdditiveExpressionContext ------------------------------------------------------------------
 
-Parser::ClosedAdditiveExpressionContext::ClosedAdditiveExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ClosedAdditiveExpressionContext::ClosedAdditiveExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::ClosedMultiplicativeExpressionContext* Parser::ClosedAdditiveExpressionContext::closedMultiplicativeExpression() {
-  return getRuleContext<Parser::ClosedMultiplicativeExpressionContext>(0);
+RxParser::ClosedMultiplicativeExpressionContext* RxParser::ClosedAdditiveExpressionContext::closedMultiplicativeExpression() {
+  return getRuleContext<RxParser::ClosedMultiplicativeExpressionContext>(0);
 }
 
-std::vector<Parser::MultiplicativeExpressionContext *> Parser::ClosedAdditiveExpressionContext::multiplicativeExpression() {
-  return getRuleContexts<Parser::MultiplicativeExpressionContext>();
+std::vector<RxParser::MultiplicativeExpressionContext *> RxParser::ClosedAdditiveExpressionContext::multiplicativeExpression() {
+  return getRuleContexts<RxParser::MultiplicativeExpressionContext>();
 }
 
-Parser::MultiplicativeExpressionContext* Parser::ClosedAdditiveExpressionContext::multiplicativeExpression(size_t i) {
-  return getRuleContext<Parser::MultiplicativeExpressionContext>(i);
+RxParser::MultiplicativeExpressionContext* RxParser::ClosedAdditiveExpressionContext::multiplicativeExpression(size_t i) {
+  return getRuleContext<RxParser::MultiplicativeExpressionContext>(i);
 }
 
-std::vector<Parser::AdditiveOperatorContext *> Parser::ClosedAdditiveExpressionContext::additiveOperator() {
-  return getRuleContexts<Parser::AdditiveOperatorContext>();
+std::vector<RxParser::AdditiveOperatorContext *> RxParser::ClosedAdditiveExpressionContext::additiveOperator() {
+  return getRuleContexts<RxParser::AdditiveOperatorContext>();
 }
 
-Parser::AdditiveOperatorContext* Parser::ClosedAdditiveExpressionContext::additiveOperator(size_t i) {
-  return getRuleContext<Parser::AdditiveOperatorContext>(i);
-}
-
-
-size_t Parser::ClosedAdditiveExpressionContext::getRuleIndex() const {
-  return Parser::RuleClosedAdditiveExpression;
+RxParser::AdditiveOperatorContext* RxParser::ClosedAdditiveExpressionContext::additiveOperator(size_t i) {
+  return getRuleContext<RxParser::AdditiveOperatorContext>(i);
 }
 
 
-std::any Parser::ClosedAdditiveExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ClosedAdditiveExpressionContext::getRuleIndex() const {
+  return RxParser::RuleClosedAdditiveExpression;
+}
+
+
+std::any RxParser::ClosedAdditiveExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitClosedAdditiveExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ClosedAdditiveExpressionContext* Parser::closedAdditiveExpression() {
+RxParser::ClosedAdditiveExpressionContext* RxParser::closedAdditiveExpression() {
   ClosedAdditiveExpressionContext *_localctx = _tracker.createInstance<ClosedAdditiveExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 116, Parser::RuleClosedAdditiveExpression);
+  enterRule(_localctx, 116, RxParser::RuleClosedAdditiveExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -6278,42 +6278,42 @@ Parser::ClosedAdditiveExpressionContext* Parser::closedAdditiveExpression() {
 
 //----------------- MultiplicativeExpressionContext ------------------------------------------------------------------
 
-Parser::MultiplicativeExpressionContext::MultiplicativeExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::MultiplicativeExpressionContext::MultiplicativeExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-std::vector<Parser::CastExpressionContext *> Parser::MultiplicativeExpressionContext::castExpression() {
-  return getRuleContexts<Parser::CastExpressionContext>();
+std::vector<RxParser::CastExpressionContext *> RxParser::MultiplicativeExpressionContext::castExpression() {
+  return getRuleContexts<RxParser::CastExpressionContext>();
 }
 
-Parser::CastExpressionContext* Parser::MultiplicativeExpressionContext::castExpression(size_t i) {
-  return getRuleContext<Parser::CastExpressionContext>(i);
+RxParser::CastExpressionContext* RxParser::MultiplicativeExpressionContext::castExpression(size_t i) {
+  return getRuleContext<RxParser::CastExpressionContext>(i);
 }
 
-std::vector<Parser::MultiplicativeOperatorContext *> Parser::MultiplicativeExpressionContext::multiplicativeOperator() {
-  return getRuleContexts<Parser::MultiplicativeOperatorContext>();
+std::vector<RxParser::MultiplicativeOperatorContext *> RxParser::MultiplicativeExpressionContext::multiplicativeOperator() {
+  return getRuleContexts<RxParser::MultiplicativeOperatorContext>();
 }
 
-Parser::MultiplicativeOperatorContext* Parser::MultiplicativeExpressionContext::multiplicativeOperator(size_t i) {
-  return getRuleContext<Parser::MultiplicativeOperatorContext>(i);
-}
-
-
-size_t Parser::MultiplicativeExpressionContext::getRuleIndex() const {
-  return Parser::RuleMultiplicativeExpression;
+RxParser::MultiplicativeOperatorContext* RxParser::MultiplicativeExpressionContext::multiplicativeOperator(size_t i) {
+  return getRuleContext<RxParser::MultiplicativeOperatorContext>(i);
 }
 
 
-std::any Parser::MultiplicativeExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::MultiplicativeExpressionContext::getRuleIndex() const {
+  return RxParser::RuleMultiplicativeExpression;
+}
+
+
+std::any RxParser::MultiplicativeExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitMultiplicativeExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::MultiplicativeExpressionContext* Parser::multiplicativeExpression() {
+RxParser::MultiplicativeExpressionContext* RxParser::multiplicativeExpression() {
   MultiplicativeExpressionContext *_localctx = _tracker.createInstance<MultiplicativeExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 118, Parser::RuleMultiplicativeExpression);
+  enterRule(_localctx, 118, RxParser::RuleMultiplicativeExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -6354,46 +6354,46 @@ Parser::MultiplicativeExpressionContext* Parser::multiplicativeExpression() {
 
 //----------------- ClosedMultiplicativeExpressionContext ------------------------------------------------------------------
 
-Parser::ClosedMultiplicativeExpressionContext::ClosedMultiplicativeExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ClosedMultiplicativeExpressionContext::ClosedMultiplicativeExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::ClosedCastExpressionContext* Parser::ClosedMultiplicativeExpressionContext::closedCastExpression() {
-  return getRuleContext<Parser::ClosedCastExpressionContext>(0);
+RxParser::ClosedCastExpressionContext* RxParser::ClosedMultiplicativeExpressionContext::closedCastExpression() {
+  return getRuleContext<RxParser::ClosedCastExpressionContext>(0);
 }
 
-std::vector<Parser::CastExpressionContext *> Parser::ClosedMultiplicativeExpressionContext::castExpression() {
-  return getRuleContexts<Parser::CastExpressionContext>();
+std::vector<RxParser::CastExpressionContext *> RxParser::ClosedMultiplicativeExpressionContext::castExpression() {
+  return getRuleContexts<RxParser::CastExpressionContext>();
 }
 
-Parser::CastExpressionContext* Parser::ClosedMultiplicativeExpressionContext::castExpression(size_t i) {
-  return getRuleContext<Parser::CastExpressionContext>(i);
+RxParser::CastExpressionContext* RxParser::ClosedMultiplicativeExpressionContext::castExpression(size_t i) {
+  return getRuleContext<RxParser::CastExpressionContext>(i);
 }
 
-std::vector<Parser::MultiplicativeOperatorContext *> Parser::ClosedMultiplicativeExpressionContext::multiplicativeOperator() {
-  return getRuleContexts<Parser::MultiplicativeOperatorContext>();
+std::vector<RxParser::MultiplicativeOperatorContext *> RxParser::ClosedMultiplicativeExpressionContext::multiplicativeOperator() {
+  return getRuleContexts<RxParser::MultiplicativeOperatorContext>();
 }
 
-Parser::MultiplicativeOperatorContext* Parser::ClosedMultiplicativeExpressionContext::multiplicativeOperator(size_t i) {
-  return getRuleContext<Parser::MultiplicativeOperatorContext>(i);
-}
-
-
-size_t Parser::ClosedMultiplicativeExpressionContext::getRuleIndex() const {
-  return Parser::RuleClosedMultiplicativeExpression;
+RxParser::MultiplicativeOperatorContext* RxParser::ClosedMultiplicativeExpressionContext::multiplicativeOperator(size_t i) {
+  return getRuleContext<RxParser::MultiplicativeOperatorContext>(i);
 }
 
 
-std::any Parser::ClosedMultiplicativeExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ClosedMultiplicativeExpressionContext::getRuleIndex() const {
+  return RxParser::RuleClosedMultiplicativeExpression;
+}
+
+
+std::any RxParser::ClosedMultiplicativeExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitClosedMultiplicativeExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ClosedMultiplicativeExpressionContext* Parser::closedMultiplicativeExpression() {
+RxParser::ClosedMultiplicativeExpressionContext* RxParser::closedMultiplicativeExpression() {
   ClosedMultiplicativeExpressionContext *_localctx = _tracker.createInstance<ClosedMultiplicativeExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 120, Parser::RuleClosedMultiplicativeExpression);
+  enterRule(_localctx, 120, RxParser::RuleClosedMultiplicativeExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -6434,46 +6434,46 @@ Parser::ClosedMultiplicativeExpressionContext* Parser::closedMultiplicativeExpre
 
 //----------------- CastExpressionContext ------------------------------------------------------------------
 
-Parser::CastExpressionContext::CastExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::CastExpressionContext::CastExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::UnaryExpressionContext* Parser::CastExpressionContext::unaryExpression() {
-  return getRuleContext<Parser::UnaryExpressionContext>(0);
+RxParser::UnaryExpressionContext* RxParser::CastExpressionContext::unaryExpression() {
+  return getRuleContext<RxParser::UnaryExpressionContext>(0);
 }
 
-std::vector<tree::TerminalNode *> Parser::CastExpressionContext::AS() {
-  return getTokens(Parser::AS);
+std::vector<tree::TerminalNode *> RxParser::CastExpressionContext::AS() {
+  return getTokens(RxParser::AS);
 }
 
-tree::TerminalNode* Parser::CastExpressionContext::AS(size_t i) {
-  return getToken(Parser::AS, i);
+tree::TerminalNode* RxParser::CastExpressionContext::AS(size_t i) {
+  return getToken(RxParser::AS, i);
 }
 
-std::vector<Parser::TypeRefContext *> Parser::CastExpressionContext::typeRef() {
-  return getRuleContexts<Parser::TypeRefContext>();
+std::vector<RxParser::TypeRefContext *> RxParser::CastExpressionContext::typeRef() {
+  return getRuleContexts<RxParser::TypeRefContext>();
 }
 
-Parser::TypeRefContext* Parser::CastExpressionContext::typeRef(size_t i) {
-  return getRuleContext<Parser::TypeRefContext>(i);
-}
-
-
-size_t Parser::CastExpressionContext::getRuleIndex() const {
-  return Parser::RuleCastExpression;
+RxParser::TypeRefContext* RxParser::CastExpressionContext::typeRef(size_t i) {
+  return getRuleContext<RxParser::TypeRefContext>(i);
 }
 
 
-std::any Parser::CastExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::CastExpressionContext::getRuleIndex() const {
+  return RxParser::RuleCastExpression;
+}
+
+
+std::any RxParser::CastExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitCastExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::CastExpressionContext* Parser::castExpression() {
+RxParser::CastExpressionContext* RxParser::castExpression() {
   CastExpressionContext *_localctx = _tracker.createInstance<CastExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 122, Parser::RuleCastExpression);
+  enterRule(_localctx, 122, RxParser::RuleCastExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -6493,7 +6493,7 @@ Parser::CastExpressionContext* Parser::castExpression() {
     while (alt != 2 && alt != atn::ATN::INVALID_ALT_NUMBER) {
       if (alt == 1) {
         setState(921);
-        match(Parser::AS);
+        match(RxParser::AS);
         setState(922);
         typeRef(); 
       }
@@ -6514,42 +6514,42 @@ Parser::CastExpressionContext* Parser::castExpression() {
 
 //----------------- ClosedCastExpressionContext ------------------------------------------------------------------
 
-Parser::ClosedCastExpressionContext::ClosedCastExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ClosedCastExpressionContext::ClosedCastExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::UnaryExpressionContext* Parser::ClosedCastExpressionContext::unaryExpression() {
-  return getRuleContext<Parser::UnaryExpressionContext>(0);
+RxParser::UnaryExpressionContext* RxParser::ClosedCastExpressionContext::unaryExpression() {
+  return getRuleContext<RxParser::UnaryExpressionContext>(0);
 }
 
-Parser::CastExpressionContext* Parser::ClosedCastExpressionContext::castExpression() {
-  return getRuleContext<Parser::CastExpressionContext>(0);
+RxParser::CastExpressionContext* RxParser::ClosedCastExpressionContext::castExpression() {
+  return getRuleContext<RxParser::CastExpressionContext>(0);
 }
 
-tree::TerminalNode* Parser::ClosedCastExpressionContext::AS() {
-  return getToken(Parser::AS, 0);
+tree::TerminalNode* RxParser::ClosedCastExpressionContext::AS() {
+  return getToken(RxParser::AS, 0);
 }
 
-Parser::ClosedCastTypeContext* Parser::ClosedCastExpressionContext::closedCastType() {
-  return getRuleContext<Parser::ClosedCastTypeContext>(0);
-}
-
-
-size_t Parser::ClosedCastExpressionContext::getRuleIndex() const {
-  return Parser::RuleClosedCastExpression;
+RxParser::ClosedCastTypeContext* RxParser::ClosedCastExpressionContext::closedCastType() {
+  return getRuleContext<RxParser::ClosedCastTypeContext>(0);
 }
 
 
-std::any Parser::ClosedCastExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ClosedCastExpressionContext::getRuleIndex() const {
+  return RxParser::RuleClosedCastExpression;
+}
+
+
+std::any RxParser::ClosedCastExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitClosedCastExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ClosedCastExpressionContext* Parser::closedCastExpression() {
+RxParser::ClosedCastExpressionContext* RxParser::closedCastExpression() {
   ClosedCastExpressionContext *_localctx = _tracker.createInstance<ClosedCastExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 124, Parser::RuleClosedCastExpression);
+  enterRule(_localctx, 124, RxParser::RuleClosedCastExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -6574,7 +6574,7 @@ Parser::ClosedCastExpressionContext* Parser::closedCastExpression() {
       setState(929);
       castExpression();
       setState(930);
-      match(Parser::AS);
+      match(RxParser::AS);
       setState(931);
       closedCastType();
       break;
@@ -6596,38 +6596,38 @@ Parser::ClosedCastExpressionContext* Parser::closedCastExpression() {
 
 //----------------- UnaryExpressionContext ------------------------------------------------------------------
 
-Parser::UnaryExpressionContext::UnaryExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::UnaryExpressionContext::UnaryExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::UnaryOperatorContext* Parser::UnaryExpressionContext::unaryOperator() {
-  return getRuleContext<Parser::UnaryOperatorContext>(0);
+RxParser::UnaryOperatorContext* RxParser::UnaryExpressionContext::unaryOperator() {
+  return getRuleContext<RxParser::UnaryOperatorContext>(0);
 }
 
-Parser::UnaryExpressionContext* Parser::UnaryExpressionContext::unaryExpression() {
-  return getRuleContext<Parser::UnaryExpressionContext>(0);
+RxParser::UnaryExpressionContext* RxParser::UnaryExpressionContext::unaryExpression() {
+  return getRuleContext<RxParser::UnaryExpressionContext>(0);
 }
 
-Parser::PostfixExpressionContext* Parser::UnaryExpressionContext::postfixExpression() {
-  return getRuleContext<Parser::PostfixExpressionContext>(0);
-}
-
-
-size_t Parser::UnaryExpressionContext::getRuleIndex() const {
-  return Parser::RuleUnaryExpression;
+RxParser::PostfixExpressionContext* RxParser::UnaryExpressionContext::postfixExpression() {
+  return getRuleContext<RxParser::PostfixExpressionContext>(0);
 }
 
 
-std::any Parser::UnaryExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::UnaryExpressionContext::getRuleIndex() const {
+  return RxParser::RuleUnaryExpression;
+}
+
+
+std::any RxParser::UnaryExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitUnaryExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::UnaryExpressionContext* Parser::unaryExpression() {
+RxParser::UnaryExpressionContext* RxParser::unaryExpression() {
   UnaryExpressionContext *_localctx = _tracker.createInstance<UnaryExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 126, Parser::RuleUnaryExpression);
+  enterRule(_localctx, 126, RxParser::RuleUnaryExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -6640,11 +6640,11 @@ Parser::UnaryExpressionContext* Parser::unaryExpression() {
     setState(939);
     _errHandler->sync(this);
     switch (_input->LA(1)) {
-      case Parser::ANDAND:
-      case Parser::NOT:
-      case Parser::MINUS:
-      case Parser::STAR:
-      case Parser::AMP: {
+      case RxParser::ANDAND:
+      case RxParser::NOT:
+      case RxParser::MINUS:
+      case RxParser::STAR:
+      case RxParser::AMP: {
         enterOuterAlt(_localctx, 1);
         setState(935);
         unaryOperator();
@@ -6653,26 +6653,26 @@ Parser::UnaryExpressionContext* Parser::unaryExpression() {
         break;
       }
 
-      case Parser::BREAK:
-      case Parser::CONTINUE:
-      case Parser::FALSE:
-      case Parser::IF:
-      case Parser::LOOP:
-      case Parser::RETURN:
-      case Parser::SELF_VALUE:
-      case Parser::SELF_TYPE:
-      case Parser::TRUE:
-      case Parser::WHILE:
-      case Parser::DERIVE:
-      case Parser::COPY:
-      case Parser::CLONE:
-      case Parser::PARTIAL_EQ:
-      case Parser::EQ:
-      case Parser::IDENTIFIER:
-      case Parser::INTEGER_LITERAL:
-      case Parser::LBRACE:
-      case Parser::LBRACKET:
-      case Parser::LPAREN: {
+      case RxParser::BREAK:
+      case RxParser::CONTINUE:
+      case RxParser::FALSE:
+      case RxParser::IF:
+      case RxParser::LOOP:
+      case RxParser::RETURN:
+      case RxParser::SELF_VALUE:
+      case RxParser::SELF_TYPE:
+      case RxParser::TRUE:
+      case RxParser::WHILE:
+      case RxParser::DERIVE:
+      case RxParser::COPY:
+      case RxParser::CLONE:
+      case RxParser::PARTIAL_EQ:
+      case RxParser::EQ:
+      case RxParser::IDENTIFIER:
+      case RxParser::INTEGER_LITERAL:
+      case RxParser::LBRACE:
+      case RxParser::LBRACKET:
+      case RxParser::LPAREN: {
         enterOuterAlt(_localctx, 2);
         setState(938);
         postfixExpression();
@@ -6695,38 +6695,38 @@ Parser::UnaryExpressionContext* Parser::unaryExpression() {
 
 //----------------- PostfixExpressionContext ------------------------------------------------------------------
 
-Parser::PostfixExpressionContext::PostfixExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::PostfixExpressionContext::PostfixExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::PrimaryExpressionContext* Parser::PostfixExpressionContext::primaryExpression() {
-  return getRuleContext<Parser::PrimaryExpressionContext>(0);
+RxParser::PrimaryExpressionContext* RxParser::PostfixExpressionContext::primaryExpression() {
+  return getRuleContext<RxParser::PrimaryExpressionContext>(0);
 }
 
-std::vector<Parser::PostfixSuffixContext *> Parser::PostfixExpressionContext::postfixSuffix() {
-  return getRuleContexts<Parser::PostfixSuffixContext>();
+std::vector<RxParser::PostfixSuffixContext *> RxParser::PostfixExpressionContext::postfixSuffix() {
+  return getRuleContexts<RxParser::PostfixSuffixContext>();
 }
 
-Parser::PostfixSuffixContext* Parser::PostfixExpressionContext::postfixSuffix(size_t i) {
-  return getRuleContext<Parser::PostfixSuffixContext>(i);
-}
-
-
-size_t Parser::PostfixExpressionContext::getRuleIndex() const {
-  return Parser::RulePostfixExpression;
+RxParser::PostfixSuffixContext* RxParser::PostfixExpressionContext::postfixSuffix(size_t i) {
+  return getRuleContext<RxParser::PostfixSuffixContext>(i);
 }
 
 
-std::any Parser::PostfixExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::PostfixExpressionContext::getRuleIndex() const {
+  return RxParser::RulePostfixExpression;
+}
+
+
+std::any RxParser::PostfixExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitPostfixExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::PostfixExpressionContext* Parser::postfixExpression() {
+RxParser::PostfixExpressionContext* RxParser::postfixExpression() {
   PostfixExpressionContext *_localctx = _tracker.createInstance<PostfixExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 128, Parser::RulePostfixExpression);
+  enterRule(_localctx, 128, RxParser::RulePostfixExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -6765,30 +6765,30 @@ Parser::PostfixExpressionContext* Parser::postfixExpression() {
 
 //----------------- ConditionExpressionContext ------------------------------------------------------------------
 
-Parser::ConditionExpressionContext::ConditionExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ConditionExpressionContext::ConditionExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::ConditionAssignmentExpressionContext* Parser::ConditionExpressionContext::conditionAssignmentExpression() {
-  return getRuleContext<Parser::ConditionAssignmentExpressionContext>(0);
+RxParser::ConditionAssignmentExpressionContext* RxParser::ConditionExpressionContext::conditionAssignmentExpression() {
+  return getRuleContext<RxParser::ConditionAssignmentExpressionContext>(0);
 }
 
 
-size_t Parser::ConditionExpressionContext::getRuleIndex() const {
-  return Parser::RuleConditionExpression;
+size_t RxParser::ConditionExpressionContext::getRuleIndex() const {
+  return RxParser::RuleConditionExpression;
 }
 
 
-std::any Parser::ConditionExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+std::any RxParser::ConditionExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitConditionExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ConditionExpressionContext* Parser::conditionExpression() {
+RxParser::ConditionExpressionContext* RxParser::conditionExpression() {
   ConditionExpressionContext *_localctx = _tracker.createInstance<ConditionExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 130, Parser::RuleConditionExpression);
+  enterRule(_localctx, 130, RxParser::RuleConditionExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -6814,38 +6814,38 @@ Parser::ConditionExpressionContext* Parser::conditionExpression() {
 
 //----------------- ConditionAssignmentExpressionContext ------------------------------------------------------------------
 
-Parser::ConditionAssignmentExpressionContext::ConditionAssignmentExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ConditionAssignmentExpressionContext::ConditionAssignmentExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::ConditionLogicalOrExpressionContext* Parser::ConditionAssignmentExpressionContext::conditionLogicalOrExpression() {
-  return getRuleContext<Parser::ConditionLogicalOrExpressionContext>(0);
+RxParser::ConditionLogicalOrExpressionContext* RxParser::ConditionAssignmentExpressionContext::conditionLogicalOrExpression() {
+  return getRuleContext<RxParser::ConditionLogicalOrExpressionContext>(0);
 }
 
-Parser::AssignmentOperatorContext* Parser::ConditionAssignmentExpressionContext::assignmentOperator() {
-  return getRuleContext<Parser::AssignmentOperatorContext>(0);
+RxParser::AssignmentOperatorContext* RxParser::ConditionAssignmentExpressionContext::assignmentOperator() {
+  return getRuleContext<RxParser::AssignmentOperatorContext>(0);
 }
 
-Parser::ConditionExpressionContext* Parser::ConditionAssignmentExpressionContext::conditionExpression() {
-  return getRuleContext<Parser::ConditionExpressionContext>(0);
-}
-
-
-size_t Parser::ConditionAssignmentExpressionContext::getRuleIndex() const {
-  return Parser::RuleConditionAssignmentExpression;
+RxParser::ConditionExpressionContext* RxParser::ConditionAssignmentExpressionContext::conditionExpression() {
+  return getRuleContext<RxParser::ConditionExpressionContext>(0);
 }
 
 
-std::any Parser::ConditionAssignmentExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ConditionAssignmentExpressionContext::getRuleIndex() const {
+  return RxParser::RuleConditionAssignmentExpression;
+}
+
+
+std::any RxParser::ConditionAssignmentExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitConditionAssignmentExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ConditionAssignmentExpressionContext* Parser::conditionAssignmentExpression() {
+RxParser::ConditionAssignmentExpressionContext* RxParser::conditionAssignmentExpression() {
   ConditionAssignmentExpressionContext *_localctx = _tracker.createInstance<ConditionAssignmentExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 132, Parser::RuleConditionAssignmentExpression);
+  enterRule(_localctx, 132, RxParser::RuleConditionAssignmentExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -6886,42 +6886,42 @@ Parser::ConditionAssignmentExpressionContext* Parser::conditionAssignmentExpress
 
 //----------------- ConditionLogicalOrExpressionContext ------------------------------------------------------------------
 
-Parser::ConditionLogicalOrExpressionContext::ConditionLogicalOrExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ConditionLogicalOrExpressionContext::ConditionLogicalOrExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-std::vector<Parser::ConditionLogicalAndExpressionContext *> Parser::ConditionLogicalOrExpressionContext::conditionLogicalAndExpression() {
-  return getRuleContexts<Parser::ConditionLogicalAndExpressionContext>();
+std::vector<RxParser::ConditionLogicalAndExpressionContext *> RxParser::ConditionLogicalOrExpressionContext::conditionLogicalAndExpression() {
+  return getRuleContexts<RxParser::ConditionLogicalAndExpressionContext>();
 }
 
-Parser::ConditionLogicalAndExpressionContext* Parser::ConditionLogicalOrExpressionContext::conditionLogicalAndExpression(size_t i) {
-  return getRuleContext<Parser::ConditionLogicalAndExpressionContext>(i);
+RxParser::ConditionLogicalAndExpressionContext* RxParser::ConditionLogicalOrExpressionContext::conditionLogicalAndExpression(size_t i) {
+  return getRuleContext<RxParser::ConditionLogicalAndExpressionContext>(i);
 }
 
-std::vector<tree::TerminalNode *> Parser::ConditionLogicalOrExpressionContext::OROR() {
-  return getTokens(Parser::OROR);
+std::vector<tree::TerminalNode *> RxParser::ConditionLogicalOrExpressionContext::OROR() {
+  return getTokens(RxParser::OROR);
 }
 
-tree::TerminalNode* Parser::ConditionLogicalOrExpressionContext::OROR(size_t i) {
-  return getToken(Parser::OROR, i);
-}
-
-
-size_t Parser::ConditionLogicalOrExpressionContext::getRuleIndex() const {
-  return Parser::RuleConditionLogicalOrExpression;
+tree::TerminalNode* RxParser::ConditionLogicalOrExpressionContext::OROR(size_t i) {
+  return getToken(RxParser::OROR, i);
 }
 
 
-std::any Parser::ConditionLogicalOrExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ConditionLogicalOrExpressionContext::getRuleIndex() const {
+  return RxParser::RuleConditionLogicalOrExpression;
+}
+
+
+std::any RxParser::ConditionLogicalOrExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitConditionLogicalOrExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ConditionLogicalOrExpressionContext* Parser::conditionLogicalOrExpression() {
+RxParser::ConditionLogicalOrExpressionContext* RxParser::conditionLogicalOrExpression() {
   ConditionLogicalOrExpressionContext *_localctx = _tracker.createInstance<ConditionLogicalOrExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 134, Parser::RuleConditionLogicalOrExpression);
+  enterRule(_localctx, 134, RxParser::RuleConditionLogicalOrExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -6941,7 +6941,7 @@ Parser::ConditionLogicalOrExpressionContext* Parser::conditionLogicalOrExpressio
     while (alt != 2 && alt != atn::ATN::INVALID_ALT_NUMBER) {
       if (alt == 1) {
         setState(957);
-        match(Parser::OROR);
+        match(RxParser::OROR);
         setState(958);
         conditionLogicalAndExpression(); 
       }
@@ -6962,42 +6962,42 @@ Parser::ConditionLogicalOrExpressionContext* Parser::conditionLogicalOrExpressio
 
 //----------------- ConditionLogicalAndExpressionContext ------------------------------------------------------------------
 
-Parser::ConditionLogicalAndExpressionContext::ConditionLogicalAndExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ConditionLogicalAndExpressionContext::ConditionLogicalAndExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-std::vector<Parser::ConditionComparisonExpressionContext *> Parser::ConditionLogicalAndExpressionContext::conditionComparisonExpression() {
-  return getRuleContexts<Parser::ConditionComparisonExpressionContext>();
+std::vector<RxParser::ConditionComparisonExpressionContext *> RxParser::ConditionLogicalAndExpressionContext::conditionComparisonExpression() {
+  return getRuleContexts<RxParser::ConditionComparisonExpressionContext>();
 }
 
-Parser::ConditionComparisonExpressionContext* Parser::ConditionLogicalAndExpressionContext::conditionComparisonExpression(size_t i) {
-  return getRuleContext<Parser::ConditionComparisonExpressionContext>(i);
+RxParser::ConditionComparisonExpressionContext* RxParser::ConditionLogicalAndExpressionContext::conditionComparisonExpression(size_t i) {
+  return getRuleContext<RxParser::ConditionComparisonExpressionContext>(i);
 }
 
-std::vector<tree::TerminalNode *> Parser::ConditionLogicalAndExpressionContext::ANDAND() {
-  return getTokens(Parser::ANDAND);
+std::vector<tree::TerminalNode *> RxParser::ConditionLogicalAndExpressionContext::ANDAND() {
+  return getTokens(RxParser::ANDAND);
 }
 
-tree::TerminalNode* Parser::ConditionLogicalAndExpressionContext::ANDAND(size_t i) {
-  return getToken(Parser::ANDAND, i);
-}
-
-
-size_t Parser::ConditionLogicalAndExpressionContext::getRuleIndex() const {
-  return Parser::RuleConditionLogicalAndExpression;
+tree::TerminalNode* RxParser::ConditionLogicalAndExpressionContext::ANDAND(size_t i) {
+  return getToken(RxParser::ANDAND, i);
 }
 
 
-std::any Parser::ConditionLogicalAndExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ConditionLogicalAndExpressionContext::getRuleIndex() const {
+  return RxParser::RuleConditionLogicalAndExpression;
+}
+
+
+std::any RxParser::ConditionLogicalAndExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitConditionLogicalAndExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ConditionLogicalAndExpressionContext* Parser::conditionLogicalAndExpression() {
+RxParser::ConditionLogicalAndExpressionContext* RxParser::conditionLogicalAndExpression() {
   ConditionLogicalAndExpressionContext *_localctx = _tracker.createInstance<ConditionLogicalAndExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 136, Parser::RuleConditionLogicalAndExpression);
+  enterRule(_localctx, 136, RxParser::RuleConditionLogicalAndExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -7017,7 +7017,7 @@ Parser::ConditionLogicalAndExpressionContext* Parser::conditionLogicalAndExpress
     while (alt != 2 && alt != atn::ATN::INVALID_ALT_NUMBER) {
       if (alt == 1) {
         setState(965);
-        match(Parser::ANDAND);
+        match(RxParser::ANDAND);
         setState(966);
         conditionComparisonExpression(); 
       }
@@ -7038,46 +7038,46 @@ Parser::ConditionLogicalAndExpressionContext* Parser::conditionLogicalAndExpress
 
 //----------------- ConditionComparisonExpressionContext ------------------------------------------------------------------
 
-Parser::ConditionComparisonExpressionContext::ConditionComparisonExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ConditionComparisonExpressionContext::ConditionComparisonExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-std::vector<Parser::ConditionBitOrExpressionContext *> Parser::ConditionComparisonExpressionContext::conditionBitOrExpression() {
-  return getRuleContexts<Parser::ConditionBitOrExpressionContext>();
+std::vector<RxParser::ConditionBitOrExpressionContext *> RxParser::ConditionComparisonExpressionContext::conditionBitOrExpression() {
+  return getRuleContexts<RxParser::ConditionBitOrExpressionContext>();
 }
 
-Parser::ConditionBitOrExpressionContext* Parser::ConditionComparisonExpressionContext::conditionBitOrExpression(size_t i) {
-  return getRuleContext<Parser::ConditionBitOrExpressionContext>(i);
+RxParser::ConditionBitOrExpressionContext* RxParser::ConditionComparisonExpressionContext::conditionBitOrExpression(size_t i) {
+  return getRuleContext<RxParser::ConditionBitOrExpressionContext>(i);
 }
 
-Parser::ComparisonExceptLtContext* Parser::ConditionComparisonExpressionContext::comparisonExceptLt() {
-  return getRuleContext<Parser::ComparisonExceptLtContext>(0);
+RxParser::ComparisonExceptLtContext* RxParser::ConditionComparisonExpressionContext::comparisonExceptLt() {
+  return getRuleContext<RxParser::ComparisonExceptLtContext>(0);
 }
 
-Parser::ConditionClosedBitOrExpressionContext* Parser::ConditionComparisonExpressionContext::conditionClosedBitOrExpression() {
-  return getRuleContext<Parser::ConditionClosedBitOrExpressionContext>(0);
+RxParser::ConditionClosedBitOrExpressionContext* RxParser::ConditionComparisonExpressionContext::conditionClosedBitOrExpression() {
+  return getRuleContext<RxParser::ConditionClosedBitOrExpressionContext>(0);
 }
 
-tree::TerminalNode* Parser::ConditionComparisonExpressionContext::LT() {
-  return getToken(Parser::LT, 0);
-}
-
-
-size_t Parser::ConditionComparisonExpressionContext::getRuleIndex() const {
-  return Parser::RuleConditionComparisonExpression;
+tree::TerminalNode* RxParser::ConditionComparisonExpressionContext::LT() {
+  return getToken(RxParser::LT, 0);
 }
 
 
-std::any Parser::ConditionComparisonExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ConditionComparisonExpressionContext::getRuleIndex() const {
+  return RxParser::RuleConditionComparisonExpression;
+}
+
+
+std::any RxParser::ConditionComparisonExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitConditionComparisonExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ConditionComparisonExpressionContext* Parser::conditionComparisonExpression() {
+RxParser::ConditionComparisonExpressionContext* RxParser::conditionComparisonExpression() {
   ConditionComparisonExpressionContext *_localctx = _tracker.createInstance<ConditionComparisonExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 138, Parser::RuleConditionComparisonExpression);
+  enterRule(_localctx, 138, RxParser::RuleConditionComparisonExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -7117,7 +7117,7 @@ Parser::ConditionComparisonExpressionContext* Parser::conditionComparisonExpress
       setState(978);
       conditionClosedBitOrExpression();
       setState(979);
-      match(Parser::LT);
+      match(RxParser::LT);
       setState(980);
       conditionBitOrExpression();
       break;
@@ -7139,42 +7139,42 @@ Parser::ConditionComparisonExpressionContext* Parser::conditionComparisonExpress
 
 //----------------- ConditionBitOrExpressionContext ------------------------------------------------------------------
 
-Parser::ConditionBitOrExpressionContext::ConditionBitOrExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ConditionBitOrExpressionContext::ConditionBitOrExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-std::vector<Parser::ConditionBitXorExpressionContext *> Parser::ConditionBitOrExpressionContext::conditionBitXorExpression() {
-  return getRuleContexts<Parser::ConditionBitXorExpressionContext>();
+std::vector<RxParser::ConditionBitXorExpressionContext *> RxParser::ConditionBitOrExpressionContext::conditionBitXorExpression() {
+  return getRuleContexts<RxParser::ConditionBitXorExpressionContext>();
 }
 
-Parser::ConditionBitXorExpressionContext* Parser::ConditionBitOrExpressionContext::conditionBitXorExpression(size_t i) {
-  return getRuleContext<Parser::ConditionBitXorExpressionContext>(i);
+RxParser::ConditionBitXorExpressionContext* RxParser::ConditionBitOrExpressionContext::conditionBitXorExpression(size_t i) {
+  return getRuleContext<RxParser::ConditionBitXorExpressionContext>(i);
 }
 
-std::vector<tree::TerminalNode *> Parser::ConditionBitOrExpressionContext::PIPE() {
-  return getTokens(Parser::PIPE);
+std::vector<tree::TerminalNode *> RxParser::ConditionBitOrExpressionContext::PIPE() {
+  return getTokens(RxParser::PIPE);
 }
 
-tree::TerminalNode* Parser::ConditionBitOrExpressionContext::PIPE(size_t i) {
-  return getToken(Parser::PIPE, i);
-}
-
-
-size_t Parser::ConditionBitOrExpressionContext::getRuleIndex() const {
-  return Parser::RuleConditionBitOrExpression;
+tree::TerminalNode* RxParser::ConditionBitOrExpressionContext::PIPE(size_t i) {
+  return getToken(RxParser::PIPE, i);
 }
 
 
-std::any Parser::ConditionBitOrExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ConditionBitOrExpressionContext::getRuleIndex() const {
+  return RxParser::RuleConditionBitOrExpression;
+}
+
+
+std::any RxParser::ConditionBitOrExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitConditionBitOrExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ConditionBitOrExpressionContext* Parser::conditionBitOrExpression() {
+RxParser::ConditionBitOrExpressionContext* RxParser::conditionBitOrExpression() {
   ConditionBitOrExpressionContext *_localctx = _tracker.createInstance<ConditionBitOrExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 140, Parser::RuleConditionBitOrExpression);
+  enterRule(_localctx, 140, RxParser::RuleConditionBitOrExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -7194,7 +7194,7 @@ Parser::ConditionBitOrExpressionContext* Parser::conditionBitOrExpression() {
     while (alt != 2 && alt != atn::ATN::INVALID_ALT_NUMBER) {
       if (alt == 1) {
         setState(985);
-        match(Parser::PIPE);
+        match(RxParser::PIPE);
         setState(986);
         conditionBitXorExpression(); 
       }
@@ -7215,46 +7215,46 @@ Parser::ConditionBitOrExpressionContext* Parser::conditionBitOrExpression() {
 
 //----------------- ConditionClosedBitOrExpressionContext ------------------------------------------------------------------
 
-Parser::ConditionClosedBitOrExpressionContext::ConditionClosedBitOrExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ConditionClosedBitOrExpressionContext::ConditionClosedBitOrExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::ConditionClosedBitXorExpressionContext* Parser::ConditionClosedBitOrExpressionContext::conditionClosedBitXorExpression() {
-  return getRuleContext<Parser::ConditionClosedBitXorExpressionContext>(0);
+RxParser::ConditionClosedBitXorExpressionContext* RxParser::ConditionClosedBitOrExpressionContext::conditionClosedBitXorExpression() {
+  return getRuleContext<RxParser::ConditionClosedBitXorExpressionContext>(0);
 }
 
-std::vector<Parser::ConditionBitXorExpressionContext *> Parser::ConditionClosedBitOrExpressionContext::conditionBitXorExpression() {
-  return getRuleContexts<Parser::ConditionBitXorExpressionContext>();
+std::vector<RxParser::ConditionBitXorExpressionContext *> RxParser::ConditionClosedBitOrExpressionContext::conditionBitXorExpression() {
+  return getRuleContexts<RxParser::ConditionBitXorExpressionContext>();
 }
 
-Parser::ConditionBitXorExpressionContext* Parser::ConditionClosedBitOrExpressionContext::conditionBitXorExpression(size_t i) {
-  return getRuleContext<Parser::ConditionBitXorExpressionContext>(i);
+RxParser::ConditionBitXorExpressionContext* RxParser::ConditionClosedBitOrExpressionContext::conditionBitXorExpression(size_t i) {
+  return getRuleContext<RxParser::ConditionBitXorExpressionContext>(i);
 }
 
-std::vector<tree::TerminalNode *> Parser::ConditionClosedBitOrExpressionContext::PIPE() {
-  return getTokens(Parser::PIPE);
+std::vector<tree::TerminalNode *> RxParser::ConditionClosedBitOrExpressionContext::PIPE() {
+  return getTokens(RxParser::PIPE);
 }
 
-tree::TerminalNode* Parser::ConditionClosedBitOrExpressionContext::PIPE(size_t i) {
-  return getToken(Parser::PIPE, i);
-}
-
-
-size_t Parser::ConditionClosedBitOrExpressionContext::getRuleIndex() const {
-  return Parser::RuleConditionClosedBitOrExpression;
+tree::TerminalNode* RxParser::ConditionClosedBitOrExpressionContext::PIPE(size_t i) {
+  return getToken(RxParser::PIPE, i);
 }
 
 
-std::any Parser::ConditionClosedBitOrExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ConditionClosedBitOrExpressionContext::getRuleIndex() const {
+  return RxParser::RuleConditionClosedBitOrExpression;
+}
+
+
+std::any RxParser::ConditionClosedBitOrExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitConditionClosedBitOrExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ConditionClosedBitOrExpressionContext* Parser::conditionClosedBitOrExpression() {
+RxParser::ConditionClosedBitOrExpressionContext* RxParser::conditionClosedBitOrExpression() {
   ConditionClosedBitOrExpressionContext *_localctx = _tracker.createInstance<ConditionClosedBitOrExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 142, Parser::RuleConditionClosedBitOrExpression);
+  enterRule(_localctx, 142, RxParser::RuleConditionClosedBitOrExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -7274,7 +7274,7 @@ Parser::ConditionClosedBitOrExpressionContext* Parser::conditionClosedBitOrExpre
         setState(992);
         conditionBitXorExpression();
         setState(993);
-        match(Parser::PIPE); 
+        match(RxParser::PIPE); 
       }
       setState(999);
       _errHandler->sync(this);
@@ -7295,42 +7295,42 @@ Parser::ConditionClosedBitOrExpressionContext* Parser::conditionClosedBitOrExpre
 
 //----------------- ConditionBitXorExpressionContext ------------------------------------------------------------------
 
-Parser::ConditionBitXorExpressionContext::ConditionBitXorExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ConditionBitXorExpressionContext::ConditionBitXorExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-std::vector<Parser::ConditionBitAndExpressionContext *> Parser::ConditionBitXorExpressionContext::conditionBitAndExpression() {
-  return getRuleContexts<Parser::ConditionBitAndExpressionContext>();
+std::vector<RxParser::ConditionBitAndExpressionContext *> RxParser::ConditionBitXorExpressionContext::conditionBitAndExpression() {
+  return getRuleContexts<RxParser::ConditionBitAndExpressionContext>();
 }
 
-Parser::ConditionBitAndExpressionContext* Parser::ConditionBitXorExpressionContext::conditionBitAndExpression(size_t i) {
-  return getRuleContext<Parser::ConditionBitAndExpressionContext>(i);
+RxParser::ConditionBitAndExpressionContext* RxParser::ConditionBitXorExpressionContext::conditionBitAndExpression(size_t i) {
+  return getRuleContext<RxParser::ConditionBitAndExpressionContext>(i);
 }
 
-std::vector<tree::TerminalNode *> Parser::ConditionBitXorExpressionContext::CARET() {
-  return getTokens(Parser::CARET);
+std::vector<tree::TerminalNode *> RxParser::ConditionBitXorExpressionContext::CARET() {
+  return getTokens(RxParser::CARET);
 }
 
-tree::TerminalNode* Parser::ConditionBitXorExpressionContext::CARET(size_t i) {
-  return getToken(Parser::CARET, i);
-}
-
-
-size_t Parser::ConditionBitXorExpressionContext::getRuleIndex() const {
-  return Parser::RuleConditionBitXorExpression;
+tree::TerminalNode* RxParser::ConditionBitXorExpressionContext::CARET(size_t i) {
+  return getToken(RxParser::CARET, i);
 }
 
 
-std::any Parser::ConditionBitXorExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ConditionBitXorExpressionContext::getRuleIndex() const {
+  return RxParser::RuleConditionBitXorExpression;
+}
+
+
+std::any RxParser::ConditionBitXorExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitConditionBitXorExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ConditionBitXorExpressionContext* Parser::conditionBitXorExpression() {
+RxParser::ConditionBitXorExpressionContext* RxParser::conditionBitXorExpression() {
   ConditionBitXorExpressionContext *_localctx = _tracker.createInstance<ConditionBitXorExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 144, Parser::RuleConditionBitXorExpression);
+  enterRule(_localctx, 144, RxParser::RuleConditionBitXorExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -7350,7 +7350,7 @@ Parser::ConditionBitXorExpressionContext* Parser::conditionBitXorExpression() {
     while (alt != 2 && alt != atn::ATN::INVALID_ALT_NUMBER) {
       if (alt == 1) {
         setState(1003);
-        match(Parser::CARET);
+        match(RxParser::CARET);
         setState(1004);
         conditionBitAndExpression(); 
       }
@@ -7371,46 +7371,46 @@ Parser::ConditionBitXorExpressionContext* Parser::conditionBitXorExpression() {
 
 //----------------- ConditionClosedBitXorExpressionContext ------------------------------------------------------------------
 
-Parser::ConditionClosedBitXorExpressionContext::ConditionClosedBitXorExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ConditionClosedBitXorExpressionContext::ConditionClosedBitXorExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::ConditionClosedBitAndExpressionContext* Parser::ConditionClosedBitXorExpressionContext::conditionClosedBitAndExpression() {
-  return getRuleContext<Parser::ConditionClosedBitAndExpressionContext>(0);
+RxParser::ConditionClosedBitAndExpressionContext* RxParser::ConditionClosedBitXorExpressionContext::conditionClosedBitAndExpression() {
+  return getRuleContext<RxParser::ConditionClosedBitAndExpressionContext>(0);
 }
 
-std::vector<Parser::ConditionBitAndExpressionContext *> Parser::ConditionClosedBitXorExpressionContext::conditionBitAndExpression() {
-  return getRuleContexts<Parser::ConditionBitAndExpressionContext>();
+std::vector<RxParser::ConditionBitAndExpressionContext *> RxParser::ConditionClosedBitXorExpressionContext::conditionBitAndExpression() {
+  return getRuleContexts<RxParser::ConditionBitAndExpressionContext>();
 }
 
-Parser::ConditionBitAndExpressionContext* Parser::ConditionClosedBitXorExpressionContext::conditionBitAndExpression(size_t i) {
-  return getRuleContext<Parser::ConditionBitAndExpressionContext>(i);
+RxParser::ConditionBitAndExpressionContext* RxParser::ConditionClosedBitXorExpressionContext::conditionBitAndExpression(size_t i) {
+  return getRuleContext<RxParser::ConditionBitAndExpressionContext>(i);
 }
 
-std::vector<tree::TerminalNode *> Parser::ConditionClosedBitXorExpressionContext::CARET() {
-  return getTokens(Parser::CARET);
+std::vector<tree::TerminalNode *> RxParser::ConditionClosedBitXorExpressionContext::CARET() {
+  return getTokens(RxParser::CARET);
 }
 
-tree::TerminalNode* Parser::ConditionClosedBitXorExpressionContext::CARET(size_t i) {
-  return getToken(Parser::CARET, i);
-}
-
-
-size_t Parser::ConditionClosedBitXorExpressionContext::getRuleIndex() const {
-  return Parser::RuleConditionClosedBitXorExpression;
+tree::TerminalNode* RxParser::ConditionClosedBitXorExpressionContext::CARET(size_t i) {
+  return getToken(RxParser::CARET, i);
 }
 
 
-std::any Parser::ConditionClosedBitXorExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ConditionClosedBitXorExpressionContext::getRuleIndex() const {
+  return RxParser::RuleConditionClosedBitXorExpression;
+}
+
+
+std::any RxParser::ConditionClosedBitXorExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitConditionClosedBitXorExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ConditionClosedBitXorExpressionContext* Parser::conditionClosedBitXorExpression() {
+RxParser::ConditionClosedBitXorExpressionContext* RxParser::conditionClosedBitXorExpression() {
   ConditionClosedBitXorExpressionContext *_localctx = _tracker.createInstance<ConditionClosedBitXorExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 146, Parser::RuleConditionClosedBitXorExpression);
+  enterRule(_localctx, 146, RxParser::RuleConditionClosedBitXorExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -7430,7 +7430,7 @@ Parser::ConditionClosedBitXorExpressionContext* Parser::conditionClosedBitXorExp
         setState(1010);
         conditionBitAndExpression();
         setState(1011);
-        match(Parser::CARET); 
+        match(RxParser::CARET); 
       }
       setState(1017);
       _errHandler->sync(this);
@@ -7451,42 +7451,42 @@ Parser::ConditionClosedBitXorExpressionContext* Parser::conditionClosedBitXorExp
 
 //----------------- ConditionBitAndExpressionContext ------------------------------------------------------------------
 
-Parser::ConditionBitAndExpressionContext::ConditionBitAndExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ConditionBitAndExpressionContext::ConditionBitAndExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-std::vector<Parser::ConditionShiftExpressionContext *> Parser::ConditionBitAndExpressionContext::conditionShiftExpression() {
-  return getRuleContexts<Parser::ConditionShiftExpressionContext>();
+std::vector<RxParser::ConditionShiftExpressionContext *> RxParser::ConditionBitAndExpressionContext::conditionShiftExpression() {
+  return getRuleContexts<RxParser::ConditionShiftExpressionContext>();
 }
 
-Parser::ConditionShiftExpressionContext* Parser::ConditionBitAndExpressionContext::conditionShiftExpression(size_t i) {
-  return getRuleContext<Parser::ConditionShiftExpressionContext>(i);
+RxParser::ConditionShiftExpressionContext* RxParser::ConditionBitAndExpressionContext::conditionShiftExpression(size_t i) {
+  return getRuleContext<RxParser::ConditionShiftExpressionContext>(i);
 }
 
-std::vector<tree::TerminalNode *> Parser::ConditionBitAndExpressionContext::AMP() {
-  return getTokens(Parser::AMP);
+std::vector<tree::TerminalNode *> RxParser::ConditionBitAndExpressionContext::AMP() {
+  return getTokens(RxParser::AMP);
 }
 
-tree::TerminalNode* Parser::ConditionBitAndExpressionContext::AMP(size_t i) {
-  return getToken(Parser::AMP, i);
-}
-
-
-size_t Parser::ConditionBitAndExpressionContext::getRuleIndex() const {
-  return Parser::RuleConditionBitAndExpression;
+tree::TerminalNode* RxParser::ConditionBitAndExpressionContext::AMP(size_t i) {
+  return getToken(RxParser::AMP, i);
 }
 
 
-std::any Parser::ConditionBitAndExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ConditionBitAndExpressionContext::getRuleIndex() const {
+  return RxParser::RuleConditionBitAndExpression;
+}
+
+
+std::any RxParser::ConditionBitAndExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitConditionBitAndExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ConditionBitAndExpressionContext* Parser::conditionBitAndExpression() {
+RxParser::ConditionBitAndExpressionContext* RxParser::conditionBitAndExpression() {
   ConditionBitAndExpressionContext *_localctx = _tracker.createInstance<ConditionBitAndExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 148, Parser::RuleConditionBitAndExpression);
+  enterRule(_localctx, 148, RxParser::RuleConditionBitAndExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -7506,7 +7506,7 @@ Parser::ConditionBitAndExpressionContext* Parser::conditionBitAndExpression() {
     while (alt != 2 && alt != atn::ATN::INVALID_ALT_NUMBER) {
       if (alt == 1) {
         setState(1021);
-        match(Parser::AMP);
+        match(RxParser::AMP);
         setState(1022);
         conditionShiftExpression(); 
       }
@@ -7527,46 +7527,46 @@ Parser::ConditionBitAndExpressionContext* Parser::conditionBitAndExpression() {
 
 //----------------- ConditionClosedBitAndExpressionContext ------------------------------------------------------------------
 
-Parser::ConditionClosedBitAndExpressionContext::ConditionClosedBitAndExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ConditionClosedBitAndExpressionContext::ConditionClosedBitAndExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::ConditionClosedShiftExpressionContext* Parser::ConditionClosedBitAndExpressionContext::conditionClosedShiftExpression() {
-  return getRuleContext<Parser::ConditionClosedShiftExpressionContext>(0);
+RxParser::ConditionClosedShiftExpressionContext* RxParser::ConditionClosedBitAndExpressionContext::conditionClosedShiftExpression() {
+  return getRuleContext<RxParser::ConditionClosedShiftExpressionContext>(0);
 }
 
-std::vector<Parser::ConditionShiftExpressionContext *> Parser::ConditionClosedBitAndExpressionContext::conditionShiftExpression() {
-  return getRuleContexts<Parser::ConditionShiftExpressionContext>();
+std::vector<RxParser::ConditionShiftExpressionContext *> RxParser::ConditionClosedBitAndExpressionContext::conditionShiftExpression() {
+  return getRuleContexts<RxParser::ConditionShiftExpressionContext>();
 }
 
-Parser::ConditionShiftExpressionContext* Parser::ConditionClosedBitAndExpressionContext::conditionShiftExpression(size_t i) {
-  return getRuleContext<Parser::ConditionShiftExpressionContext>(i);
+RxParser::ConditionShiftExpressionContext* RxParser::ConditionClosedBitAndExpressionContext::conditionShiftExpression(size_t i) {
+  return getRuleContext<RxParser::ConditionShiftExpressionContext>(i);
 }
 
-std::vector<tree::TerminalNode *> Parser::ConditionClosedBitAndExpressionContext::AMP() {
-  return getTokens(Parser::AMP);
+std::vector<tree::TerminalNode *> RxParser::ConditionClosedBitAndExpressionContext::AMP() {
+  return getTokens(RxParser::AMP);
 }
 
-tree::TerminalNode* Parser::ConditionClosedBitAndExpressionContext::AMP(size_t i) {
-  return getToken(Parser::AMP, i);
-}
-
-
-size_t Parser::ConditionClosedBitAndExpressionContext::getRuleIndex() const {
-  return Parser::RuleConditionClosedBitAndExpression;
+tree::TerminalNode* RxParser::ConditionClosedBitAndExpressionContext::AMP(size_t i) {
+  return getToken(RxParser::AMP, i);
 }
 
 
-std::any Parser::ConditionClosedBitAndExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ConditionClosedBitAndExpressionContext::getRuleIndex() const {
+  return RxParser::RuleConditionClosedBitAndExpression;
+}
+
+
+std::any RxParser::ConditionClosedBitAndExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitConditionClosedBitAndExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ConditionClosedBitAndExpressionContext* Parser::conditionClosedBitAndExpression() {
+RxParser::ConditionClosedBitAndExpressionContext* RxParser::conditionClosedBitAndExpression() {
   ConditionClosedBitAndExpressionContext *_localctx = _tracker.createInstance<ConditionClosedBitAndExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 150, Parser::RuleConditionClosedBitAndExpression);
+  enterRule(_localctx, 150, RxParser::RuleConditionClosedBitAndExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -7586,7 +7586,7 @@ Parser::ConditionClosedBitAndExpressionContext* Parser::conditionClosedBitAndExp
         setState(1028);
         conditionShiftExpression();
         setState(1029);
-        match(Parser::AMP); 
+        match(RxParser::AMP); 
       }
       setState(1035);
       _errHandler->sync(this);
@@ -7607,58 +7607,58 @@ Parser::ConditionClosedBitAndExpressionContext* Parser::conditionClosedBitAndExp
 
 //----------------- ConditionShiftExpressionContext ------------------------------------------------------------------
 
-Parser::ConditionShiftExpressionContext::ConditionShiftExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ConditionShiftExpressionContext::ConditionShiftExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-std::vector<Parser::ConditionAdditiveExpressionContext *> Parser::ConditionShiftExpressionContext::conditionAdditiveExpression() {
-  return getRuleContexts<Parser::ConditionAdditiveExpressionContext>();
+std::vector<RxParser::ConditionAdditiveExpressionContext *> RxParser::ConditionShiftExpressionContext::conditionAdditiveExpression() {
+  return getRuleContexts<RxParser::ConditionAdditiveExpressionContext>();
 }
 
-Parser::ConditionAdditiveExpressionContext* Parser::ConditionShiftExpressionContext::conditionAdditiveExpression(size_t i) {
-  return getRuleContext<Parser::ConditionAdditiveExpressionContext>(i);
+RxParser::ConditionAdditiveExpressionContext* RxParser::ConditionShiftExpressionContext::conditionAdditiveExpression(size_t i) {
+  return getRuleContext<RxParser::ConditionAdditiveExpressionContext>(i);
 }
 
-std::vector<Parser::ConditionClosedAdditiveExpressionContext *> Parser::ConditionShiftExpressionContext::conditionClosedAdditiveExpression() {
-  return getRuleContexts<Parser::ConditionClosedAdditiveExpressionContext>();
+std::vector<RxParser::ConditionClosedAdditiveExpressionContext *> RxParser::ConditionShiftExpressionContext::conditionClosedAdditiveExpression() {
+  return getRuleContexts<RxParser::ConditionClosedAdditiveExpressionContext>();
 }
 
-Parser::ConditionClosedAdditiveExpressionContext* Parser::ConditionShiftExpressionContext::conditionClosedAdditiveExpression(size_t i) {
-  return getRuleContext<Parser::ConditionClosedAdditiveExpressionContext>(i);
+RxParser::ConditionClosedAdditiveExpressionContext* RxParser::ConditionShiftExpressionContext::conditionClosedAdditiveExpression(size_t i) {
+  return getRuleContext<RxParser::ConditionClosedAdditiveExpressionContext>(i);
 }
 
-std::vector<tree::TerminalNode *> Parser::ConditionShiftExpressionContext::SHL() {
-  return getTokens(Parser::SHL);
+std::vector<tree::TerminalNode *> RxParser::ConditionShiftExpressionContext::SHL() {
+  return getTokens(RxParser::SHL);
 }
 
-tree::TerminalNode* Parser::ConditionShiftExpressionContext::SHL(size_t i) {
-  return getToken(Parser::SHL, i);
+tree::TerminalNode* RxParser::ConditionShiftExpressionContext::SHL(size_t i) {
+  return getToken(RxParser::SHL, i);
 }
 
-std::vector<Parser::ShiftRightContext *> Parser::ConditionShiftExpressionContext::shiftRight() {
-  return getRuleContexts<Parser::ShiftRightContext>();
+std::vector<RxParser::ShiftRightContext *> RxParser::ConditionShiftExpressionContext::shiftRight() {
+  return getRuleContexts<RxParser::ShiftRightContext>();
 }
 
-Parser::ShiftRightContext* Parser::ConditionShiftExpressionContext::shiftRight(size_t i) {
-  return getRuleContext<Parser::ShiftRightContext>(i);
-}
-
-
-size_t Parser::ConditionShiftExpressionContext::getRuleIndex() const {
-  return Parser::RuleConditionShiftExpression;
+RxParser::ShiftRightContext* RxParser::ConditionShiftExpressionContext::shiftRight(size_t i) {
+  return getRuleContext<RxParser::ShiftRightContext>(i);
 }
 
 
-std::any Parser::ConditionShiftExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ConditionShiftExpressionContext::getRuleIndex() const {
+  return RxParser::RuleConditionShiftExpression;
+}
+
+
+std::any RxParser::ConditionShiftExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitConditionShiftExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ConditionShiftExpressionContext* Parser::conditionShiftExpression() {
+RxParser::ConditionShiftExpressionContext* RxParser::conditionShiftExpression() {
   ConditionShiftExpressionContext *_localctx = _tracker.createInstance<ConditionShiftExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 152, Parser::RuleConditionShiftExpression);
+  enterRule(_localctx, 152, RxParser::RuleConditionShiftExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -7682,7 +7682,7 @@ Parser::ConditionShiftExpressionContext* Parser::conditionShiftExpression() {
           setState(1038);
           conditionClosedAdditiveExpression();
           setState(1039);
-          match(Parser::SHL);
+          match(RxParser::SHL);
           break;
         }
 
@@ -7717,58 +7717,58 @@ Parser::ConditionShiftExpressionContext* Parser::conditionShiftExpression() {
 
 //----------------- ConditionClosedShiftExpressionContext ------------------------------------------------------------------
 
-Parser::ConditionClosedShiftExpressionContext::ConditionClosedShiftExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ConditionClosedShiftExpressionContext::ConditionClosedShiftExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-std::vector<Parser::ConditionClosedAdditiveExpressionContext *> Parser::ConditionClosedShiftExpressionContext::conditionClosedAdditiveExpression() {
-  return getRuleContexts<Parser::ConditionClosedAdditiveExpressionContext>();
+std::vector<RxParser::ConditionClosedAdditiveExpressionContext *> RxParser::ConditionClosedShiftExpressionContext::conditionClosedAdditiveExpression() {
+  return getRuleContexts<RxParser::ConditionClosedAdditiveExpressionContext>();
 }
 
-Parser::ConditionClosedAdditiveExpressionContext* Parser::ConditionClosedShiftExpressionContext::conditionClosedAdditiveExpression(size_t i) {
-  return getRuleContext<Parser::ConditionClosedAdditiveExpressionContext>(i);
+RxParser::ConditionClosedAdditiveExpressionContext* RxParser::ConditionClosedShiftExpressionContext::conditionClosedAdditiveExpression(size_t i) {
+  return getRuleContext<RxParser::ConditionClosedAdditiveExpressionContext>(i);
 }
 
-std::vector<tree::TerminalNode *> Parser::ConditionClosedShiftExpressionContext::SHL() {
-  return getTokens(Parser::SHL);
+std::vector<tree::TerminalNode *> RxParser::ConditionClosedShiftExpressionContext::SHL() {
+  return getTokens(RxParser::SHL);
 }
 
-tree::TerminalNode* Parser::ConditionClosedShiftExpressionContext::SHL(size_t i) {
-  return getToken(Parser::SHL, i);
+tree::TerminalNode* RxParser::ConditionClosedShiftExpressionContext::SHL(size_t i) {
+  return getToken(RxParser::SHL, i);
 }
 
-std::vector<Parser::ConditionAdditiveExpressionContext *> Parser::ConditionClosedShiftExpressionContext::conditionAdditiveExpression() {
-  return getRuleContexts<Parser::ConditionAdditiveExpressionContext>();
+std::vector<RxParser::ConditionAdditiveExpressionContext *> RxParser::ConditionClosedShiftExpressionContext::conditionAdditiveExpression() {
+  return getRuleContexts<RxParser::ConditionAdditiveExpressionContext>();
 }
 
-Parser::ConditionAdditiveExpressionContext* Parser::ConditionClosedShiftExpressionContext::conditionAdditiveExpression(size_t i) {
-  return getRuleContext<Parser::ConditionAdditiveExpressionContext>(i);
+RxParser::ConditionAdditiveExpressionContext* RxParser::ConditionClosedShiftExpressionContext::conditionAdditiveExpression(size_t i) {
+  return getRuleContext<RxParser::ConditionAdditiveExpressionContext>(i);
 }
 
-std::vector<Parser::ShiftRightContext *> Parser::ConditionClosedShiftExpressionContext::shiftRight() {
-  return getRuleContexts<Parser::ShiftRightContext>();
+std::vector<RxParser::ShiftRightContext *> RxParser::ConditionClosedShiftExpressionContext::shiftRight() {
+  return getRuleContexts<RxParser::ShiftRightContext>();
 }
 
-Parser::ShiftRightContext* Parser::ConditionClosedShiftExpressionContext::shiftRight(size_t i) {
-  return getRuleContext<Parser::ShiftRightContext>(i);
-}
-
-
-size_t Parser::ConditionClosedShiftExpressionContext::getRuleIndex() const {
-  return Parser::RuleConditionClosedShiftExpression;
+RxParser::ShiftRightContext* RxParser::ConditionClosedShiftExpressionContext::shiftRight(size_t i) {
+  return getRuleContext<RxParser::ShiftRightContext>(i);
 }
 
 
-std::any Parser::ConditionClosedShiftExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ConditionClosedShiftExpressionContext::getRuleIndex() const {
+  return RxParser::RuleConditionClosedShiftExpression;
+}
+
+
+std::any RxParser::ConditionClosedShiftExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitConditionClosedShiftExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ConditionClosedShiftExpressionContext* Parser::conditionClosedShiftExpression() {
+RxParser::ConditionClosedShiftExpressionContext* RxParser::conditionClosedShiftExpression() {
   ConditionClosedShiftExpressionContext *_localctx = _tracker.createInstance<ConditionClosedShiftExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 154, Parser::RuleConditionClosedShiftExpression);
+  enterRule(_localctx, 154, RxParser::RuleConditionClosedShiftExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -7792,7 +7792,7 @@ Parser::ConditionClosedShiftExpressionContext* Parser::conditionClosedShiftExpre
           setState(1051);
           conditionClosedAdditiveExpression();
           setState(1052);
-          match(Parser::SHL);
+          match(RxParser::SHL);
           break;
         }
 
@@ -7827,42 +7827,42 @@ Parser::ConditionClosedShiftExpressionContext* Parser::conditionClosedShiftExpre
 
 //----------------- ConditionAdditiveExpressionContext ------------------------------------------------------------------
 
-Parser::ConditionAdditiveExpressionContext::ConditionAdditiveExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ConditionAdditiveExpressionContext::ConditionAdditiveExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-std::vector<Parser::ConditionMultiplicativeExpressionContext *> Parser::ConditionAdditiveExpressionContext::conditionMultiplicativeExpression() {
-  return getRuleContexts<Parser::ConditionMultiplicativeExpressionContext>();
+std::vector<RxParser::ConditionMultiplicativeExpressionContext *> RxParser::ConditionAdditiveExpressionContext::conditionMultiplicativeExpression() {
+  return getRuleContexts<RxParser::ConditionMultiplicativeExpressionContext>();
 }
 
-Parser::ConditionMultiplicativeExpressionContext* Parser::ConditionAdditiveExpressionContext::conditionMultiplicativeExpression(size_t i) {
-  return getRuleContext<Parser::ConditionMultiplicativeExpressionContext>(i);
+RxParser::ConditionMultiplicativeExpressionContext* RxParser::ConditionAdditiveExpressionContext::conditionMultiplicativeExpression(size_t i) {
+  return getRuleContext<RxParser::ConditionMultiplicativeExpressionContext>(i);
 }
 
-std::vector<Parser::AdditiveOperatorContext *> Parser::ConditionAdditiveExpressionContext::additiveOperator() {
-  return getRuleContexts<Parser::AdditiveOperatorContext>();
+std::vector<RxParser::AdditiveOperatorContext *> RxParser::ConditionAdditiveExpressionContext::additiveOperator() {
+  return getRuleContexts<RxParser::AdditiveOperatorContext>();
 }
 
-Parser::AdditiveOperatorContext* Parser::ConditionAdditiveExpressionContext::additiveOperator(size_t i) {
-  return getRuleContext<Parser::AdditiveOperatorContext>(i);
-}
-
-
-size_t Parser::ConditionAdditiveExpressionContext::getRuleIndex() const {
-  return Parser::RuleConditionAdditiveExpression;
+RxParser::AdditiveOperatorContext* RxParser::ConditionAdditiveExpressionContext::additiveOperator(size_t i) {
+  return getRuleContext<RxParser::AdditiveOperatorContext>(i);
 }
 
 
-std::any Parser::ConditionAdditiveExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ConditionAdditiveExpressionContext::getRuleIndex() const {
+  return RxParser::RuleConditionAdditiveExpression;
+}
+
+
+std::any RxParser::ConditionAdditiveExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitConditionAdditiveExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ConditionAdditiveExpressionContext* Parser::conditionAdditiveExpression() {
+RxParser::ConditionAdditiveExpressionContext* RxParser::conditionAdditiveExpression() {
   ConditionAdditiveExpressionContext *_localctx = _tracker.createInstance<ConditionAdditiveExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 156, Parser::RuleConditionAdditiveExpression);
+  enterRule(_localctx, 156, RxParser::RuleConditionAdditiveExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -7903,46 +7903,46 @@ Parser::ConditionAdditiveExpressionContext* Parser::conditionAdditiveExpression(
 
 //----------------- ConditionClosedAdditiveExpressionContext ------------------------------------------------------------------
 
-Parser::ConditionClosedAdditiveExpressionContext::ConditionClosedAdditiveExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ConditionClosedAdditiveExpressionContext::ConditionClosedAdditiveExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::ConditionClosedMultiplicativeExpressionContext* Parser::ConditionClosedAdditiveExpressionContext::conditionClosedMultiplicativeExpression() {
-  return getRuleContext<Parser::ConditionClosedMultiplicativeExpressionContext>(0);
+RxParser::ConditionClosedMultiplicativeExpressionContext* RxParser::ConditionClosedAdditiveExpressionContext::conditionClosedMultiplicativeExpression() {
+  return getRuleContext<RxParser::ConditionClosedMultiplicativeExpressionContext>(0);
 }
 
-std::vector<Parser::ConditionMultiplicativeExpressionContext *> Parser::ConditionClosedAdditiveExpressionContext::conditionMultiplicativeExpression() {
-  return getRuleContexts<Parser::ConditionMultiplicativeExpressionContext>();
+std::vector<RxParser::ConditionMultiplicativeExpressionContext *> RxParser::ConditionClosedAdditiveExpressionContext::conditionMultiplicativeExpression() {
+  return getRuleContexts<RxParser::ConditionMultiplicativeExpressionContext>();
 }
 
-Parser::ConditionMultiplicativeExpressionContext* Parser::ConditionClosedAdditiveExpressionContext::conditionMultiplicativeExpression(size_t i) {
-  return getRuleContext<Parser::ConditionMultiplicativeExpressionContext>(i);
+RxParser::ConditionMultiplicativeExpressionContext* RxParser::ConditionClosedAdditiveExpressionContext::conditionMultiplicativeExpression(size_t i) {
+  return getRuleContext<RxParser::ConditionMultiplicativeExpressionContext>(i);
 }
 
-std::vector<Parser::AdditiveOperatorContext *> Parser::ConditionClosedAdditiveExpressionContext::additiveOperator() {
-  return getRuleContexts<Parser::AdditiveOperatorContext>();
+std::vector<RxParser::AdditiveOperatorContext *> RxParser::ConditionClosedAdditiveExpressionContext::additiveOperator() {
+  return getRuleContexts<RxParser::AdditiveOperatorContext>();
 }
 
-Parser::AdditiveOperatorContext* Parser::ConditionClosedAdditiveExpressionContext::additiveOperator(size_t i) {
-  return getRuleContext<Parser::AdditiveOperatorContext>(i);
-}
-
-
-size_t Parser::ConditionClosedAdditiveExpressionContext::getRuleIndex() const {
-  return Parser::RuleConditionClosedAdditiveExpression;
+RxParser::AdditiveOperatorContext* RxParser::ConditionClosedAdditiveExpressionContext::additiveOperator(size_t i) {
+  return getRuleContext<RxParser::AdditiveOperatorContext>(i);
 }
 
 
-std::any Parser::ConditionClosedAdditiveExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ConditionClosedAdditiveExpressionContext::getRuleIndex() const {
+  return RxParser::RuleConditionClosedAdditiveExpression;
+}
+
+
+std::any RxParser::ConditionClosedAdditiveExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitConditionClosedAdditiveExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ConditionClosedAdditiveExpressionContext* Parser::conditionClosedAdditiveExpression() {
+RxParser::ConditionClosedAdditiveExpressionContext* RxParser::conditionClosedAdditiveExpression() {
   ConditionClosedAdditiveExpressionContext *_localctx = _tracker.createInstance<ConditionClosedAdditiveExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 158, Parser::RuleConditionClosedAdditiveExpression);
+  enterRule(_localctx, 158, RxParser::RuleConditionClosedAdditiveExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -7983,42 +7983,42 @@ Parser::ConditionClosedAdditiveExpressionContext* Parser::conditionClosedAdditiv
 
 //----------------- ConditionMultiplicativeExpressionContext ------------------------------------------------------------------
 
-Parser::ConditionMultiplicativeExpressionContext::ConditionMultiplicativeExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ConditionMultiplicativeExpressionContext::ConditionMultiplicativeExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-std::vector<Parser::ConditionCastExpressionContext *> Parser::ConditionMultiplicativeExpressionContext::conditionCastExpression() {
-  return getRuleContexts<Parser::ConditionCastExpressionContext>();
+std::vector<RxParser::ConditionCastExpressionContext *> RxParser::ConditionMultiplicativeExpressionContext::conditionCastExpression() {
+  return getRuleContexts<RxParser::ConditionCastExpressionContext>();
 }
 
-Parser::ConditionCastExpressionContext* Parser::ConditionMultiplicativeExpressionContext::conditionCastExpression(size_t i) {
-  return getRuleContext<Parser::ConditionCastExpressionContext>(i);
+RxParser::ConditionCastExpressionContext* RxParser::ConditionMultiplicativeExpressionContext::conditionCastExpression(size_t i) {
+  return getRuleContext<RxParser::ConditionCastExpressionContext>(i);
 }
 
-std::vector<Parser::MultiplicativeOperatorContext *> Parser::ConditionMultiplicativeExpressionContext::multiplicativeOperator() {
-  return getRuleContexts<Parser::MultiplicativeOperatorContext>();
+std::vector<RxParser::MultiplicativeOperatorContext *> RxParser::ConditionMultiplicativeExpressionContext::multiplicativeOperator() {
+  return getRuleContexts<RxParser::MultiplicativeOperatorContext>();
 }
 
-Parser::MultiplicativeOperatorContext* Parser::ConditionMultiplicativeExpressionContext::multiplicativeOperator(size_t i) {
-  return getRuleContext<Parser::MultiplicativeOperatorContext>(i);
-}
-
-
-size_t Parser::ConditionMultiplicativeExpressionContext::getRuleIndex() const {
-  return Parser::RuleConditionMultiplicativeExpression;
+RxParser::MultiplicativeOperatorContext* RxParser::ConditionMultiplicativeExpressionContext::multiplicativeOperator(size_t i) {
+  return getRuleContext<RxParser::MultiplicativeOperatorContext>(i);
 }
 
 
-std::any Parser::ConditionMultiplicativeExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ConditionMultiplicativeExpressionContext::getRuleIndex() const {
+  return RxParser::RuleConditionMultiplicativeExpression;
+}
+
+
+std::any RxParser::ConditionMultiplicativeExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitConditionMultiplicativeExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ConditionMultiplicativeExpressionContext* Parser::conditionMultiplicativeExpression() {
+RxParser::ConditionMultiplicativeExpressionContext* RxParser::conditionMultiplicativeExpression() {
   ConditionMultiplicativeExpressionContext *_localctx = _tracker.createInstance<ConditionMultiplicativeExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 160, Parser::RuleConditionMultiplicativeExpression);
+  enterRule(_localctx, 160, RxParser::RuleConditionMultiplicativeExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -8059,46 +8059,46 @@ Parser::ConditionMultiplicativeExpressionContext* Parser::conditionMultiplicativ
 
 //----------------- ConditionClosedMultiplicativeExpressionContext ------------------------------------------------------------------
 
-Parser::ConditionClosedMultiplicativeExpressionContext::ConditionClosedMultiplicativeExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ConditionClosedMultiplicativeExpressionContext::ConditionClosedMultiplicativeExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::ConditionClosedCastExpressionContext* Parser::ConditionClosedMultiplicativeExpressionContext::conditionClosedCastExpression() {
-  return getRuleContext<Parser::ConditionClosedCastExpressionContext>(0);
+RxParser::ConditionClosedCastExpressionContext* RxParser::ConditionClosedMultiplicativeExpressionContext::conditionClosedCastExpression() {
+  return getRuleContext<RxParser::ConditionClosedCastExpressionContext>(0);
 }
 
-std::vector<Parser::ConditionCastExpressionContext *> Parser::ConditionClosedMultiplicativeExpressionContext::conditionCastExpression() {
-  return getRuleContexts<Parser::ConditionCastExpressionContext>();
+std::vector<RxParser::ConditionCastExpressionContext *> RxParser::ConditionClosedMultiplicativeExpressionContext::conditionCastExpression() {
+  return getRuleContexts<RxParser::ConditionCastExpressionContext>();
 }
 
-Parser::ConditionCastExpressionContext* Parser::ConditionClosedMultiplicativeExpressionContext::conditionCastExpression(size_t i) {
-  return getRuleContext<Parser::ConditionCastExpressionContext>(i);
+RxParser::ConditionCastExpressionContext* RxParser::ConditionClosedMultiplicativeExpressionContext::conditionCastExpression(size_t i) {
+  return getRuleContext<RxParser::ConditionCastExpressionContext>(i);
 }
 
-std::vector<Parser::MultiplicativeOperatorContext *> Parser::ConditionClosedMultiplicativeExpressionContext::multiplicativeOperator() {
-  return getRuleContexts<Parser::MultiplicativeOperatorContext>();
+std::vector<RxParser::MultiplicativeOperatorContext *> RxParser::ConditionClosedMultiplicativeExpressionContext::multiplicativeOperator() {
+  return getRuleContexts<RxParser::MultiplicativeOperatorContext>();
 }
 
-Parser::MultiplicativeOperatorContext* Parser::ConditionClosedMultiplicativeExpressionContext::multiplicativeOperator(size_t i) {
-  return getRuleContext<Parser::MultiplicativeOperatorContext>(i);
-}
-
-
-size_t Parser::ConditionClosedMultiplicativeExpressionContext::getRuleIndex() const {
-  return Parser::RuleConditionClosedMultiplicativeExpression;
+RxParser::MultiplicativeOperatorContext* RxParser::ConditionClosedMultiplicativeExpressionContext::multiplicativeOperator(size_t i) {
+  return getRuleContext<RxParser::MultiplicativeOperatorContext>(i);
 }
 
 
-std::any Parser::ConditionClosedMultiplicativeExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ConditionClosedMultiplicativeExpressionContext::getRuleIndex() const {
+  return RxParser::RuleConditionClosedMultiplicativeExpression;
+}
+
+
+std::any RxParser::ConditionClosedMultiplicativeExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitConditionClosedMultiplicativeExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ConditionClosedMultiplicativeExpressionContext* Parser::conditionClosedMultiplicativeExpression() {
+RxParser::ConditionClosedMultiplicativeExpressionContext* RxParser::conditionClosedMultiplicativeExpression() {
   ConditionClosedMultiplicativeExpressionContext *_localctx = _tracker.createInstance<ConditionClosedMultiplicativeExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 162, Parser::RuleConditionClosedMultiplicativeExpression);
+  enterRule(_localctx, 162, RxParser::RuleConditionClosedMultiplicativeExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -8139,46 +8139,46 @@ Parser::ConditionClosedMultiplicativeExpressionContext* Parser::conditionClosedM
 
 //----------------- ConditionCastExpressionContext ------------------------------------------------------------------
 
-Parser::ConditionCastExpressionContext::ConditionCastExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ConditionCastExpressionContext::ConditionCastExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::ConditionUnaryExpressionContext* Parser::ConditionCastExpressionContext::conditionUnaryExpression() {
-  return getRuleContext<Parser::ConditionUnaryExpressionContext>(0);
+RxParser::ConditionUnaryExpressionContext* RxParser::ConditionCastExpressionContext::conditionUnaryExpression() {
+  return getRuleContext<RxParser::ConditionUnaryExpressionContext>(0);
 }
 
-std::vector<tree::TerminalNode *> Parser::ConditionCastExpressionContext::AS() {
-  return getTokens(Parser::AS);
+std::vector<tree::TerminalNode *> RxParser::ConditionCastExpressionContext::AS() {
+  return getTokens(RxParser::AS);
 }
 
-tree::TerminalNode* Parser::ConditionCastExpressionContext::AS(size_t i) {
-  return getToken(Parser::AS, i);
+tree::TerminalNode* RxParser::ConditionCastExpressionContext::AS(size_t i) {
+  return getToken(RxParser::AS, i);
 }
 
-std::vector<Parser::TypeRefContext *> Parser::ConditionCastExpressionContext::typeRef() {
-  return getRuleContexts<Parser::TypeRefContext>();
+std::vector<RxParser::TypeRefContext *> RxParser::ConditionCastExpressionContext::typeRef() {
+  return getRuleContexts<RxParser::TypeRefContext>();
 }
 
-Parser::TypeRefContext* Parser::ConditionCastExpressionContext::typeRef(size_t i) {
-  return getRuleContext<Parser::TypeRefContext>(i);
-}
-
-
-size_t Parser::ConditionCastExpressionContext::getRuleIndex() const {
-  return Parser::RuleConditionCastExpression;
+RxParser::TypeRefContext* RxParser::ConditionCastExpressionContext::typeRef(size_t i) {
+  return getRuleContext<RxParser::TypeRefContext>(i);
 }
 
 
-std::any Parser::ConditionCastExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ConditionCastExpressionContext::getRuleIndex() const {
+  return RxParser::RuleConditionCastExpression;
+}
+
+
+std::any RxParser::ConditionCastExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitConditionCastExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ConditionCastExpressionContext* Parser::conditionCastExpression() {
+RxParser::ConditionCastExpressionContext* RxParser::conditionCastExpression() {
   ConditionCastExpressionContext *_localctx = _tracker.createInstance<ConditionCastExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 164, Parser::RuleConditionCastExpression);
+  enterRule(_localctx, 164, RxParser::RuleConditionCastExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -8198,7 +8198,7 @@ Parser::ConditionCastExpressionContext* Parser::conditionCastExpression() {
     while (alt != 2 && alt != atn::ATN::INVALID_ALT_NUMBER) {
       if (alt == 1) {
         setState(1103);
-        match(Parser::AS);
+        match(RxParser::AS);
         setState(1104);
         typeRef(); 
       }
@@ -8219,42 +8219,42 @@ Parser::ConditionCastExpressionContext* Parser::conditionCastExpression() {
 
 //----------------- ConditionClosedCastExpressionContext ------------------------------------------------------------------
 
-Parser::ConditionClosedCastExpressionContext::ConditionClosedCastExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ConditionClosedCastExpressionContext::ConditionClosedCastExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::ConditionUnaryExpressionContext* Parser::ConditionClosedCastExpressionContext::conditionUnaryExpression() {
-  return getRuleContext<Parser::ConditionUnaryExpressionContext>(0);
+RxParser::ConditionUnaryExpressionContext* RxParser::ConditionClosedCastExpressionContext::conditionUnaryExpression() {
+  return getRuleContext<RxParser::ConditionUnaryExpressionContext>(0);
 }
 
-Parser::ConditionCastExpressionContext* Parser::ConditionClosedCastExpressionContext::conditionCastExpression() {
-  return getRuleContext<Parser::ConditionCastExpressionContext>(0);
+RxParser::ConditionCastExpressionContext* RxParser::ConditionClosedCastExpressionContext::conditionCastExpression() {
+  return getRuleContext<RxParser::ConditionCastExpressionContext>(0);
 }
 
-tree::TerminalNode* Parser::ConditionClosedCastExpressionContext::AS() {
-  return getToken(Parser::AS, 0);
+tree::TerminalNode* RxParser::ConditionClosedCastExpressionContext::AS() {
+  return getToken(RxParser::AS, 0);
 }
 
-Parser::ClosedCastTypeContext* Parser::ConditionClosedCastExpressionContext::closedCastType() {
-  return getRuleContext<Parser::ClosedCastTypeContext>(0);
-}
-
-
-size_t Parser::ConditionClosedCastExpressionContext::getRuleIndex() const {
-  return Parser::RuleConditionClosedCastExpression;
+RxParser::ClosedCastTypeContext* RxParser::ConditionClosedCastExpressionContext::closedCastType() {
+  return getRuleContext<RxParser::ClosedCastTypeContext>(0);
 }
 
 
-std::any Parser::ConditionClosedCastExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ConditionClosedCastExpressionContext::getRuleIndex() const {
+  return RxParser::RuleConditionClosedCastExpression;
+}
+
+
+std::any RxParser::ConditionClosedCastExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitConditionClosedCastExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ConditionClosedCastExpressionContext* Parser::conditionClosedCastExpression() {
+RxParser::ConditionClosedCastExpressionContext* RxParser::conditionClosedCastExpression() {
   ConditionClosedCastExpressionContext *_localctx = _tracker.createInstance<ConditionClosedCastExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 166, Parser::RuleConditionClosedCastExpression);
+  enterRule(_localctx, 166, RxParser::RuleConditionClosedCastExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -8279,7 +8279,7 @@ Parser::ConditionClosedCastExpressionContext* Parser::conditionClosedCastExpress
       setState(1111);
       conditionCastExpression();
       setState(1112);
-      match(Parser::AS);
+      match(RxParser::AS);
       setState(1113);
       closedCastType();
       break;
@@ -8301,38 +8301,38 @@ Parser::ConditionClosedCastExpressionContext* Parser::conditionClosedCastExpress
 
 //----------------- ConditionUnaryExpressionContext ------------------------------------------------------------------
 
-Parser::ConditionUnaryExpressionContext::ConditionUnaryExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ConditionUnaryExpressionContext::ConditionUnaryExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::UnaryOperatorContext* Parser::ConditionUnaryExpressionContext::unaryOperator() {
-  return getRuleContext<Parser::UnaryOperatorContext>(0);
+RxParser::UnaryOperatorContext* RxParser::ConditionUnaryExpressionContext::unaryOperator() {
+  return getRuleContext<RxParser::UnaryOperatorContext>(0);
 }
 
-Parser::ConditionUnaryExpressionContext* Parser::ConditionUnaryExpressionContext::conditionUnaryExpression() {
-  return getRuleContext<Parser::ConditionUnaryExpressionContext>(0);
+RxParser::ConditionUnaryExpressionContext* RxParser::ConditionUnaryExpressionContext::conditionUnaryExpression() {
+  return getRuleContext<RxParser::ConditionUnaryExpressionContext>(0);
 }
 
-Parser::ConditionPostfixExpressionContext* Parser::ConditionUnaryExpressionContext::conditionPostfixExpression() {
-  return getRuleContext<Parser::ConditionPostfixExpressionContext>(0);
-}
-
-
-size_t Parser::ConditionUnaryExpressionContext::getRuleIndex() const {
-  return Parser::RuleConditionUnaryExpression;
+RxParser::ConditionPostfixExpressionContext* RxParser::ConditionUnaryExpressionContext::conditionPostfixExpression() {
+  return getRuleContext<RxParser::ConditionPostfixExpressionContext>(0);
 }
 
 
-std::any Parser::ConditionUnaryExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ConditionUnaryExpressionContext::getRuleIndex() const {
+  return RxParser::RuleConditionUnaryExpression;
+}
+
+
+std::any RxParser::ConditionUnaryExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitConditionUnaryExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ConditionUnaryExpressionContext* Parser::conditionUnaryExpression() {
+RxParser::ConditionUnaryExpressionContext* RxParser::conditionUnaryExpression() {
   ConditionUnaryExpressionContext *_localctx = _tracker.createInstance<ConditionUnaryExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 168, Parser::RuleConditionUnaryExpression);
+  enterRule(_localctx, 168, RxParser::RuleConditionUnaryExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -8345,11 +8345,11 @@ Parser::ConditionUnaryExpressionContext* Parser::conditionUnaryExpression() {
     setState(1121);
     _errHandler->sync(this);
     switch (_input->LA(1)) {
-      case Parser::ANDAND:
-      case Parser::NOT:
-      case Parser::MINUS:
-      case Parser::STAR:
-      case Parser::AMP: {
+      case RxParser::ANDAND:
+      case RxParser::NOT:
+      case RxParser::MINUS:
+      case RxParser::STAR:
+      case RxParser::AMP: {
         enterOuterAlt(_localctx, 1);
         setState(1117);
         unaryOperator();
@@ -8358,26 +8358,26 @@ Parser::ConditionUnaryExpressionContext* Parser::conditionUnaryExpression() {
         break;
       }
 
-      case Parser::BREAK:
-      case Parser::CONTINUE:
-      case Parser::FALSE:
-      case Parser::IF:
-      case Parser::LOOP:
-      case Parser::RETURN:
-      case Parser::SELF_VALUE:
-      case Parser::SELF_TYPE:
-      case Parser::TRUE:
-      case Parser::WHILE:
-      case Parser::DERIVE:
-      case Parser::COPY:
-      case Parser::CLONE:
-      case Parser::PARTIAL_EQ:
-      case Parser::EQ:
-      case Parser::IDENTIFIER:
-      case Parser::INTEGER_LITERAL:
-      case Parser::LBRACE:
-      case Parser::LBRACKET:
-      case Parser::LPAREN: {
+      case RxParser::BREAK:
+      case RxParser::CONTINUE:
+      case RxParser::FALSE:
+      case RxParser::IF:
+      case RxParser::LOOP:
+      case RxParser::RETURN:
+      case RxParser::SELF_VALUE:
+      case RxParser::SELF_TYPE:
+      case RxParser::TRUE:
+      case RxParser::WHILE:
+      case RxParser::DERIVE:
+      case RxParser::COPY:
+      case RxParser::CLONE:
+      case RxParser::PARTIAL_EQ:
+      case RxParser::EQ:
+      case RxParser::IDENTIFIER:
+      case RxParser::INTEGER_LITERAL:
+      case RxParser::LBRACE:
+      case RxParser::LBRACKET:
+      case RxParser::LPAREN: {
         enterOuterAlt(_localctx, 2);
         setState(1120);
         conditionPostfixExpression();
@@ -8400,38 +8400,38 @@ Parser::ConditionUnaryExpressionContext* Parser::conditionUnaryExpression() {
 
 //----------------- ConditionPostfixExpressionContext ------------------------------------------------------------------
 
-Parser::ConditionPostfixExpressionContext::ConditionPostfixExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ConditionPostfixExpressionContext::ConditionPostfixExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::ConditionPrimaryContext* Parser::ConditionPostfixExpressionContext::conditionPrimary() {
-  return getRuleContext<Parser::ConditionPrimaryContext>(0);
+RxParser::ConditionPrimaryContext* RxParser::ConditionPostfixExpressionContext::conditionPrimary() {
+  return getRuleContext<RxParser::ConditionPrimaryContext>(0);
 }
 
-std::vector<Parser::PostfixSuffixContext *> Parser::ConditionPostfixExpressionContext::postfixSuffix() {
-  return getRuleContexts<Parser::PostfixSuffixContext>();
+std::vector<RxParser::PostfixSuffixContext *> RxParser::ConditionPostfixExpressionContext::postfixSuffix() {
+  return getRuleContexts<RxParser::PostfixSuffixContext>();
 }
 
-Parser::PostfixSuffixContext* Parser::ConditionPostfixExpressionContext::postfixSuffix(size_t i) {
-  return getRuleContext<Parser::PostfixSuffixContext>(i);
-}
-
-
-size_t Parser::ConditionPostfixExpressionContext::getRuleIndex() const {
-  return Parser::RuleConditionPostfixExpression;
+RxParser::PostfixSuffixContext* RxParser::ConditionPostfixExpressionContext::postfixSuffix(size_t i) {
+  return getRuleContext<RxParser::PostfixSuffixContext>(i);
 }
 
 
-std::any Parser::ConditionPostfixExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ConditionPostfixExpressionContext::getRuleIndex() const {
+  return RxParser::RuleConditionPostfixExpression;
+}
+
+
+std::any RxParser::ConditionPostfixExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitConditionPostfixExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ConditionPostfixExpressionContext* Parser::conditionPostfixExpression() {
+RxParser::ConditionPostfixExpressionContext* RxParser::conditionPostfixExpression() {
   ConditionPostfixExpressionContext *_localctx = _tracker.createInstance<ConditionPostfixExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 170, Parser::RuleConditionPostfixExpression);
+  enterRule(_localctx, 170, RxParser::RuleConditionPostfixExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -8470,30 +8470,30 @@ Parser::ConditionPostfixExpressionContext* Parser::conditionPostfixExpression() 
 
 //----------------- ConditionBreakExpressionContext ------------------------------------------------------------------
 
-Parser::ConditionBreakExpressionContext::ConditionBreakExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ConditionBreakExpressionContext::ConditionBreakExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::ConditionBreakAssignmentExpressionContext* Parser::ConditionBreakExpressionContext::conditionBreakAssignmentExpression() {
-  return getRuleContext<Parser::ConditionBreakAssignmentExpressionContext>(0);
+RxParser::ConditionBreakAssignmentExpressionContext* RxParser::ConditionBreakExpressionContext::conditionBreakAssignmentExpression() {
+  return getRuleContext<RxParser::ConditionBreakAssignmentExpressionContext>(0);
 }
 
 
-size_t Parser::ConditionBreakExpressionContext::getRuleIndex() const {
-  return Parser::RuleConditionBreakExpression;
+size_t RxParser::ConditionBreakExpressionContext::getRuleIndex() const {
+  return RxParser::RuleConditionBreakExpression;
 }
 
 
-std::any Parser::ConditionBreakExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+std::any RxParser::ConditionBreakExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitConditionBreakExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ConditionBreakExpressionContext* Parser::conditionBreakExpression() {
+RxParser::ConditionBreakExpressionContext* RxParser::conditionBreakExpression() {
   ConditionBreakExpressionContext *_localctx = _tracker.createInstance<ConditionBreakExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 172, Parser::RuleConditionBreakExpression);
+  enterRule(_localctx, 172, RxParser::RuleConditionBreakExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -8519,38 +8519,38 @@ Parser::ConditionBreakExpressionContext* Parser::conditionBreakExpression() {
 
 //----------------- ConditionBreakAssignmentExpressionContext ------------------------------------------------------------------
 
-Parser::ConditionBreakAssignmentExpressionContext::ConditionBreakAssignmentExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ConditionBreakAssignmentExpressionContext::ConditionBreakAssignmentExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::ConditionBreakLogicalOrExpressionContext* Parser::ConditionBreakAssignmentExpressionContext::conditionBreakLogicalOrExpression() {
-  return getRuleContext<Parser::ConditionBreakLogicalOrExpressionContext>(0);
+RxParser::ConditionBreakLogicalOrExpressionContext* RxParser::ConditionBreakAssignmentExpressionContext::conditionBreakLogicalOrExpression() {
+  return getRuleContext<RxParser::ConditionBreakLogicalOrExpressionContext>(0);
 }
 
-Parser::AssignmentOperatorContext* Parser::ConditionBreakAssignmentExpressionContext::assignmentOperator() {
-  return getRuleContext<Parser::AssignmentOperatorContext>(0);
+RxParser::AssignmentOperatorContext* RxParser::ConditionBreakAssignmentExpressionContext::assignmentOperator() {
+  return getRuleContext<RxParser::AssignmentOperatorContext>(0);
 }
 
-Parser::ConditionExpressionContext* Parser::ConditionBreakAssignmentExpressionContext::conditionExpression() {
-  return getRuleContext<Parser::ConditionExpressionContext>(0);
-}
-
-
-size_t Parser::ConditionBreakAssignmentExpressionContext::getRuleIndex() const {
-  return Parser::RuleConditionBreakAssignmentExpression;
+RxParser::ConditionExpressionContext* RxParser::ConditionBreakAssignmentExpressionContext::conditionExpression() {
+  return getRuleContext<RxParser::ConditionExpressionContext>(0);
 }
 
 
-std::any Parser::ConditionBreakAssignmentExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ConditionBreakAssignmentExpressionContext::getRuleIndex() const {
+  return RxParser::RuleConditionBreakAssignmentExpression;
+}
+
+
+std::any RxParser::ConditionBreakAssignmentExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitConditionBreakAssignmentExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ConditionBreakAssignmentExpressionContext* Parser::conditionBreakAssignmentExpression() {
+RxParser::ConditionBreakAssignmentExpressionContext* RxParser::conditionBreakAssignmentExpression() {
   ConditionBreakAssignmentExpressionContext *_localctx = _tracker.createInstance<ConditionBreakAssignmentExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 174, Parser::RuleConditionBreakAssignmentExpression);
+  enterRule(_localctx, 174, RxParser::RuleConditionBreakAssignmentExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -8591,46 +8591,46 @@ Parser::ConditionBreakAssignmentExpressionContext* Parser::conditionBreakAssignm
 
 //----------------- ConditionBreakLogicalOrExpressionContext ------------------------------------------------------------------
 
-Parser::ConditionBreakLogicalOrExpressionContext::ConditionBreakLogicalOrExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ConditionBreakLogicalOrExpressionContext::ConditionBreakLogicalOrExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::ConditionBreakLogicalAndExpressionContext* Parser::ConditionBreakLogicalOrExpressionContext::conditionBreakLogicalAndExpression() {
-  return getRuleContext<Parser::ConditionBreakLogicalAndExpressionContext>(0);
+RxParser::ConditionBreakLogicalAndExpressionContext* RxParser::ConditionBreakLogicalOrExpressionContext::conditionBreakLogicalAndExpression() {
+  return getRuleContext<RxParser::ConditionBreakLogicalAndExpressionContext>(0);
 }
 
-std::vector<tree::TerminalNode *> Parser::ConditionBreakLogicalOrExpressionContext::OROR() {
-  return getTokens(Parser::OROR);
+std::vector<tree::TerminalNode *> RxParser::ConditionBreakLogicalOrExpressionContext::OROR() {
+  return getTokens(RxParser::OROR);
 }
 
-tree::TerminalNode* Parser::ConditionBreakLogicalOrExpressionContext::OROR(size_t i) {
-  return getToken(Parser::OROR, i);
+tree::TerminalNode* RxParser::ConditionBreakLogicalOrExpressionContext::OROR(size_t i) {
+  return getToken(RxParser::OROR, i);
 }
 
-std::vector<Parser::ConditionLogicalAndExpressionContext *> Parser::ConditionBreakLogicalOrExpressionContext::conditionLogicalAndExpression() {
-  return getRuleContexts<Parser::ConditionLogicalAndExpressionContext>();
+std::vector<RxParser::ConditionLogicalAndExpressionContext *> RxParser::ConditionBreakLogicalOrExpressionContext::conditionLogicalAndExpression() {
+  return getRuleContexts<RxParser::ConditionLogicalAndExpressionContext>();
 }
 
-Parser::ConditionLogicalAndExpressionContext* Parser::ConditionBreakLogicalOrExpressionContext::conditionLogicalAndExpression(size_t i) {
-  return getRuleContext<Parser::ConditionLogicalAndExpressionContext>(i);
-}
-
-
-size_t Parser::ConditionBreakLogicalOrExpressionContext::getRuleIndex() const {
-  return Parser::RuleConditionBreakLogicalOrExpression;
+RxParser::ConditionLogicalAndExpressionContext* RxParser::ConditionBreakLogicalOrExpressionContext::conditionLogicalAndExpression(size_t i) {
+  return getRuleContext<RxParser::ConditionLogicalAndExpressionContext>(i);
 }
 
 
-std::any Parser::ConditionBreakLogicalOrExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ConditionBreakLogicalOrExpressionContext::getRuleIndex() const {
+  return RxParser::RuleConditionBreakLogicalOrExpression;
+}
+
+
+std::any RxParser::ConditionBreakLogicalOrExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitConditionBreakLogicalOrExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ConditionBreakLogicalOrExpressionContext* Parser::conditionBreakLogicalOrExpression() {
+RxParser::ConditionBreakLogicalOrExpressionContext* RxParser::conditionBreakLogicalOrExpression() {
   ConditionBreakLogicalOrExpressionContext *_localctx = _tracker.createInstance<ConditionBreakLogicalOrExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 176, Parser::RuleConditionBreakLogicalOrExpression);
+  enterRule(_localctx, 176, RxParser::RuleConditionBreakLogicalOrExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -8650,7 +8650,7 @@ Parser::ConditionBreakLogicalOrExpressionContext* Parser::conditionBreakLogicalO
     while (alt != 2 && alt != atn::ATN::INVALID_ALT_NUMBER) {
       if (alt == 1) {
         setState(1139);
-        match(Parser::OROR);
+        match(RxParser::OROR);
         setState(1140);
         conditionLogicalAndExpression(); 
       }
@@ -8671,46 +8671,46 @@ Parser::ConditionBreakLogicalOrExpressionContext* Parser::conditionBreakLogicalO
 
 //----------------- ConditionBreakLogicalAndExpressionContext ------------------------------------------------------------------
 
-Parser::ConditionBreakLogicalAndExpressionContext::ConditionBreakLogicalAndExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ConditionBreakLogicalAndExpressionContext::ConditionBreakLogicalAndExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::ConditionBreakComparisonExpressionContext* Parser::ConditionBreakLogicalAndExpressionContext::conditionBreakComparisonExpression() {
-  return getRuleContext<Parser::ConditionBreakComparisonExpressionContext>(0);
+RxParser::ConditionBreakComparisonExpressionContext* RxParser::ConditionBreakLogicalAndExpressionContext::conditionBreakComparisonExpression() {
+  return getRuleContext<RxParser::ConditionBreakComparisonExpressionContext>(0);
 }
 
-std::vector<tree::TerminalNode *> Parser::ConditionBreakLogicalAndExpressionContext::ANDAND() {
-  return getTokens(Parser::ANDAND);
+std::vector<tree::TerminalNode *> RxParser::ConditionBreakLogicalAndExpressionContext::ANDAND() {
+  return getTokens(RxParser::ANDAND);
 }
 
-tree::TerminalNode* Parser::ConditionBreakLogicalAndExpressionContext::ANDAND(size_t i) {
-  return getToken(Parser::ANDAND, i);
+tree::TerminalNode* RxParser::ConditionBreakLogicalAndExpressionContext::ANDAND(size_t i) {
+  return getToken(RxParser::ANDAND, i);
 }
 
-std::vector<Parser::ConditionComparisonExpressionContext *> Parser::ConditionBreakLogicalAndExpressionContext::conditionComparisonExpression() {
-  return getRuleContexts<Parser::ConditionComparisonExpressionContext>();
+std::vector<RxParser::ConditionComparisonExpressionContext *> RxParser::ConditionBreakLogicalAndExpressionContext::conditionComparisonExpression() {
+  return getRuleContexts<RxParser::ConditionComparisonExpressionContext>();
 }
 
-Parser::ConditionComparisonExpressionContext* Parser::ConditionBreakLogicalAndExpressionContext::conditionComparisonExpression(size_t i) {
-  return getRuleContext<Parser::ConditionComparisonExpressionContext>(i);
-}
-
-
-size_t Parser::ConditionBreakLogicalAndExpressionContext::getRuleIndex() const {
-  return Parser::RuleConditionBreakLogicalAndExpression;
+RxParser::ConditionComparisonExpressionContext* RxParser::ConditionBreakLogicalAndExpressionContext::conditionComparisonExpression(size_t i) {
+  return getRuleContext<RxParser::ConditionComparisonExpressionContext>(i);
 }
 
 
-std::any Parser::ConditionBreakLogicalAndExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ConditionBreakLogicalAndExpressionContext::getRuleIndex() const {
+  return RxParser::RuleConditionBreakLogicalAndExpression;
+}
+
+
+std::any RxParser::ConditionBreakLogicalAndExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitConditionBreakLogicalAndExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ConditionBreakLogicalAndExpressionContext* Parser::conditionBreakLogicalAndExpression() {
+RxParser::ConditionBreakLogicalAndExpressionContext* RxParser::conditionBreakLogicalAndExpression() {
   ConditionBreakLogicalAndExpressionContext *_localctx = _tracker.createInstance<ConditionBreakLogicalAndExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 178, Parser::RuleConditionBreakLogicalAndExpression);
+  enterRule(_localctx, 178, RxParser::RuleConditionBreakLogicalAndExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -8730,7 +8730,7 @@ Parser::ConditionBreakLogicalAndExpressionContext* Parser::conditionBreakLogical
     while (alt != 2 && alt != atn::ATN::INVALID_ALT_NUMBER) {
       if (alt == 1) {
         setState(1147);
-        match(Parser::ANDAND);
+        match(RxParser::ANDAND);
         setState(1148);
         conditionComparisonExpression(); 
       }
@@ -8751,46 +8751,46 @@ Parser::ConditionBreakLogicalAndExpressionContext* Parser::conditionBreakLogical
 
 //----------------- ConditionBreakComparisonExpressionContext ------------------------------------------------------------------
 
-Parser::ConditionBreakComparisonExpressionContext::ConditionBreakComparisonExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ConditionBreakComparisonExpressionContext::ConditionBreakComparisonExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::ConditionBreakBitOrExpressionContext* Parser::ConditionBreakComparisonExpressionContext::conditionBreakBitOrExpression() {
-  return getRuleContext<Parser::ConditionBreakBitOrExpressionContext>(0);
+RxParser::ConditionBreakBitOrExpressionContext* RxParser::ConditionBreakComparisonExpressionContext::conditionBreakBitOrExpression() {
+  return getRuleContext<RxParser::ConditionBreakBitOrExpressionContext>(0);
 }
 
-Parser::ComparisonExceptLtContext* Parser::ConditionBreakComparisonExpressionContext::comparisonExceptLt() {
-  return getRuleContext<Parser::ComparisonExceptLtContext>(0);
+RxParser::ComparisonExceptLtContext* RxParser::ConditionBreakComparisonExpressionContext::comparisonExceptLt() {
+  return getRuleContext<RxParser::ComparisonExceptLtContext>(0);
 }
 
-Parser::ConditionBitOrExpressionContext* Parser::ConditionBreakComparisonExpressionContext::conditionBitOrExpression() {
-  return getRuleContext<Parser::ConditionBitOrExpressionContext>(0);
+RxParser::ConditionBitOrExpressionContext* RxParser::ConditionBreakComparisonExpressionContext::conditionBitOrExpression() {
+  return getRuleContext<RxParser::ConditionBitOrExpressionContext>(0);
 }
 
-Parser::ConditionBreakClosedBitOrExpressionContext* Parser::ConditionBreakComparisonExpressionContext::conditionBreakClosedBitOrExpression() {
-  return getRuleContext<Parser::ConditionBreakClosedBitOrExpressionContext>(0);
+RxParser::ConditionBreakClosedBitOrExpressionContext* RxParser::ConditionBreakComparisonExpressionContext::conditionBreakClosedBitOrExpression() {
+  return getRuleContext<RxParser::ConditionBreakClosedBitOrExpressionContext>(0);
 }
 
-tree::TerminalNode* Parser::ConditionBreakComparisonExpressionContext::LT() {
-  return getToken(Parser::LT, 0);
-}
-
-
-size_t Parser::ConditionBreakComparisonExpressionContext::getRuleIndex() const {
-  return Parser::RuleConditionBreakComparisonExpression;
+tree::TerminalNode* RxParser::ConditionBreakComparisonExpressionContext::LT() {
+  return getToken(RxParser::LT, 0);
 }
 
 
-std::any Parser::ConditionBreakComparisonExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ConditionBreakComparisonExpressionContext::getRuleIndex() const {
+  return RxParser::RuleConditionBreakComparisonExpression;
+}
+
+
+std::any RxParser::ConditionBreakComparisonExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitConditionBreakComparisonExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ConditionBreakComparisonExpressionContext* Parser::conditionBreakComparisonExpression() {
+RxParser::ConditionBreakComparisonExpressionContext* RxParser::conditionBreakComparisonExpression() {
   ConditionBreakComparisonExpressionContext *_localctx = _tracker.createInstance<ConditionBreakComparisonExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 180, Parser::RuleConditionBreakComparisonExpression);
+  enterRule(_localctx, 180, RxParser::RuleConditionBreakComparisonExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -8830,7 +8830,7 @@ Parser::ConditionBreakComparisonExpressionContext* Parser::conditionBreakCompari
       setState(1160);
       conditionBreakClosedBitOrExpression();
       setState(1161);
-      match(Parser::LT);
+      match(RxParser::LT);
       setState(1162);
       conditionBitOrExpression();
       break;
@@ -8852,46 +8852,46 @@ Parser::ConditionBreakComparisonExpressionContext* Parser::conditionBreakCompari
 
 //----------------- ConditionBreakBitOrExpressionContext ------------------------------------------------------------------
 
-Parser::ConditionBreakBitOrExpressionContext::ConditionBreakBitOrExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ConditionBreakBitOrExpressionContext::ConditionBreakBitOrExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::ConditionBreakBitXorExpressionContext* Parser::ConditionBreakBitOrExpressionContext::conditionBreakBitXorExpression() {
-  return getRuleContext<Parser::ConditionBreakBitXorExpressionContext>(0);
+RxParser::ConditionBreakBitXorExpressionContext* RxParser::ConditionBreakBitOrExpressionContext::conditionBreakBitXorExpression() {
+  return getRuleContext<RxParser::ConditionBreakBitXorExpressionContext>(0);
 }
 
-std::vector<tree::TerminalNode *> Parser::ConditionBreakBitOrExpressionContext::PIPE() {
-  return getTokens(Parser::PIPE);
+std::vector<tree::TerminalNode *> RxParser::ConditionBreakBitOrExpressionContext::PIPE() {
+  return getTokens(RxParser::PIPE);
 }
 
-tree::TerminalNode* Parser::ConditionBreakBitOrExpressionContext::PIPE(size_t i) {
-  return getToken(Parser::PIPE, i);
+tree::TerminalNode* RxParser::ConditionBreakBitOrExpressionContext::PIPE(size_t i) {
+  return getToken(RxParser::PIPE, i);
 }
 
-std::vector<Parser::ConditionBitXorExpressionContext *> Parser::ConditionBreakBitOrExpressionContext::conditionBitXorExpression() {
-  return getRuleContexts<Parser::ConditionBitXorExpressionContext>();
+std::vector<RxParser::ConditionBitXorExpressionContext *> RxParser::ConditionBreakBitOrExpressionContext::conditionBitXorExpression() {
+  return getRuleContexts<RxParser::ConditionBitXorExpressionContext>();
 }
 
-Parser::ConditionBitXorExpressionContext* Parser::ConditionBreakBitOrExpressionContext::conditionBitXorExpression(size_t i) {
-  return getRuleContext<Parser::ConditionBitXorExpressionContext>(i);
-}
-
-
-size_t Parser::ConditionBreakBitOrExpressionContext::getRuleIndex() const {
-  return Parser::RuleConditionBreakBitOrExpression;
+RxParser::ConditionBitXorExpressionContext* RxParser::ConditionBreakBitOrExpressionContext::conditionBitXorExpression(size_t i) {
+  return getRuleContext<RxParser::ConditionBitXorExpressionContext>(i);
 }
 
 
-std::any Parser::ConditionBreakBitOrExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ConditionBreakBitOrExpressionContext::getRuleIndex() const {
+  return RxParser::RuleConditionBreakBitOrExpression;
+}
+
+
+std::any RxParser::ConditionBreakBitOrExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitConditionBreakBitOrExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ConditionBreakBitOrExpressionContext* Parser::conditionBreakBitOrExpression() {
+RxParser::ConditionBreakBitOrExpressionContext* RxParser::conditionBreakBitOrExpression() {
   ConditionBreakBitOrExpressionContext *_localctx = _tracker.createInstance<ConditionBreakBitOrExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 182, Parser::RuleConditionBreakBitOrExpression);
+  enterRule(_localctx, 182, RxParser::RuleConditionBreakBitOrExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -8911,7 +8911,7 @@ Parser::ConditionBreakBitOrExpressionContext* Parser::conditionBreakBitOrExpress
     while (alt != 2 && alt != atn::ATN::INVALID_ALT_NUMBER) {
       if (alt == 1) {
         setState(1167);
-        match(Parser::PIPE);
+        match(RxParser::PIPE);
         setState(1168);
         conditionBitXorExpression(); 
       }
@@ -8932,54 +8932,54 @@ Parser::ConditionBreakBitOrExpressionContext* Parser::conditionBreakBitOrExpress
 
 //----------------- ConditionBreakClosedBitOrExpressionContext ------------------------------------------------------------------
 
-Parser::ConditionBreakClosedBitOrExpressionContext::ConditionBreakClosedBitOrExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ConditionBreakClosedBitOrExpressionContext::ConditionBreakClosedBitOrExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::ConditionBreakClosedBitXorExpressionContext* Parser::ConditionBreakClosedBitOrExpressionContext::conditionBreakClosedBitXorExpression() {
-  return getRuleContext<Parser::ConditionBreakClosedBitXorExpressionContext>(0);
+RxParser::ConditionBreakClosedBitXorExpressionContext* RxParser::ConditionBreakClosedBitOrExpressionContext::conditionBreakClosedBitXorExpression() {
+  return getRuleContext<RxParser::ConditionBreakClosedBitXorExpressionContext>(0);
 }
 
-Parser::ConditionBreakBitXorExpressionContext* Parser::ConditionBreakClosedBitOrExpressionContext::conditionBreakBitXorExpression() {
-  return getRuleContext<Parser::ConditionBreakBitXorExpressionContext>(0);
+RxParser::ConditionBreakBitXorExpressionContext* RxParser::ConditionBreakClosedBitOrExpressionContext::conditionBreakBitXorExpression() {
+  return getRuleContext<RxParser::ConditionBreakBitXorExpressionContext>(0);
 }
 
-std::vector<tree::TerminalNode *> Parser::ConditionBreakClosedBitOrExpressionContext::PIPE() {
-  return getTokens(Parser::PIPE);
+std::vector<tree::TerminalNode *> RxParser::ConditionBreakClosedBitOrExpressionContext::PIPE() {
+  return getTokens(RxParser::PIPE);
 }
 
-tree::TerminalNode* Parser::ConditionBreakClosedBitOrExpressionContext::PIPE(size_t i) {
-  return getToken(Parser::PIPE, i);
+tree::TerminalNode* RxParser::ConditionBreakClosedBitOrExpressionContext::PIPE(size_t i) {
+  return getToken(RxParser::PIPE, i);
 }
 
-Parser::ConditionClosedBitXorExpressionContext* Parser::ConditionBreakClosedBitOrExpressionContext::conditionClosedBitXorExpression() {
-  return getRuleContext<Parser::ConditionClosedBitXorExpressionContext>(0);
+RxParser::ConditionClosedBitXorExpressionContext* RxParser::ConditionBreakClosedBitOrExpressionContext::conditionClosedBitXorExpression() {
+  return getRuleContext<RxParser::ConditionClosedBitXorExpressionContext>(0);
 }
 
-std::vector<Parser::ConditionBitXorExpressionContext *> Parser::ConditionBreakClosedBitOrExpressionContext::conditionBitXorExpression() {
-  return getRuleContexts<Parser::ConditionBitXorExpressionContext>();
+std::vector<RxParser::ConditionBitXorExpressionContext *> RxParser::ConditionBreakClosedBitOrExpressionContext::conditionBitXorExpression() {
+  return getRuleContexts<RxParser::ConditionBitXorExpressionContext>();
 }
 
-Parser::ConditionBitXorExpressionContext* Parser::ConditionBreakClosedBitOrExpressionContext::conditionBitXorExpression(size_t i) {
-  return getRuleContext<Parser::ConditionBitXorExpressionContext>(i);
-}
-
-
-size_t Parser::ConditionBreakClosedBitOrExpressionContext::getRuleIndex() const {
-  return Parser::RuleConditionBreakClosedBitOrExpression;
+RxParser::ConditionBitXorExpressionContext* RxParser::ConditionBreakClosedBitOrExpressionContext::conditionBitXorExpression(size_t i) {
+  return getRuleContext<RxParser::ConditionBitXorExpressionContext>(i);
 }
 
 
-std::any Parser::ConditionBreakClosedBitOrExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ConditionBreakClosedBitOrExpressionContext::getRuleIndex() const {
+  return RxParser::RuleConditionBreakClosedBitOrExpression;
+}
+
+
+std::any RxParser::ConditionBreakClosedBitOrExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitConditionBreakClosedBitOrExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ConditionBreakClosedBitOrExpressionContext* Parser::conditionBreakClosedBitOrExpression() {
+RxParser::ConditionBreakClosedBitOrExpressionContext* RxParser::conditionBreakClosedBitOrExpression() {
   ConditionBreakClosedBitOrExpressionContext *_localctx = _tracker.createInstance<ConditionBreakClosedBitOrExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 184, Parser::RuleConditionBreakClosedBitOrExpression);
+  enterRule(_localctx, 184, RxParser::RuleConditionBreakClosedBitOrExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -9005,7 +9005,7 @@ Parser::ConditionBreakClosedBitOrExpressionContext* Parser::conditionBreakClosed
       setState(1175);
       conditionBreakBitXorExpression();
       setState(1176);
-      match(Parser::PIPE);
+      match(RxParser::PIPE);
       setState(1182);
       _errHandler->sync(this);
       alt = getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 134, _ctx);
@@ -9014,7 +9014,7 @@ Parser::ConditionBreakClosedBitOrExpressionContext* Parser::conditionBreakClosed
           setState(1177);
           conditionBitXorExpression();
           setState(1178);
-          match(Parser::PIPE); 
+          match(RxParser::PIPE); 
         }
         setState(1184);
         _errHandler->sync(this);
@@ -9041,46 +9041,46 @@ Parser::ConditionBreakClosedBitOrExpressionContext* Parser::conditionBreakClosed
 
 //----------------- ConditionBreakBitXorExpressionContext ------------------------------------------------------------------
 
-Parser::ConditionBreakBitXorExpressionContext::ConditionBreakBitXorExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ConditionBreakBitXorExpressionContext::ConditionBreakBitXorExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::ConditionBreakBitAndExpressionContext* Parser::ConditionBreakBitXorExpressionContext::conditionBreakBitAndExpression() {
-  return getRuleContext<Parser::ConditionBreakBitAndExpressionContext>(0);
+RxParser::ConditionBreakBitAndExpressionContext* RxParser::ConditionBreakBitXorExpressionContext::conditionBreakBitAndExpression() {
+  return getRuleContext<RxParser::ConditionBreakBitAndExpressionContext>(0);
 }
 
-std::vector<tree::TerminalNode *> Parser::ConditionBreakBitXorExpressionContext::CARET() {
-  return getTokens(Parser::CARET);
+std::vector<tree::TerminalNode *> RxParser::ConditionBreakBitXorExpressionContext::CARET() {
+  return getTokens(RxParser::CARET);
 }
 
-tree::TerminalNode* Parser::ConditionBreakBitXorExpressionContext::CARET(size_t i) {
-  return getToken(Parser::CARET, i);
+tree::TerminalNode* RxParser::ConditionBreakBitXorExpressionContext::CARET(size_t i) {
+  return getToken(RxParser::CARET, i);
 }
 
-std::vector<Parser::ConditionBitAndExpressionContext *> Parser::ConditionBreakBitXorExpressionContext::conditionBitAndExpression() {
-  return getRuleContexts<Parser::ConditionBitAndExpressionContext>();
+std::vector<RxParser::ConditionBitAndExpressionContext *> RxParser::ConditionBreakBitXorExpressionContext::conditionBitAndExpression() {
+  return getRuleContexts<RxParser::ConditionBitAndExpressionContext>();
 }
 
-Parser::ConditionBitAndExpressionContext* Parser::ConditionBreakBitXorExpressionContext::conditionBitAndExpression(size_t i) {
-  return getRuleContext<Parser::ConditionBitAndExpressionContext>(i);
-}
-
-
-size_t Parser::ConditionBreakBitXorExpressionContext::getRuleIndex() const {
-  return Parser::RuleConditionBreakBitXorExpression;
+RxParser::ConditionBitAndExpressionContext* RxParser::ConditionBreakBitXorExpressionContext::conditionBitAndExpression(size_t i) {
+  return getRuleContext<RxParser::ConditionBitAndExpressionContext>(i);
 }
 
 
-std::any Parser::ConditionBreakBitXorExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ConditionBreakBitXorExpressionContext::getRuleIndex() const {
+  return RxParser::RuleConditionBreakBitXorExpression;
+}
+
+
+std::any RxParser::ConditionBreakBitXorExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitConditionBreakBitXorExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ConditionBreakBitXorExpressionContext* Parser::conditionBreakBitXorExpression() {
+RxParser::ConditionBreakBitXorExpressionContext* RxParser::conditionBreakBitXorExpression() {
   ConditionBreakBitXorExpressionContext *_localctx = _tracker.createInstance<ConditionBreakBitXorExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 186, Parser::RuleConditionBreakBitXorExpression);
+  enterRule(_localctx, 186, RxParser::RuleConditionBreakBitXorExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -9100,7 +9100,7 @@ Parser::ConditionBreakBitXorExpressionContext* Parser::conditionBreakBitXorExpre
     while (alt != 2 && alt != atn::ATN::INVALID_ALT_NUMBER) {
       if (alt == 1) {
         setState(1190);
-        match(Parser::CARET);
+        match(RxParser::CARET);
         setState(1191);
         conditionBitAndExpression(); 
       }
@@ -9121,54 +9121,54 @@ Parser::ConditionBreakBitXorExpressionContext* Parser::conditionBreakBitXorExpre
 
 //----------------- ConditionBreakClosedBitXorExpressionContext ------------------------------------------------------------------
 
-Parser::ConditionBreakClosedBitXorExpressionContext::ConditionBreakClosedBitXorExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ConditionBreakClosedBitXorExpressionContext::ConditionBreakClosedBitXorExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::ConditionBreakClosedBitAndExpressionContext* Parser::ConditionBreakClosedBitXorExpressionContext::conditionBreakClosedBitAndExpression() {
-  return getRuleContext<Parser::ConditionBreakClosedBitAndExpressionContext>(0);
+RxParser::ConditionBreakClosedBitAndExpressionContext* RxParser::ConditionBreakClosedBitXorExpressionContext::conditionBreakClosedBitAndExpression() {
+  return getRuleContext<RxParser::ConditionBreakClosedBitAndExpressionContext>(0);
 }
 
-Parser::ConditionBreakBitAndExpressionContext* Parser::ConditionBreakClosedBitXorExpressionContext::conditionBreakBitAndExpression() {
-  return getRuleContext<Parser::ConditionBreakBitAndExpressionContext>(0);
+RxParser::ConditionBreakBitAndExpressionContext* RxParser::ConditionBreakClosedBitXorExpressionContext::conditionBreakBitAndExpression() {
+  return getRuleContext<RxParser::ConditionBreakBitAndExpressionContext>(0);
 }
 
-std::vector<tree::TerminalNode *> Parser::ConditionBreakClosedBitXorExpressionContext::CARET() {
-  return getTokens(Parser::CARET);
+std::vector<tree::TerminalNode *> RxParser::ConditionBreakClosedBitXorExpressionContext::CARET() {
+  return getTokens(RxParser::CARET);
 }
 
-tree::TerminalNode* Parser::ConditionBreakClosedBitXorExpressionContext::CARET(size_t i) {
-  return getToken(Parser::CARET, i);
+tree::TerminalNode* RxParser::ConditionBreakClosedBitXorExpressionContext::CARET(size_t i) {
+  return getToken(RxParser::CARET, i);
 }
 
-Parser::ConditionClosedBitAndExpressionContext* Parser::ConditionBreakClosedBitXorExpressionContext::conditionClosedBitAndExpression() {
-  return getRuleContext<Parser::ConditionClosedBitAndExpressionContext>(0);
+RxParser::ConditionClosedBitAndExpressionContext* RxParser::ConditionBreakClosedBitXorExpressionContext::conditionClosedBitAndExpression() {
+  return getRuleContext<RxParser::ConditionClosedBitAndExpressionContext>(0);
 }
 
-std::vector<Parser::ConditionBitAndExpressionContext *> Parser::ConditionBreakClosedBitXorExpressionContext::conditionBitAndExpression() {
-  return getRuleContexts<Parser::ConditionBitAndExpressionContext>();
+std::vector<RxParser::ConditionBitAndExpressionContext *> RxParser::ConditionBreakClosedBitXorExpressionContext::conditionBitAndExpression() {
+  return getRuleContexts<RxParser::ConditionBitAndExpressionContext>();
 }
 
-Parser::ConditionBitAndExpressionContext* Parser::ConditionBreakClosedBitXorExpressionContext::conditionBitAndExpression(size_t i) {
-  return getRuleContext<Parser::ConditionBitAndExpressionContext>(i);
-}
-
-
-size_t Parser::ConditionBreakClosedBitXorExpressionContext::getRuleIndex() const {
-  return Parser::RuleConditionBreakClosedBitXorExpression;
+RxParser::ConditionBitAndExpressionContext* RxParser::ConditionBreakClosedBitXorExpressionContext::conditionBitAndExpression(size_t i) {
+  return getRuleContext<RxParser::ConditionBitAndExpressionContext>(i);
 }
 
 
-std::any Parser::ConditionBreakClosedBitXorExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ConditionBreakClosedBitXorExpressionContext::getRuleIndex() const {
+  return RxParser::RuleConditionBreakClosedBitXorExpression;
+}
+
+
+std::any RxParser::ConditionBreakClosedBitXorExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitConditionBreakClosedBitXorExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ConditionBreakClosedBitXorExpressionContext* Parser::conditionBreakClosedBitXorExpression() {
+RxParser::ConditionBreakClosedBitXorExpressionContext* RxParser::conditionBreakClosedBitXorExpression() {
   ConditionBreakClosedBitXorExpressionContext *_localctx = _tracker.createInstance<ConditionBreakClosedBitXorExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 188, Parser::RuleConditionBreakClosedBitXorExpression);
+  enterRule(_localctx, 188, RxParser::RuleConditionBreakClosedBitXorExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -9194,7 +9194,7 @@ Parser::ConditionBreakClosedBitXorExpressionContext* Parser::conditionBreakClose
       setState(1198);
       conditionBreakBitAndExpression();
       setState(1199);
-      match(Parser::CARET);
+      match(RxParser::CARET);
       setState(1205);
       _errHandler->sync(this);
       alt = getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 137, _ctx);
@@ -9203,7 +9203,7 @@ Parser::ConditionBreakClosedBitXorExpressionContext* Parser::conditionBreakClose
           setState(1200);
           conditionBitAndExpression();
           setState(1201);
-          match(Parser::CARET); 
+          match(RxParser::CARET); 
         }
         setState(1207);
         _errHandler->sync(this);
@@ -9230,46 +9230,46 @@ Parser::ConditionBreakClosedBitXorExpressionContext* Parser::conditionBreakClose
 
 //----------------- ConditionBreakBitAndExpressionContext ------------------------------------------------------------------
 
-Parser::ConditionBreakBitAndExpressionContext::ConditionBreakBitAndExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ConditionBreakBitAndExpressionContext::ConditionBreakBitAndExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::ConditionBreakShiftExpressionContext* Parser::ConditionBreakBitAndExpressionContext::conditionBreakShiftExpression() {
-  return getRuleContext<Parser::ConditionBreakShiftExpressionContext>(0);
+RxParser::ConditionBreakShiftExpressionContext* RxParser::ConditionBreakBitAndExpressionContext::conditionBreakShiftExpression() {
+  return getRuleContext<RxParser::ConditionBreakShiftExpressionContext>(0);
 }
 
-std::vector<tree::TerminalNode *> Parser::ConditionBreakBitAndExpressionContext::AMP() {
-  return getTokens(Parser::AMP);
+std::vector<tree::TerminalNode *> RxParser::ConditionBreakBitAndExpressionContext::AMP() {
+  return getTokens(RxParser::AMP);
 }
 
-tree::TerminalNode* Parser::ConditionBreakBitAndExpressionContext::AMP(size_t i) {
-  return getToken(Parser::AMP, i);
+tree::TerminalNode* RxParser::ConditionBreakBitAndExpressionContext::AMP(size_t i) {
+  return getToken(RxParser::AMP, i);
 }
 
-std::vector<Parser::ConditionShiftExpressionContext *> Parser::ConditionBreakBitAndExpressionContext::conditionShiftExpression() {
-  return getRuleContexts<Parser::ConditionShiftExpressionContext>();
+std::vector<RxParser::ConditionShiftExpressionContext *> RxParser::ConditionBreakBitAndExpressionContext::conditionShiftExpression() {
+  return getRuleContexts<RxParser::ConditionShiftExpressionContext>();
 }
 
-Parser::ConditionShiftExpressionContext* Parser::ConditionBreakBitAndExpressionContext::conditionShiftExpression(size_t i) {
-  return getRuleContext<Parser::ConditionShiftExpressionContext>(i);
-}
-
-
-size_t Parser::ConditionBreakBitAndExpressionContext::getRuleIndex() const {
-  return Parser::RuleConditionBreakBitAndExpression;
+RxParser::ConditionShiftExpressionContext* RxParser::ConditionBreakBitAndExpressionContext::conditionShiftExpression(size_t i) {
+  return getRuleContext<RxParser::ConditionShiftExpressionContext>(i);
 }
 
 
-std::any Parser::ConditionBreakBitAndExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ConditionBreakBitAndExpressionContext::getRuleIndex() const {
+  return RxParser::RuleConditionBreakBitAndExpression;
+}
+
+
+std::any RxParser::ConditionBreakBitAndExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitConditionBreakBitAndExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ConditionBreakBitAndExpressionContext* Parser::conditionBreakBitAndExpression() {
+RxParser::ConditionBreakBitAndExpressionContext* RxParser::conditionBreakBitAndExpression() {
   ConditionBreakBitAndExpressionContext *_localctx = _tracker.createInstance<ConditionBreakBitAndExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 190, Parser::RuleConditionBreakBitAndExpression);
+  enterRule(_localctx, 190, RxParser::RuleConditionBreakBitAndExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -9289,7 +9289,7 @@ Parser::ConditionBreakBitAndExpressionContext* Parser::conditionBreakBitAndExpre
     while (alt != 2 && alt != atn::ATN::INVALID_ALT_NUMBER) {
       if (alt == 1) {
         setState(1213);
-        match(Parser::AMP);
+        match(RxParser::AMP);
         setState(1214);
         conditionShiftExpression(); 
       }
@@ -9310,54 +9310,54 @@ Parser::ConditionBreakBitAndExpressionContext* Parser::conditionBreakBitAndExpre
 
 //----------------- ConditionBreakClosedBitAndExpressionContext ------------------------------------------------------------------
 
-Parser::ConditionBreakClosedBitAndExpressionContext::ConditionBreakClosedBitAndExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ConditionBreakClosedBitAndExpressionContext::ConditionBreakClosedBitAndExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::ConditionBreakClosedShiftExpressionContext* Parser::ConditionBreakClosedBitAndExpressionContext::conditionBreakClosedShiftExpression() {
-  return getRuleContext<Parser::ConditionBreakClosedShiftExpressionContext>(0);
+RxParser::ConditionBreakClosedShiftExpressionContext* RxParser::ConditionBreakClosedBitAndExpressionContext::conditionBreakClosedShiftExpression() {
+  return getRuleContext<RxParser::ConditionBreakClosedShiftExpressionContext>(0);
 }
 
-Parser::ConditionBreakShiftExpressionContext* Parser::ConditionBreakClosedBitAndExpressionContext::conditionBreakShiftExpression() {
-  return getRuleContext<Parser::ConditionBreakShiftExpressionContext>(0);
+RxParser::ConditionBreakShiftExpressionContext* RxParser::ConditionBreakClosedBitAndExpressionContext::conditionBreakShiftExpression() {
+  return getRuleContext<RxParser::ConditionBreakShiftExpressionContext>(0);
 }
 
-std::vector<tree::TerminalNode *> Parser::ConditionBreakClosedBitAndExpressionContext::AMP() {
-  return getTokens(Parser::AMP);
+std::vector<tree::TerminalNode *> RxParser::ConditionBreakClosedBitAndExpressionContext::AMP() {
+  return getTokens(RxParser::AMP);
 }
 
-tree::TerminalNode* Parser::ConditionBreakClosedBitAndExpressionContext::AMP(size_t i) {
-  return getToken(Parser::AMP, i);
+tree::TerminalNode* RxParser::ConditionBreakClosedBitAndExpressionContext::AMP(size_t i) {
+  return getToken(RxParser::AMP, i);
 }
 
-Parser::ConditionClosedShiftExpressionContext* Parser::ConditionBreakClosedBitAndExpressionContext::conditionClosedShiftExpression() {
-  return getRuleContext<Parser::ConditionClosedShiftExpressionContext>(0);
+RxParser::ConditionClosedShiftExpressionContext* RxParser::ConditionBreakClosedBitAndExpressionContext::conditionClosedShiftExpression() {
+  return getRuleContext<RxParser::ConditionClosedShiftExpressionContext>(0);
 }
 
-std::vector<Parser::ConditionShiftExpressionContext *> Parser::ConditionBreakClosedBitAndExpressionContext::conditionShiftExpression() {
-  return getRuleContexts<Parser::ConditionShiftExpressionContext>();
+std::vector<RxParser::ConditionShiftExpressionContext *> RxParser::ConditionBreakClosedBitAndExpressionContext::conditionShiftExpression() {
+  return getRuleContexts<RxParser::ConditionShiftExpressionContext>();
 }
 
-Parser::ConditionShiftExpressionContext* Parser::ConditionBreakClosedBitAndExpressionContext::conditionShiftExpression(size_t i) {
-  return getRuleContext<Parser::ConditionShiftExpressionContext>(i);
-}
-
-
-size_t Parser::ConditionBreakClosedBitAndExpressionContext::getRuleIndex() const {
-  return Parser::RuleConditionBreakClosedBitAndExpression;
+RxParser::ConditionShiftExpressionContext* RxParser::ConditionBreakClosedBitAndExpressionContext::conditionShiftExpression(size_t i) {
+  return getRuleContext<RxParser::ConditionShiftExpressionContext>(i);
 }
 
 
-std::any Parser::ConditionBreakClosedBitAndExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ConditionBreakClosedBitAndExpressionContext::getRuleIndex() const {
+  return RxParser::RuleConditionBreakClosedBitAndExpression;
+}
+
+
+std::any RxParser::ConditionBreakClosedBitAndExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitConditionBreakClosedBitAndExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ConditionBreakClosedBitAndExpressionContext* Parser::conditionBreakClosedBitAndExpression() {
+RxParser::ConditionBreakClosedBitAndExpressionContext* RxParser::conditionBreakClosedBitAndExpression() {
   ConditionBreakClosedBitAndExpressionContext *_localctx = _tracker.createInstance<ConditionBreakClosedBitAndExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 192, Parser::RuleConditionBreakClosedBitAndExpression);
+  enterRule(_localctx, 192, RxParser::RuleConditionBreakClosedBitAndExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -9383,7 +9383,7 @@ Parser::ConditionBreakClosedBitAndExpressionContext* Parser::conditionBreakClose
       setState(1221);
       conditionBreakShiftExpression();
       setState(1222);
-      match(Parser::AMP);
+      match(RxParser::AMP);
       setState(1228);
       _errHandler->sync(this);
       alt = getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 140, _ctx);
@@ -9392,7 +9392,7 @@ Parser::ConditionBreakClosedBitAndExpressionContext* Parser::conditionBreakClose
           setState(1223);
           conditionShiftExpression();
           setState(1224);
-          match(Parser::AMP); 
+          match(RxParser::AMP); 
         }
         setState(1230);
         _errHandler->sync(this);
@@ -9419,66 +9419,66 @@ Parser::ConditionBreakClosedBitAndExpressionContext* Parser::conditionBreakClose
 
 //----------------- ConditionBreakShiftExpressionContext ------------------------------------------------------------------
 
-Parser::ConditionBreakShiftExpressionContext::ConditionBreakShiftExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ConditionBreakShiftExpressionContext::ConditionBreakShiftExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::ConditionBreakAdditiveExpressionContext* Parser::ConditionBreakShiftExpressionContext::conditionBreakAdditiveExpression() {
-  return getRuleContext<Parser::ConditionBreakAdditiveExpressionContext>(0);
+RxParser::ConditionBreakAdditiveExpressionContext* RxParser::ConditionBreakShiftExpressionContext::conditionBreakAdditiveExpression() {
+  return getRuleContext<RxParser::ConditionBreakAdditiveExpressionContext>(0);
 }
 
-std::vector<Parser::ConditionAdditiveExpressionContext *> Parser::ConditionBreakShiftExpressionContext::conditionAdditiveExpression() {
-  return getRuleContexts<Parser::ConditionAdditiveExpressionContext>();
+std::vector<RxParser::ConditionAdditiveExpressionContext *> RxParser::ConditionBreakShiftExpressionContext::conditionAdditiveExpression() {
+  return getRuleContexts<RxParser::ConditionAdditiveExpressionContext>();
 }
 
-Parser::ConditionAdditiveExpressionContext* Parser::ConditionBreakShiftExpressionContext::conditionAdditiveExpression(size_t i) {
-  return getRuleContext<Parser::ConditionAdditiveExpressionContext>(i);
+RxParser::ConditionAdditiveExpressionContext* RxParser::ConditionBreakShiftExpressionContext::conditionAdditiveExpression(size_t i) {
+  return getRuleContext<RxParser::ConditionAdditiveExpressionContext>(i);
 }
 
-Parser::ConditionBreakClosedAdditiveExpressionContext* Parser::ConditionBreakShiftExpressionContext::conditionBreakClosedAdditiveExpression() {
-  return getRuleContext<Parser::ConditionBreakClosedAdditiveExpressionContext>(0);
+RxParser::ConditionBreakClosedAdditiveExpressionContext* RxParser::ConditionBreakShiftExpressionContext::conditionBreakClosedAdditiveExpression() {
+  return getRuleContext<RxParser::ConditionBreakClosedAdditiveExpressionContext>(0);
 }
 
-std::vector<tree::TerminalNode *> Parser::ConditionBreakShiftExpressionContext::SHL() {
-  return getTokens(Parser::SHL);
+std::vector<tree::TerminalNode *> RxParser::ConditionBreakShiftExpressionContext::SHL() {
+  return getTokens(RxParser::SHL);
 }
 
-tree::TerminalNode* Parser::ConditionBreakShiftExpressionContext::SHL(size_t i) {
-  return getToken(Parser::SHL, i);
+tree::TerminalNode* RxParser::ConditionBreakShiftExpressionContext::SHL(size_t i) {
+  return getToken(RxParser::SHL, i);
 }
 
-std::vector<Parser::ShiftRightContext *> Parser::ConditionBreakShiftExpressionContext::shiftRight() {
-  return getRuleContexts<Parser::ShiftRightContext>();
+std::vector<RxParser::ShiftRightContext *> RxParser::ConditionBreakShiftExpressionContext::shiftRight() {
+  return getRuleContexts<RxParser::ShiftRightContext>();
 }
 
-Parser::ShiftRightContext* Parser::ConditionBreakShiftExpressionContext::shiftRight(size_t i) {
-  return getRuleContext<Parser::ShiftRightContext>(i);
+RxParser::ShiftRightContext* RxParser::ConditionBreakShiftExpressionContext::shiftRight(size_t i) {
+  return getRuleContext<RxParser::ShiftRightContext>(i);
 }
 
-std::vector<Parser::ConditionClosedAdditiveExpressionContext *> Parser::ConditionBreakShiftExpressionContext::conditionClosedAdditiveExpression() {
-  return getRuleContexts<Parser::ConditionClosedAdditiveExpressionContext>();
+std::vector<RxParser::ConditionClosedAdditiveExpressionContext *> RxParser::ConditionBreakShiftExpressionContext::conditionClosedAdditiveExpression() {
+  return getRuleContexts<RxParser::ConditionClosedAdditiveExpressionContext>();
 }
 
-Parser::ConditionClosedAdditiveExpressionContext* Parser::ConditionBreakShiftExpressionContext::conditionClosedAdditiveExpression(size_t i) {
-  return getRuleContext<Parser::ConditionClosedAdditiveExpressionContext>(i);
-}
-
-
-size_t Parser::ConditionBreakShiftExpressionContext::getRuleIndex() const {
-  return Parser::RuleConditionBreakShiftExpression;
+RxParser::ConditionClosedAdditiveExpressionContext* RxParser::ConditionBreakShiftExpressionContext::conditionClosedAdditiveExpression(size_t i) {
+  return getRuleContext<RxParser::ConditionClosedAdditiveExpressionContext>(i);
 }
 
 
-std::any Parser::ConditionBreakShiftExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ConditionBreakShiftExpressionContext::getRuleIndex() const {
+  return RxParser::RuleConditionBreakShiftExpression;
+}
+
+
+std::any RxParser::ConditionBreakShiftExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitConditionBreakShiftExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ConditionBreakShiftExpressionContext* Parser::conditionBreakShiftExpression() {
+RxParser::ConditionBreakShiftExpressionContext* RxParser::conditionBreakShiftExpression() {
   ConditionBreakShiftExpressionContext *_localctx = _tracker.createInstance<ConditionBreakShiftExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 194, Parser::RuleConditionBreakShiftExpression);
+  enterRule(_localctx, 194, RxParser::RuleConditionBreakShiftExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -9508,7 +9508,7 @@ Parser::ConditionBreakShiftExpressionContext* Parser::conditionBreakShiftExpress
         setState(1236);
         conditionBreakClosedAdditiveExpression();
         setState(1237);
-        match(Parser::SHL);
+        match(RxParser::SHL);
         break;
       }
 
@@ -9535,7 +9535,7 @@ Parser::ConditionBreakShiftExpressionContext* Parser::conditionBreakShiftExpress
             setState(1244);
             conditionClosedAdditiveExpression();
             setState(1245);
-            match(Parser::SHL);
+            match(RxParser::SHL);
             break;
           }
 
@@ -9576,66 +9576,66 @@ Parser::ConditionBreakShiftExpressionContext* Parser::conditionBreakShiftExpress
 
 //----------------- ConditionBreakClosedShiftExpressionContext ------------------------------------------------------------------
 
-Parser::ConditionBreakClosedShiftExpressionContext::ConditionBreakClosedShiftExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ConditionBreakClosedShiftExpressionContext::ConditionBreakClosedShiftExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::ConditionBreakClosedAdditiveExpressionContext* Parser::ConditionBreakClosedShiftExpressionContext::conditionBreakClosedAdditiveExpression() {
-  return getRuleContext<Parser::ConditionBreakClosedAdditiveExpressionContext>(0);
+RxParser::ConditionBreakClosedAdditiveExpressionContext* RxParser::ConditionBreakClosedShiftExpressionContext::conditionBreakClosedAdditiveExpression() {
+  return getRuleContext<RxParser::ConditionBreakClosedAdditiveExpressionContext>(0);
 }
 
-std::vector<Parser::ConditionClosedAdditiveExpressionContext *> Parser::ConditionBreakClosedShiftExpressionContext::conditionClosedAdditiveExpression() {
-  return getRuleContexts<Parser::ConditionClosedAdditiveExpressionContext>();
+std::vector<RxParser::ConditionClosedAdditiveExpressionContext *> RxParser::ConditionBreakClosedShiftExpressionContext::conditionClosedAdditiveExpression() {
+  return getRuleContexts<RxParser::ConditionClosedAdditiveExpressionContext>();
 }
 
-Parser::ConditionClosedAdditiveExpressionContext* Parser::ConditionBreakClosedShiftExpressionContext::conditionClosedAdditiveExpression(size_t i) {
-  return getRuleContext<Parser::ConditionClosedAdditiveExpressionContext>(i);
+RxParser::ConditionClosedAdditiveExpressionContext* RxParser::ConditionBreakClosedShiftExpressionContext::conditionClosedAdditiveExpression(size_t i) {
+  return getRuleContext<RxParser::ConditionClosedAdditiveExpressionContext>(i);
 }
 
-std::vector<tree::TerminalNode *> Parser::ConditionBreakClosedShiftExpressionContext::SHL() {
-  return getTokens(Parser::SHL);
+std::vector<tree::TerminalNode *> RxParser::ConditionBreakClosedShiftExpressionContext::SHL() {
+  return getTokens(RxParser::SHL);
 }
 
-tree::TerminalNode* Parser::ConditionBreakClosedShiftExpressionContext::SHL(size_t i) {
-  return getToken(Parser::SHL, i);
+tree::TerminalNode* RxParser::ConditionBreakClosedShiftExpressionContext::SHL(size_t i) {
+  return getToken(RxParser::SHL, i);
 }
 
-Parser::ConditionBreakAdditiveExpressionContext* Parser::ConditionBreakClosedShiftExpressionContext::conditionBreakAdditiveExpression() {
-  return getRuleContext<Parser::ConditionBreakAdditiveExpressionContext>(0);
+RxParser::ConditionBreakAdditiveExpressionContext* RxParser::ConditionBreakClosedShiftExpressionContext::conditionBreakAdditiveExpression() {
+  return getRuleContext<RxParser::ConditionBreakAdditiveExpressionContext>(0);
 }
 
-std::vector<Parser::ShiftRightContext *> Parser::ConditionBreakClosedShiftExpressionContext::shiftRight() {
-  return getRuleContexts<Parser::ShiftRightContext>();
+std::vector<RxParser::ShiftRightContext *> RxParser::ConditionBreakClosedShiftExpressionContext::shiftRight() {
+  return getRuleContexts<RxParser::ShiftRightContext>();
 }
 
-Parser::ShiftRightContext* Parser::ConditionBreakClosedShiftExpressionContext::shiftRight(size_t i) {
-  return getRuleContext<Parser::ShiftRightContext>(i);
+RxParser::ShiftRightContext* RxParser::ConditionBreakClosedShiftExpressionContext::shiftRight(size_t i) {
+  return getRuleContext<RxParser::ShiftRightContext>(i);
 }
 
-std::vector<Parser::ConditionAdditiveExpressionContext *> Parser::ConditionBreakClosedShiftExpressionContext::conditionAdditiveExpression() {
-  return getRuleContexts<Parser::ConditionAdditiveExpressionContext>();
+std::vector<RxParser::ConditionAdditiveExpressionContext *> RxParser::ConditionBreakClosedShiftExpressionContext::conditionAdditiveExpression() {
+  return getRuleContexts<RxParser::ConditionAdditiveExpressionContext>();
 }
 
-Parser::ConditionAdditiveExpressionContext* Parser::ConditionBreakClosedShiftExpressionContext::conditionAdditiveExpression(size_t i) {
-  return getRuleContext<Parser::ConditionAdditiveExpressionContext>(i);
-}
-
-
-size_t Parser::ConditionBreakClosedShiftExpressionContext::getRuleIndex() const {
-  return Parser::RuleConditionBreakClosedShiftExpression;
+RxParser::ConditionAdditiveExpressionContext* RxParser::ConditionBreakClosedShiftExpressionContext::conditionAdditiveExpression(size_t i) {
+  return getRuleContext<RxParser::ConditionAdditiveExpressionContext>(i);
 }
 
 
-std::any Parser::ConditionBreakClosedShiftExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ConditionBreakClosedShiftExpressionContext::getRuleIndex() const {
+  return RxParser::RuleConditionBreakClosedShiftExpression;
+}
+
+
+std::any RxParser::ConditionBreakClosedShiftExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitConditionBreakClosedShiftExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ConditionBreakClosedShiftExpressionContext* Parser::conditionBreakClosedShiftExpression() {
+RxParser::ConditionBreakClosedShiftExpressionContext* RxParser::conditionBreakClosedShiftExpression() {
   ConditionBreakClosedShiftExpressionContext *_localctx = _tracker.createInstance<ConditionBreakClosedShiftExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 196, Parser::RuleConditionBreakClosedShiftExpression);
+  enterRule(_localctx, 196, RxParser::RuleConditionBreakClosedShiftExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -9665,7 +9665,7 @@ Parser::ConditionBreakClosedShiftExpressionContext* Parser::conditionBreakClosed
         setState(1260);
         conditionBreakClosedAdditiveExpression();
         setState(1261);
-        match(Parser::SHL);
+        match(RxParser::SHL);
         break;
       }
 
@@ -9692,7 +9692,7 @@ Parser::ConditionBreakClosedShiftExpressionContext* Parser::conditionBreakClosed
             setState(1268);
             conditionClosedAdditiveExpression();
             setState(1269);
-            match(Parser::SHL);
+            match(RxParser::SHL);
             break;
           }
 
@@ -9733,46 +9733,46 @@ Parser::ConditionBreakClosedShiftExpressionContext* Parser::conditionBreakClosed
 
 //----------------- ConditionBreakAdditiveExpressionContext ------------------------------------------------------------------
 
-Parser::ConditionBreakAdditiveExpressionContext::ConditionBreakAdditiveExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ConditionBreakAdditiveExpressionContext::ConditionBreakAdditiveExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::ConditionBreakMultiplicativeExpressionContext* Parser::ConditionBreakAdditiveExpressionContext::conditionBreakMultiplicativeExpression() {
-  return getRuleContext<Parser::ConditionBreakMultiplicativeExpressionContext>(0);
+RxParser::ConditionBreakMultiplicativeExpressionContext* RxParser::ConditionBreakAdditiveExpressionContext::conditionBreakMultiplicativeExpression() {
+  return getRuleContext<RxParser::ConditionBreakMultiplicativeExpressionContext>(0);
 }
 
-std::vector<Parser::AdditiveOperatorContext *> Parser::ConditionBreakAdditiveExpressionContext::additiveOperator() {
-  return getRuleContexts<Parser::AdditiveOperatorContext>();
+std::vector<RxParser::AdditiveOperatorContext *> RxParser::ConditionBreakAdditiveExpressionContext::additiveOperator() {
+  return getRuleContexts<RxParser::AdditiveOperatorContext>();
 }
 
-Parser::AdditiveOperatorContext* Parser::ConditionBreakAdditiveExpressionContext::additiveOperator(size_t i) {
-  return getRuleContext<Parser::AdditiveOperatorContext>(i);
+RxParser::AdditiveOperatorContext* RxParser::ConditionBreakAdditiveExpressionContext::additiveOperator(size_t i) {
+  return getRuleContext<RxParser::AdditiveOperatorContext>(i);
 }
 
-std::vector<Parser::ConditionMultiplicativeExpressionContext *> Parser::ConditionBreakAdditiveExpressionContext::conditionMultiplicativeExpression() {
-  return getRuleContexts<Parser::ConditionMultiplicativeExpressionContext>();
+std::vector<RxParser::ConditionMultiplicativeExpressionContext *> RxParser::ConditionBreakAdditiveExpressionContext::conditionMultiplicativeExpression() {
+  return getRuleContexts<RxParser::ConditionMultiplicativeExpressionContext>();
 }
 
-Parser::ConditionMultiplicativeExpressionContext* Parser::ConditionBreakAdditiveExpressionContext::conditionMultiplicativeExpression(size_t i) {
-  return getRuleContext<Parser::ConditionMultiplicativeExpressionContext>(i);
-}
-
-
-size_t Parser::ConditionBreakAdditiveExpressionContext::getRuleIndex() const {
-  return Parser::RuleConditionBreakAdditiveExpression;
+RxParser::ConditionMultiplicativeExpressionContext* RxParser::ConditionBreakAdditiveExpressionContext::conditionMultiplicativeExpression(size_t i) {
+  return getRuleContext<RxParser::ConditionMultiplicativeExpressionContext>(i);
 }
 
 
-std::any Parser::ConditionBreakAdditiveExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ConditionBreakAdditiveExpressionContext::getRuleIndex() const {
+  return RxParser::RuleConditionBreakAdditiveExpression;
+}
+
+
+std::any RxParser::ConditionBreakAdditiveExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitConditionBreakAdditiveExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ConditionBreakAdditiveExpressionContext* Parser::conditionBreakAdditiveExpression() {
+RxParser::ConditionBreakAdditiveExpressionContext* RxParser::conditionBreakAdditiveExpression() {
   ConditionBreakAdditiveExpressionContext *_localctx = _tracker.createInstance<ConditionBreakAdditiveExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 198, Parser::RuleConditionBreakAdditiveExpression);
+  enterRule(_localctx, 198, RxParser::RuleConditionBreakAdditiveExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -9813,54 +9813,54 @@ Parser::ConditionBreakAdditiveExpressionContext* Parser::conditionBreakAdditiveE
 
 //----------------- ConditionBreakClosedAdditiveExpressionContext ------------------------------------------------------------------
 
-Parser::ConditionBreakClosedAdditiveExpressionContext::ConditionBreakClosedAdditiveExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ConditionBreakClosedAdditiveExpressionContext::ConditionBreakClosedAdditiveExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::ConditionBreakClosedMultiplicativeExpressionContext* Parser::ConditionBreakClosedAdditiveExpressionContext::conditionBreakClosedMultiplicativeExpression() {
-  return getRuleContext<Parser::ConditionBreakClosedMultiplicativeExpressionContext>(0);
+RxParser::ConditionBreakClosedMultiplicativeExpressionContext* RxParser::ConditionBreakClosedAdditiveExpressionContext::conditionBreakClosedMultiplicativeExpression() {
+  return getRuleContext<RxParser::ConditionBreakClosedMultiplicativeExpressionContext>(0);
 }
 
-Parser::ConditionBreakMultiplicativeExpressionContext* Parser::ConditionBreakClosedAdditiveExpressionContext::conditionBreakMultiplicativeExpression() {
-  return getRuleContext<Parser::ConditionBreakMultiplicativeExpressionContext>(0);
+RxParser::ConditionBreakMultiplicativeExpressionContext* RxParser::ConditionBreakClosedAdditiveExpressionContext::conditionBreakMultiplicativeExpression() {
+  return getRuleContext<RxParser::ConditionBreakMultiplicativeExpressionContext>(0);
 }
 
-std::vector<Parser::AdditiveOperatorContext *> Parser::ConditionBreakClosedAdditiveExpressionContext::additiveOperator() {
-  return getRuleContexts<Parser::AdditiveOperatorContext>();
+std::vector<RxParser::AdditiveOperatorContext *> RxParser::ConditionBreakClosedAdditiveExpressionContext::additiveOperator() {
+  return getRuleContexts<RxParser::AdditiveOperatorContext>();
 }
 
-Parser::AdditiveOperatorContext* Parser::ConditionBreakClosedAdditiveExpressionContext::additiveOperator(size_t i) {
-  return getRuleContext<Parser::AdditiveOperatorContext>(i);
+RxParser::AdditiveOperatorContext* RxParser::ConditionBreakClosedAdditiveExpressionContext::additiveOperator(size_t i) {
+  return getRuleContext<RxParser::AdditiveOperatorContext>(i);
 }
 
-Parser::ConditionClosedMultiplicativeExpressionContext* Parser::ConditionBreakClosedAdditiveExpressionContext::conditionClosedMultiplicativeExpression() {
-  return getRuleContext<Parser::ConditionClosedMultiplicativeExpressionContext>(0);
+RxParser::ConditionClosedMultiplicativeExpressionContext* RxParser::ConditionBreakClosedAdditiveExpressionContext::conditionClosedMultiplicativeExpression() {
+  return getRuleContext<RxParser::ConditionClosedMultiplicativeExpressionContext>(0);
 }
 
-std::vector<Parser::ConditionMultiplicativeExpressionContext *> Parser::ConditionBreakClosedAdditiveExpressionContext::conditionMultiplicativeExpression() {
-  return getRuleContexts<Parser::ConditionMultiplicativeExpressionContext>();
+std::vector<RxParser::ConditionMultiplicativeExpressionContext *> RxParser::ConditionBreakClosedAdditiveExpressionContext::conditionMultiplicativeExpression() {
+  return getRuleContexts<RxParser::ConditionMultiplicativeExpressionContext>();
 }
 
-Parser::ConditionMultiplicativeExpressionContext* Parser::ConditionBreakClosedAdditiveExpressionContext::conditionMultiplicativeExpression(size_t i) {
-  return getRuleContext<Parser::ConditionMultiplicativeExpressionContext>(i);
-}
-
-
-size_t Parser::ConditionBreakClosedAdditiveExpressionContext::getRuleIndex() const {
-  return Parser::RuleConditionBreakClosedAdditiveExpression;
+RxParser::ConditionMultiplicativeExpressionContext* RxParser::ConditionBreakClosedAdditiveExpressionContext::conditionMultiplicativeExpression(size_t i) {
+  return getRuleContext<RxParser::ConditionMultiplicativeExpressionContext>(i);
 }
 
 
-std::any Parser::ConditionBreakClosedAdditiveExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ConditionBreakClosedAdditiveExpressionContext::getRuleIndex() const {
+  return RxParser::RuleConditionBreakClosedAdditiveExpression;
+}
+
+
+std::any RxParser::ConditionBreakClosedAdditiveExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitConditionBreakClosedAdditiveExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ConditionBreakClosedAdditiveExpressionContext* Parser::conditionBreakClosedAdditiveExpression() {
+RxParser::ConditionBreakClosedAdditiveExpressionContext* RxParser::conditionBreakClosedAdditiveExpression() {
   ConditionBreakClosedAdditiveExpressionContext *_localctx = _tracker.createInstance<ConditionBreakClosedAdditiveExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 200, Parser::RuleConditionBreakClosedAdditiveExpression);
+  enterRule(_localctx, 200, RxParser::RuleConditionBreakClosedAdditiveExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -9922,46 +9922,46 @@ Parser::ConditionBreakClosedAdditiveExpressionContext* Parser::conditionBreakClo
 
 //----------------- ConditionBreakMultiplicativeExpressionContext ------------------------------------------------------------------
 
-Parser::ConditionBreakMultiplicativeExpressionContext::ConditionBreakMultiplicativeExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ConditionBreakMultiplicativeExpressionContext::ConditionBreakMultiplicativeExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::ConditionBreakCastExpressionContext* Parser::ConditionBreakMultiplicativeExpressionContext::conditionBreakCastExpression() {
-  return getRuleContext<Parser::ConditionBreakCastExpressionContext>(0);
+RxParser::ConditionBreakCastExpressionContext* RxParser::ConditionBreakMultiplicativeExpressionContext::conditionBreakCastExpression() {
+  return getRuleContext<RxParser::ConditionBreakCastExpressionContext>(0);
 }
 
-std::vector<Parser::MultiplicativeOperatorContext *> Parser::ConditionBreakMultiplicativeExpressionContext::multiplicativeOperator() {
-  return getRuleContexts<Parser::MultiplicativeOperatorContext>();
+std::vector<RxParser::MultiplicativeOperatorContext *> RxParser::ConditionBreakMultiplicativeExpressionContext::multiplicativeOperator() {
+  return getRuleContexts<RxParser::MultiplicativeOperatorContext>();
 }
 
-Parser::MultiplicativeOperatorContext* Parser::ConditionBreakMultiplicativeExpressionContext::multiplicativeOperator(size_t i) {
-  return getRuleContext<Parser::MultiplicativeOperatorContext>(i);
+RxParser::MultiplicativeOperatorContext* RxParser::ConditionBreakMultiplicativeExpressionContext::multiplicativeOperator(size_t i) {
+  return getRuleContext<RxParser::MultiplicativeOperatorContext>(i);
 }
 
-std::vector<Parser::ConditionCastExpressionContext *> Parser::ConditionBreakMultiplicativeExpressionContext::conditionCastExpression() {
-  return getRuleContexts<Parser::ConditionCastExpressionContext>();
+std::vector<RxParser::ConditionCastExpressionContext *> RxParser::ConditionBreakMultiplicativeExpressionContext::conditionCastExpression() {
+  return getRuleContexts<RxParser::ConditionCastExpressionContext>();
 }
 
-Parser::ConditionCastExpressionContext* Parser::ConditionBreakMultiplicativeExpressionContext::conditionCastExpression(size_t i) {
-  return getRuleContext<Parser::ConditionCastExpressionContext>(i);
-}
-
-
-size_t Parser::ConditionBreakMultiplicativeExpressionContext::getRuleIndex() const {
-  return Parser::RuleConditionBreakMultiplicativeExpression;
+RxParser::ConditionCastExpressionContext* RxParser::ConditionBreakMultiplicativeExpressionContext::conditionCastExpression(size_t i) {
+  return getRuleContext<RxParser::ConditionCastExpressionContext>(i);
 }
 
 
-std::any Parser::ConditionBreakMultiplicativeExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ConditionBreakMultiplicativeExpressionContext::getRuleIndex() const {
+  return RxParser::RuleConditionBreakMultiplicativeExpression;
+}
+
+
+std::any RxParser::ConditionBreakMultiplicativeExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitConditionBreakMultiplicativeExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ConditionBreakMultiplicativeExpressionContext* Parser::conditionBreakMultiplicativeExpression() {
+RxParser::ConditionBreakMultiplicativeExpressionContext* RxParser::conditionBreakMultiplicativeExpression() {
   ConditionBreakMultiplicativeExpressionContext *_localctx = _tracker.createInstance<ConditionBreakMultiplicativeExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 202, Parser::RuleConditionBreakMultiplicativeExpression);
+  enterRule(_localctx, 202, RxParser::RuleConditionBreakMultiplicativeExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -10002,54 +10002,54 @@ Parser::ConditionBreakMultiplicativeExpressionContext* Parser::conditionBreakMul
 
 //----------------- ConditionBreakClosedMultiplicativeExpressionContext ------------------------------------------------------------------
 
-Parser::ConditionBreakClosedMultiplicativeExpressionContext::ConditionBreakClosedMultiplicativeExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ConditionBreakClosedMultiplicativeExpressionContext::ConditionBreakClosedMultiplicativeExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::ConditionBreakClosedCastExpressionContext* Parser::ConditionBreakClosedMultiplicativeExpressionContext::conditionBreakClosedCastExpression() {
-  return getRuleContext<Parser::ConditionBreakClosedCastExpressionContext>(0);
+RxParser::ConditionBreakClosedCastExpressionContext* RxParser::ConditionBreakClosedMultiplicativeExpressionContext::conditionBreakClosedCastExpression() {
+  return getRuleContext<RxParser::ConditionBreakClosedCastExpressionContext>(0);
 }
 
-Parser::ConditionBreakCastExpressionContext* Parser::ConditionBreakClosedMultiplicativeExpressionContext::conditionBreakCastExpression() {
-  return getRuleContext<Parser::ConditionBreakCastExpressionContext>(0);
+RxParser::ConditionBreakCastExpressionContext* RxParser::ConditionBreakClosedMultiplicativeExpressionContext::conditionBreakCastExpression() {
+  return getRuleContext<RxParser::ConditionBreakCastExpressionContext>(0);
 }
 
-std::vector<Parser::MultiplicativeOperatorContext *> Parser::ConditionBreakClosedMultiplicativeExpressionContext::multiplicativeOperator() {
-  return getRuleContexts<Parser::MultiplicativeOperatorContext>();
+std::vector<RxParser::MultiplicativeOperatorContext *> RxParser::ConditionBreakClosedMultiplicativeExpressionContext::multiplicativeOperator() {
+  return getRuleContexts<RxParser::MultiplicativeOperatorContext>();
 }
 
-Parser::MultiplicativeOperatorContext* Parser::ConditionBreakClosedMultiplicativeExpressionContext::multiplicativeOperator(size_t i) {
-  return getRuleContext<Parser::MultiplicativeOperatorContext>(i);
+RxParser::MultiplicativeOperatorContext* RxParser::ConditionBreakClosedMultiplicativeExpressionContext::multiplicativeOperator(size_t i) {
+  return getRuleContext<RxParser::MultiplicativeOperatorContext>(i);
 }
 
-Parser::ConditionClosedCastExpressionContext* Parser::ConditionBreakClosedMultiplicativeExpressionContext::conditionClosedCastExpression() {
-  return getRuleContext<Parser::ConditionClosedCastExpressionContext>(0);
+RxParser::ConditionClosedCastExpressionContext* RxParser::ConditionBreakClosedMultiplicativeExpressionContext::conditionClosedCastExpression() {
+  return getRuleContext<RxParser::ConditionClosedCastExpressionContext>(0);
 }
 
-std::vector<Parser::ConditionCastExpressionContext *> Parser::ConditionBreakClosedMultiplicativeExpressionContext::conditionCastExpression() {
-  return getRuleContexts<Parser::ConditionCastExpressionContext>();
+std::vector<RxParser::ConditionCastExpressionContext *> RxParser::ConditionBreakClosedMultiplicativeExpressionContext::conditionCastExpression() {
+  return getRuleContexts<RxParser::ConditionCastExpressionContext>();
 }
 
-Parser::ConditionCastExpressionContext* Parser::ConditionBreakClosedMultiplicativeExpressionContext::conditionCastExpression(size_t i) {
-  return getRuleContext<Parser::ConditionCastExpressionContext>(i);
-}
-
-
-size_t Parser::ConditionBreakClosedMultiplicativeExpressionContext::getRuleIndex() const {
-  return Parser::RuleConditionBreakClosedMultiplicativeExpression;
+RxParser::ConditionCastExpressionContext* RxParser::ConditionBreakClosedMultiplicativeExpressionContext::conditionCastExpression(size_t i) {
+  return getRuleContext<RxParser::ConditionCastExpressionContext>(i);
 }
 
 
-std::any Parser::ConditionBreakClosedMultiplicativeExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ConditionBreakClosedMultiplicativeExpressionContext::getRuleIndex() const {
+  return RxParser::RuleConditionBreakClosedMultiplicativeExpression;
+}
+
+
+std::any RxParser::ConditionBreakClosedMultiplicativeExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitConditionBreakClosedMultiplicativeExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ConditionBreakClosedMultiplicativeExpressionContext* Parser::conditionBreakClosedMultiplicativeExpression() {
+RxParser::ConditionBreakClosedMultiplicativeExpressionContext* RxParser::conditionBreakClosedMultiplicativeExpression() {
   ConditionBreakClosedMultiplicativeExpressionContext *_localctx = _tracker.createInstance<ConditionBreakClosedMultiplicativeExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 204, Parser::RuleConditionBreakClosedMultiplicativeExpression);
+  enterRule(_localctx, 204, RxParser::RuleConditionBreakClosedMultiplicativeExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -10111,46 +10111,46 @@ Parser::ConditionBreakClosedMultiplicativeExpressionContext* Parser::conditionBr
 
 //----------------- ConditionBreakCastExpressionContext ------------------------------------------------------------------
 
-Parser::ConditionBreakCastExpressionContext::ConditionBreakCastExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ConditionBreakCastExpressionContext::ConditionBreakCastExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::ConditionBreakUnaryExpressionContext* Parser::ConditionBreakCastExpressionContext::conditionBreakUnaryExpression() {
-  return getRuleContext<Parser::ConditionBreakUnaryExpressionContext>(0);
+RxParser::ConditionBreakUnaryExpressionContext* RxParser::ConditionBreakCastExpressionContext::conditionBreakUnaryExpression() {
+  return getRuleContext<RxParser::ConditionBreakUnaryExpressionContext>(0);
 }
 
-std::vector<tree::TerminalNode *> Parser::ConditionBreakCastExpressionContext::AS() {
-  return getTokens(Parser::AS);
+std::vector<tree::TerminalNode *> RxParser::ConditionBreakCastExpressionContext::AS() {
+  return getTokens(RxParser::AS);
 }
 
-tree::TerminalNode* Parser::ConditionBreakCastExpressionContext::AS(size_t i) {
-  return getToken(Parser::AS, i);
+tree::TerminalNode* RxParser::ConditionBreakCastExpressionContext::AS(size_t i) {
+  return getToken(RxParser::AS, i);
 }
 
-std::vector<Parser::TypeRefContext *> Parser::ConditionBreakCastExpressionContext::typeRef() {
-  return getRuleContexts<Parser::TypeRefContext>();
+std::vector<RxParser::TypeRefContext *> RxParser::ConditionBreakCastExpressionContext::typeRef() {
+  return getRuleContexts<RxParser::TypeRefContext>();
 }
 
-Parser::TypeRefContext* Parser::ConditionBreakCastExpressionContext::typeRef(size_t i) {
-  return getRuleContext<Parser::TypeRefContext>(i);
-}
-
-
-size_t Parser::ConditionBreakCastExpressionContext::getRuleIndex() const {
-  return Parser::RuleConditionBreakCastExpression;
+RxParser::TypeRefContext* RxParser::ConditionBreakCastExpressionContext::typeRef(size_t i) {
+  return getRuleContext<RxParser::TypeRefContext>(i);
 }
 
 
-std::any Parser::ConditionBreakCastExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ConditionBreakCastExpressionContext::getRuleIndex() const {
+  return RxParser::RuleConditionBreakCastExpression;
+}
+
+
+std::any RxParser::ConditionBreakCastExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitConditionBreakCastExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ConditionBreakCastExpressionContext* Parser::conditionBreakCastExpression() {
+RxParser::ConditionBreakCastExpressionContext* RxParser::conditionBreakCastExpression() {
   ConditionBreakCastExpressionContext *_localctx = _tracker.createInstance<ConditionBreakCastExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 206, Parser::RuleConditionBreakCastExpression);
+  enterRule(_localctx, 206, RxParser::RuleConditionBreakCastExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -10170,7 +10170,7 @@ Parser::ConditionBreakCastExpressionContext* Parser::conditionBreakCastExpressio
     while (alt != 2 && alt != atn::ATN::INVALID_ALT_NUMBER) {
       if (alt == 1) {
         setState(1332);
-        match(Parser::AS);
+        match(RxParser::AS);
         setState(1333);
         typeRef(); 
       }
@@ -10191,42 +10191,42 @@ Parser::ConditionBreakCastExpressionContext* Parser::conditionBreakCastExpressio
 
 //----------------- ConditionBreakClosedCastExpressionContext ------------------------------------------------------------------
 
-Parser::ConditionBreakClosedCastExpressionContext::ConditionBreakClosedCastExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ConditionBreakClosedCastExpressionContext::ConditionBreakClosedCastExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::ConditionBreakUnaryExpressionContext* Parser::ConditionBreakClosedCastExpressionContext::conditionBreakUnaryExpression() {
-  return getRuleContext<Parser::ConditionBreakUnaryExpressionContext>(0);
+RxParser::ConditionBreakUnaryExpressionContext* RxParser::ConditionBreakClosedCastExpressionContext::conditionBreakUnaryExpression() {
+  return getRuleContext<RxParser::ConditionBreakUnaryExpressionContext>(0);
 }
 
-Parser::ConditionBreakCastExpressionContext* Parser::ConditionBreakClosedCastExpressionContext::conditionBreakCastExpression() {
-  return getRuleContext<Parser::ConditionBreakCastExpressionContext>(0);
+RxParser::ConditionBreakCastExpressionContext* RxParser::ConditionBreakClosedCastExpressionContext::conditionBreakCastExpression() {
+  return getRuleContext<RxParser::ConditionBreakCastExpressionContext>(0);
 }
 
-tree::TerminalNode* Parser::ConditionBreakClosedCastExpressionContext::AS() {
-  return getToken(Parser::AS, 0);
+tree::TerminalNode* RxParser::ConditionBreakClosedCastExpressionContext::AS() {
+  return getToken(RxParser::AS, 0);
 }
 
-Parser::ClosedCastTypeContext* Parser::ConditionBreakClosedCastExpressionContext::closedCastType() {
-  return getRuleContext<Parser::ClosedCastTypeContext>(0);
-}
-
-
-size_t Parser::ConditionBreakClosedCastExpressionContext::getRuleIndex() const {
-  return Parser::RuleConditionBreakClosedCastExpression;
+RxParser::ClosedCastTypeContext* RxParser::ConditionBreakClosedCastExpressionContext::closedCastType() {
+  return getRuleContext<RxParser::ClosedCastTypeContext>(0);
 }
 
 
-std::any Parser::ConditionBreakClosedCastExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ConditionBreakClosedCastExpressionContext::getRuleIndex() const {
+  return RxParser::RuleConditionBreakClosedCastExpression;
+}
+
+
+std::any RxParser::ConditionBreakClosedCastExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitConditionBreakClosedCastExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ConditionBreakClosedCastExpressionContext* Parser::conditionBreakClosedCastExpression() {
+RxParser::ConditionBreakClosedCastExpressionContext* RxParser::conditionBreakClosedCastExpression() {
   ConditionBreakClosedCastExpressionContext *_localctx = _tracker.createInstance<ConditionBreakClosedCastExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 208, Parser::RuleConditionBreakClosedCastExpression);
+  enterRule(_localctx, 208, RxParser::RuleConditionBreakClosedCastExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -10251,7 +10251,7 @@ Parser::ConditionBreakClosedCastExpressionContext* Parser::conditionBreakClosedC
       setState(1340);
       conditionBreakCastExpression();
       setState(1341);
-      match(Parser::AS);
+      match(RxParser::AS);
       setState(1342);
       closedCastType();
       break;
@@ -10273,38 +10273,38 @@ Parser::ConditionBreakClosedCastExpressionContext* Parser::conditionBreakClosedC
 
 //----------------- ConditionBreakUnaryExpressionContext ------------------------------------------------------------------
 
-Parser::ConditionBreakUnaryExpressionContext::ConditionBreakUnaryExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ConditionBreakUnaryExpressionContext::ConditionBreakUnaryExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::UnaryOperatorContext* Parser::ConditionBreakUnaryExpressionContext::unaryOperator() {
-  return getRuleContext<Parser::UnaryOperatorContext>(0);
+RxParser::UnaryOperatorContext* RxParser::ConditionBreakUnaryExpressionContext::unaryOperator() {
+  return getRuleContext<RxParser::UnaryOperatorContext>(0);
 }
 
-Parser::ConditionUnaryExpressionContext* Parser::ConditionBreakUnaryExpressionContext::conditionUnaryExpression() {
-  return getRuleContext<Parser::ConditionUnaryExpressionContext>(0);
+RxParser::ConditionUnaryExpressionContext* RxParser::ConditionBreakUnaryExpressionContext::conditionUnaryExpression() {
+  return getRuleContext<RxParser::ConditionUnaryExpressionContext>(0);
 }
 
-Parser::ConditionBreakPostfixExpressionContext* Parser::ConditionBreakUnaryExpressionContext::conditionBreakPostfixExpression() {
-  return getRuleContext<Parser::ConditionBreakPostfixExpressionContext>(0);
-}
-
-
-size_t Parser::ConditionBreakUnaryExpressionContext::getRuleIndex() const {
-  return Parser::RuleConditionBreakUnaryExpression;
+RxParser::ConditionBreakPostfixExpressionContext* RxParser::ConditionBreakUnaryExpressionContext::conditionBreakPostfixExpression() {
+  return getRuleContext<RxParser::ConditionBreakPostfixExpressionContext>(0);
 }
 
 
-std::any Parser::ConditionBreakUnaryExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ConditionBreakUnaryExpressionContext::getRuleIndex() const {
+  return RxParser::RuleConditionBreakUnaryExpression;
+}
+
+
+std::any RxParser::ConditionBreakUnaryExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitConditionBreakUnaryExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ConditionBreakUnaryExpressionContext* Parser::conditionBreakUnaryExpression() {
+RxParser::ConditionBreakUnaryExpressionContext* RxParser::conditionBreakUnaryExpression() {
   ConditionBreakUnaryExpressionContext *_localctx = _tracker.createInstance<ConditionBreakUnaryExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 210, Parser::RuleConditionBreakUnaryExpression);
+  enterRule(_localctx, 210, RxParser::RuleConditionBreakUnaryExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -10317,11 +10317,11 @@ Parser::ConditionBreakUnaryExpressionContext* Parser::conditionBreakUnaryExpress
     setState(1350);
     _errHandler->sync(this);
     switch (_input->LA(1)) {
-      case Parser::ANDAND:
-      case Parser::NOT:
-      case Parser::MINUS:
-      case Parser::STAR:
-      case Parser::AMP: {
+      case RxParser::ANDAND:
+      case RxParser::NOT:
+      case RxParser::MINUS:
+      case RxParser::STAR:
+      case RxParser::AMP: {
         enterOuterAlt(_localctx, 1);
         setState(1346);
         unaryOperator();
@@ -10330,25 +10330,25 @@ Parser::ConditionBreakUnaryExpressionContext* Parser::conditionBreakUnaryExpress
         break;
       }
 
-      case Parser::BREAK:
-      case Parser::CONTINUE:
-      case Parser::FALSE:
-      case Parser::IF:
-      case Parser::LOOP:
-      case Parser::RETURN:
-      case Parser::SELF_VALUE:
-      case Parser::SELF_TYPE:
-      case Parser::TRUE:
-      case Parser::WHILE:
-      case Parser::DERIVE:
-      case Parser::COPY:
-      case Parser::CLONE:
-      case Parser::PARTIAL_EQ:
-      case Parser::EQ:
-      case Parser::IDENTIFIER:
-      case Parser::INTEGER_LITERAL:
-      case Parser::LBRACKET:
-      case Parser::LPAREN: {
+      case RxParser::BREAK:
+      case RxParser::CONTINUE:
+      case RxParser::FALSE:
+      case RxParser::IF:
+      case RxParser::LOOP:
+      case RxParser::RETURN:
+      case RxParser::SELF_VALUE:
+      case RxParser::SELF_TYPE:
+      case RxParser::TRUE:
+      case RxParser::WHILE:
+      case RxParser::DERIVE:
+      case RxParser::COPY:
+      case RxParser::CLONE:
+      case RxParser::PARTIAL_EQ:
+      case RxParser::EQ:
+      case RxParser::IDENTIFIER:
+      case RxParser::INTEGER_LITERAL:
+      case RxParser::LBRACKET:
+      case RxParser::LPAREN: {
         enterOuterAlt(_localctx, 2);
         setState(1349);
         conditionBreakPostfixExpression();
@@ -10371,38 +10371,38 @@ Parser::ConditionBreakUnaryExpressionContext* Parser::conditionBreakUnaryExpress
 
 //----------------- ConditionBreakPostfixExpressionContext ------------------------------------------------------------------
 
-Parser::ConditionBreakPostfixExpressionContext::ConditionBreakPostfixExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ConditionBreakPostfixExpressionContext::ConditionBreakPostfixExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::ConditionPrimaryWithoutBareBlockContext* Parser::ConditionBreakPostfixExpressionContext::conditionPrimaryWithoutBareBlock() {
-  return getRuleContext<Parser::ConditionPrimaryWithoutBareBlockContext>(0);
+RxParser::ConditionPrimaryWithoutBareBlockContext* RxParser::ConditionBreakPostfixExpressionContext::conditionPrimaryWithoutBareBlock() {
+  return getRuleContext<RxParser::ConditionPrimaryWithoutBareBlockContext>(0);
 }
 
-std::vector<Parser::PostfixSuffixContext *> Parser::ConditionBreakPostfixExpressionContext::postfixSuffix() {
-  return getRuleContexts<Parser::PostfixSuffixContext>();
+std::vector<RxParser::PostfixSuffixContext *> RxParser::ConditionBreakPostfixExpressionContext::postfixSuffix() {
+  return getRuleContexts<RxParser::PostfixSuffixContext>();
 }
 
-Parser::PostfixSuffixContext* Parser::ConditionBreakPostfixExpressionContext::postfixSuffix(size_t i) {
-  return getRuleContext<Parser::PostfixSuffixContext>(i);
-}
-
-
-size_t Parser::ConditionBreakPostfixExpressionContext::getRuleIndex() const {
-  return Parser::RuleConditionBreakPostfixExpression;
+RxParser::PostfixSuffixContext* RxParser::ConditionBreakPostfixExpressionContext::postfixSuffix(size_t i) {
+  return getRuleContext<RxParser::PostfixSuffixContext>(i);
 }
 
 
-std::any Parser::ConditionBreakPostfixExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ConditionBreakPostfixExpressionContext::getRuleIndex() const {
+  return RxParser::RuleConditionBreakPostfixExpression;
+}
+
+
+std::any RxParser::ConditionBreakPostfixExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitConditionBreakPostfixExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ConditionBreakPostfixExpressionContext* Parser::conditionBreakPostfixExpression() {
+RxParser::ConditionBreakPostfixExpressionContext* RxParser::conditionBreakPostfixExpression() {
   ConditionBreakPostfixExpressionContext *_localctx = _tracker.createInstance<ConditionBreakPostfixExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 212, Parser::RuleConditionBreakPostfixExpression);
+  enterRule(_localctx, 212, RxParser::RuleConditionBreakPostfixExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -10441,30 +10441,30 @@ Parser::ConditionBreakPostfixExpressionContext* Parser::conditionBreakPostfixExp
 
 //----------------- StatementExpressionContext ------------------------------------------------------------------
 
-Parser::StatementExpressionContext::StatementExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::StatementExpressionContext::StatementExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::StatementAssignmentExpressionContext* Parser::StatementExpressionContext::statementAssignmentExpression() {
-  return getRuleContext<Parser::StatementAssignmentExpressionContext>(0);
+RxParser::StatementAssignmentExpressionContext* RxParser::StatementExpressionContext::statementAssignmentExpression() {
+  return getRuleContext<RxParser::StatementAssignmentExpressionContext>(0);
 }
 
 
-size_t Parser::StatementExpressionContext::getRuleIndex() const {
-  return Parser::RuleStatementExpression;
+size_t RxParser::StatementExpressionContext::getRuleIndex() const {
+  return RxParser::RuleStatementExpression;
 }
 
 
-std::any Parser::StatementExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+std::any RxParser::StatementExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitStatementExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::StatementExpressionContext* Parser::statementExpression() {
+RxParser::StatementExpressionContext* RxParser::statementExpression() {
   StatementExpressionContext *_localctx = _tracker.createInstance<StatementExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 214, Parser::RuleStatementExpression);
+  enterRule(_localctx, 214, RxParser::RuleStatementExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -10490,38 +10490,38 @@ Parser::StatementExpressionContext* Parser::statementExpression() {
 
 //----------------- StatementAssignmentExpressionContext ------------------------------------------------------------------
 
-Parser::StatementAssignmentExpressionContext::StatementAssignmentExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::StatementAssignmentExpressionContext::StatementAssignmentExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::StatementLogicalOrExpressionContext* Parser::StatementAssignmentExpressionContext::statementLogicalOrExpression() {
-  return getRuleContext<Parser::StatementLogicalOrExpressionContext>(0);
+RxParser::StatementLogicalOrExpressionContext* RxParser::StatementAssignmentExpressionContext::statementLogicalOrExpression() {
+  return getRuleContext<RxParser::StatementLogicalOrExpressionContext>(0);
 }
 
-Parser::AssignmentOperatorContext* Parser::StatementAssignmentExpressionContext::assignmentOperator() {
-  return getRuleContext<Parser::AssignmentOperatorContext>(0);
+RxParser::AssignmentOperatorContext* RxParser::StatementAssignmentExpressionContext::assignmentOperator() {
+  return getRuleContext<RxParser::AssignmentOperatorContext>(0);
 }
 
-Parser::ExpressionContext* Parser::StatementAssignmentExpressionContext::expression() {
-  return getRuleContext<Parser::ExpressionContext>(0);
-}
-
-
-size_t Parser::StatementAssignmentExpressionContext::getRuleIndex() const {
-  return Parser::RuleStatementAssignmentExpression;
+RxParser::ExpressionContext* RxParser::StatementAssignmentExpressionContext::expression() {
+  return getRuleContext<RxParser::ExpressionContext>(0);
 }
 
 
-std::any Parser::StatementAssignmentExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::StatementAssignmentExpressionContext::getRuleIndex() const {
+  return RxParser::RuleStatementAssignmentExpression;
+}
+
+
+std::any RxParser::StatementAssignmentExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitStatementAssignmentExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::StatementAssignmentExpressionContext* Parser::statementAssignmentExpression() {
+RxParser::StatementAssignmentExpressionContext* RxParser::statementAssignmentExpression() {
   StatementAssignmentExpressionContext *_localctx = _tracker.createInstance<StatementAssignmentExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 216, Parser::RuleStatementAssignmentExpression);
+  enterRule(_localctx, 216, RxParser::RuleStatementAssignmentExpression);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -10559,46 +10559,46 @@ Parser::StatementAssignmentExpressionContext* Parser::statementAssignmentExpress
 
 //----------------- StatementLogicalOrExpressionContext ------------------------------------------------------------------
 
-Parser::StatementLogicalOrExpressionContext::StatementLogicalOrExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::StatementLogicalOrExpressionContext::StatementLogicalOrExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::StatementLogicalAndExpressionContext* Parser::StatementLogicalOrExpressionContext::statementLogicalAndExpression() {
-  return getRuleContext<Parser::StatementLogicalAndExpressionContext>(0);
+RxParser::StatementLogicalAndExpressionContext* RxParser::StatementLogicalOrExpressionContext::statementLogicalAndExpression() {
+  return getRuleContext<RxParser::StatementLogicalAndExpressionContext>(0);
 }
 
-std::vector<tree::TerminalNode *> Parser::StatementLogicalOrExpressionContext::OROR() {
-  return getTokens(Parser::OROR);
+std::vector<tree::TerminalNode *> RxParser::StatementLogicalOrExpressionContext::OROR() {
+  return getTokens(RxParser::OROR);
 }
 
-tree::TerminalNode* Parser::StatementLogicalOrExpressionContext::OROR(size_t i) {
-  return getToken(Parser::OROR, i);
+tree::TerminalNode* RxParser::StatementLogicalOrExpressionContext::OROR(size_t i) {
+  return getToken(RxParser::OROR, i);
 }
 
-std::vector<Parser::LogicalAndExpressionContext *> Parser::StatementLogicalOrExpressionContext::logicalAndExpression() {
-  return getRuleContexts<Parser::LogicalAndExpressionContext>();
+std::vector<RxParser::LogicalAndExpressionContext *> RxParser::StatementLogicalOrExpressionContext::logicalAndExpression() {
+  return getRuleContexts<RxParser::LogicalAndExpressionContext>();
 }
 
-Parser::LogicalAndExpressionContext* Parser::StatementLogicalOrExpressionContext::logicalAndExpression(size_t i) {
-  return getRuleContext<Parser::LogicalAndExpressionContext>(i);
-}
-
-
-size_t Parser::StatementLogicalOrExpressionContext::getRuleIndex() const {
-  return Parser::RuleStatementLogicalOrExpression;
+RxParser::LogicalAndExpressionContext* RxParser::StatementLogicalOrExpressionContext::logicalAndExpression(size_t i) {
+  return getRuleContext<RxParser::LogicalAndExpressionContext>(i);
 }
 
 
-std::any Parser::StatementLogicalOrExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::StatementLogicalOrExpressionContext::getRuleIndex() const {
+  return RxParser::RuleStatementLogicalOrExpression;
+}
+
+
+std::any RxParser::StatementLogicalOrExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitStatementLogicalOrExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::StatementLogicalOrExpressionContext* Parser::statementLogicalOrExpression() {
+RxParser::StatementLogicalOrExpressionContext* RxParser::statementLogicalOrExpression() {
   StatementLogicalOrExpressionContext *_localctx = _tracker.createInstance<StatementLogicalOrExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 218, Parser::RuleStatementLogicalOrExpression);
+  enterRule(_localctx, 218, RxParser::RuleStatementLogicalOrExpression);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -10615,9 +10615,9 @@ Parser::StatementLogicalOrExpressionContext* Parser::statementLogicalOrExpressio
     setState(1372);
     _errHandler->sync(this);
     _la = _input->LA(1);
-    while (_la == Parser::OROR) {
+    while (_la == RxParser::OROR) {
       setState(1368);
-      match(Parser::OROR);
+      match(RxParser::OROR);
       setState(1369);
       logicalAndExpression();
       setState(1374);
@@ -10637,46 +10637,46 @@ Parser::StatementLogicalOrExpressionContext* Parser::statementLogicalOrExpressio
 
 //----------------- StatementLogicalAndExpressionContext ------------------------------------------------------------------
 
-Parser::StatementLogicalAndExpressionContext::StatementLogicalAndExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::StatementLogicalAndExpressionContext::StatementLogicalAndExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::StatementComparisonExpressionContext* Parser::StatementLogicalAndExpressionContext::statementComparisonExpression() {
-  return getRuleContext<Parser::StatementComparisonExpressionContext>(0);
+RxParser::StatementComparisonExpressionContext* RxParser::StatementLogicalAndExpressionContext::statementComparisonExpression() {
+  return getRuleContext<RxParser::StatementComparisonExpressionContext>(0);
 }
 
-std::vector<tree::TerminalNode *> Parser::StatementLogicalAndExpressionContext::ANDAND() {
-  return getTokens(Parser::ANDAND);
+std::vector<tree::TerminalNode *> RxParser::StatementLogicalAndExpressionContext::ANDAND() {
+  return getTokens(RxParser::ANDAND);
 }
 
-tree::TerminalNode* Parser::StatementLogicalAndExpressionContext::ANDAND(size_t i) {
-  return getToken(Parser::ANDAND, i);
+tree::TerminalNode* RxParser::StatementLogicalAndExpressionContext::ANDAND(size_t i) {
+  return getToken(RxParser::ANDAND, i);
 }
 
-std::vector<Parser::ComparisonExpressionContext *> Parser::StatementLogicalAndExpressionContext::comparisonExpression() {
-  return getRuleContexts<Parser::ComparisonExpressionContext>();
+std::vector<RxParser::ComparisonExpressionContext *> RxParser::StatementLogicalAndExpressionContext::comparisonExpression() {
+  return getRuleContexts<RxParser::ComparisonExpressionContext>();
 }
 
-Parser::ComparisonExpressionContext* Parser::StatementLogicalAndExpressionContext::comparisonExpression(size_t i) {
-  return getRuleContext<Parser::ComparisonExpressionContext>(i);
-}
-
-
-size_t Parser::StatementLogicalAndExpressionContext::getRuleIndex() const {
-  return Parser::RuleStatementLogicalAndExpression;
+RxParser::ComparisonExpressionContext* RxParser::StatementLogicalAndExpressionContext::comparisonExpression(size_t i) {
+  return getRuleContext<RxParser::ComparisonExpressionContext>(i);
 }
 
 
-std::any Parser::StatementLogicalAndExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::StatementLogicalAndExpressionContext::getRuleIndex() const {
+  return RxParser::RuleStatementLogicalAndExpression;
+}
+
+
+std::any RxParser::StatementLogicalAndExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitStatementLogicalAndExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::StatementLogicalAndExpressionContext* Parser::statementLogicalAndExpression() {
+RxParser::StatementLogicalAndExpressionContext* RxParser::statementLogicalAndExpression() {
   StatementLogicalAndExpressionContext *_localctx = _tracker.createInstance<StatementLogicalAndExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 220, Parser::RuleStatementLogicalAndExpression);
+  enterRule(_localctx, 220, RxParser::RuleStatementLogicalAndExpression);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -10693,9 +10693,9 @@ Parser::StatementLogicalAndExpressionContext* Parser::statementLogicalAndExpress
     setState(1380);
     _errHandler->sync(this);
     _la = _input->LA(1);
-    while (_la == Parser::ANDAND) {
+    while (_la == RxParser::ANDAND) {
       setState(1376);
-      match(Parser::ANDAND);
+      match(RxParser::ANDAND);
       setState(1377);
       comparisonExpression();
       setState(1382);
@@ -10715,46 +10715,46 @@ Parser::StatementLogicalAndExpressionContext* Parser::statementLogicalAndExpress
 
 //----------------- StatementComparisonExpressionContext ------------------------------------------------------------------
 
-Parser::StatementComparisonExpressionContext::StatementComparisonExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::StatementComparisonExpressionContext::StatementComparisonExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::StatementBitOrExpressionContext* Parser::StatementComparisonExpressionContext::statementBitOrExpression() {
-  return getRuleContext<Parser::StatementBitOrExpressionContext>(0);
+RxParser::StatementBitOrExpressionContext* RxParser::StatementComparisonExpressionContext::statementBitOrExpression() {
+  return getRuleContext<RxParser::StatementBitOrExpressionContext>(0);
 }
 
-Parser::ComparisonExceptLtContext* Parser::StatementComparisonExpressionContext::comparisonExceptLt() {
-  return getRuleContext<Parser::ComparisonExceptLtContext>(0);
+RxParser::ComparisonExceptLtContext* RxParser::StatementComparisonExpressionContext::comparisonExceptLt() {
+  return getRuleContext<RxParser::ComparisonExceptLtContext>(0);
 }
 
-Parser::BitOrExpressionContext* Parser::StatementComparisonExpressionContext::bitOrExpression() {
-  return getRuleContext<Parser::BitOrExpressionContext>(0);
+RxParser::BitOrExpressionContext* RxParser::StatementComparisonExpressionContext::bitOrExpression() {
+  return getRuleContext<RxParser::BitOrExpressionContext>(0);
 }
 
-Parser::StatementClosedBitOrExpressionContext* Parser::StatementComparisonExpressionContext::statementClosedBitOrExpression() {
-  return getRuleContext<Parser::StatementClosedBitOrExpressionContext>(0);
+RxParser::StatementClosedBitOrExpressionContext* RxParser::StatementComparisonExpressionContext::statementClosedBitOrExpression() {
+  return getRuleContext<RxParser::StatementClosedBitOrExpressionContext>(0);
 }
 
-tree::TerminalNode* Parser::StatementComparisonExpressionContext::LT() {
-  return getToken(Parser::LT, 0);
-}
-
-
-size_t Parser::StatementComparisonExpressionContext::getRuleIndex() const {
-  return Parser::RuleStatementComparisonExpression;
+tree::TerminalNode* RxParser::StatementComparisonExpressionContext::LT() {
+  return getToken(RxParser::LT, 0);
 }
 
 
-std::any Parser::StatementComparisonExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::StatementComparisonExpressionContext::getRuleIndex() const {
+  return RxParser::RuleStatementComparisonExpression;
+}
+
+
+std::any RxParser::StatementComparisonExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitStatementComparisonExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::StatementComparisonExpressionContext* Parser::statementComparisonExpression() {
+RxParser::StatementComparisonExpressionContext* RxParser::statementComparisonExpression() {
   StatementComparisonExpressionContext *_localctx = _tracker.createInstance<StatementComparisonExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 222, Parser::RuleStatementComparisonExpression);
+  enterRule(_localctx, 222, RxParser::RuleStatementComparisonExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -10794,7 +10794,7 @@ Parser::StatementComparisonExpressionContext* Parser::statementComparisonExpress
       setState(1389);
       statementClosedBitOrExpression();
       setState(1390);
-      match(Parser::LT);
+      match(RxParser::LT);
       setState(1391);
       bitOrExpression();
       break;
@@ -10816,46 +10816,46 @@ Parser::StatementComparisonExpressionContext* Parser::statementComparisonExpress
 
 //----------------- StatementBitOrExpressionContext ------------------------------------------------------------------
 
-Parser::StatementBitOrExpressionContext::StatementBitOrExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::StatementBitOrExpressionContext::StatementBitOrExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::StatementBitXorExpressionContext* Parser::StatementBitOrExpressionContext::statementBitXorExpression() {
-  return getRuleContext<Parser::StatementBitXorExpressionContext>(0);
+RxParser::StatementBitXorExpressionContext* RxParser::StatementBitOrExpressionContext::statementBitXorExpression() {
+  return getRuleContext<RxParser::StatementBitXorExpressionContext>(0);
 }
 
-std::vector<tree::TerminalNode *> Parser::StatementBitOrExpressionContext::PIPE() {
-  return getTokens(Parser::PIPE);
+std::vector<tree::TerminalNode *> RxParser::StatementBitOrExpressionContext::PIPE() {
+  return getTokens(RxParser::PIPE);
 }
 
-tree::TerminalNode* Parser::StatementBitOrExpressionContext::PIPE(size_t i) {
-  return getToken(Parser::PIPE, i);
+tree::TerminalNode* RxParser::StatementBitOrExpressionContext::PIPE(size_t i) {
+  return getToken(RxParser::PIPE, i);
 }
 
-std::vector<Parser::BitXorExpressionContext *> Parser::StatementBitOrExpressionContext::bitXorExpression() {
-  return getRuleContexts<Parser::BitXorExpressionContext>();
+std::vector<RxParser::BitXorExpressionContext *> RxParser::StatementBitOrExpressionContext::bitXorExpression() {
+  return getRuleContexts<RxParser::BitXorExpressionContext>();
 }
 
-Parser::BitXorExpressionContext* Parser::StatementBitOrExpressionContext::bitXorExpression(size_t i) {
-  return getRuleContext<Parser::BitXorExpressionContext>(i);
-}
-
-
-size_t Parser::StatementBitOrExpressionContext::getRuleIndex() const {
-  return Parser::RuleStatementBitOrExpression;
+RxParser::BitXorExpressionContext* RxParser::StatementBitOrExpressionContext::bitXorExpression(size_t i) {
+  return getRuleContext<RxParser::BitXorExpressionContext>(i);
 }
 
 
-std::any Parser::StatementBitOrExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::StatementBitOrExpressionContext::getRuleIndex() const {
+  return RxParser::RuleStatementBitOrExpression;
+}
+
+
+std::any RxParser::StatementBitOrExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitStatementBitOrExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::StatementBitOrExpressionContext* Parser::statementBitOrExpression() {
+RxParser::StatementBitOrExpressionContext* RxParser::statementBitOrExpression() {
   StatementBitOrExpressionContext *_localctx = _tracker.createInstance<StatementBitOrExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 224, Parser::RuleStatementBitOrExpression);
+  enterRule(_localctx, 224, RxParser::RuleStatementBitOrExpression);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -10872,9 +10872,9 @@ Parser::StatementBitOrExpressionContext* Parser::statementBitOrExpression() {
     setState(1400);
     _errHandler->sync(this);
     _la = _input->LA(1);
-    while (_la == Parser::PIPE) {
+    while (_la == RxParser::PIPE) {
       setState(1396);
-      match(Parser::PIPE);
+      match(RxParser::PIPE);
       setState(1397);
       bitXorExpression();
       setState(1402);
@@ -10894,54 +10894,54 @@ Parser::StatementBitOrExpressionContext* Parser::statementBitOrExpression() {
 
 //----------------- StatementClosedBitOrExpressionContext ------------------------------------------------------------------
 
-Parser::StatementClosedBitOrExpressionContext::StatementClosedBitOrExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::StatementClosedBitOrExpressionContext::StatementClosedBitOrExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::StatementClosedBitXorExpressionContext* Parser::StatementClosedBitOrExpressionContext::statementClosedBitXorExpression() {
-  return getRuleContext<Parser::StatementClosedBitXorExpressionContext>(0);
+RxParser::StatementClosedBitXorExpressionContext* RxParser::StatementClosedBitOrExpressionContext::statementClosedBitXorExpression() {
+  return getRuleContext<RxParser::StatementClosedBitXorExpressionContext>(0);
 }
 
-Parser::StatementBitXorExpressionContext* Parser::StatementClosedBitOrExpressionContext::statementBitXorExpression() {
-  return getRuleContext<Parser::StatementBitXorExpressionContext>(0);
+RxParser::StatementBitXorExpressionContext* RxParser::StatementClosedBitOrExpressionContext::statementBitXorExpression() {
+  return getRuleContext<RxParser::StatementBitXorExpressionContext>(0);
 }
 
-std::vector<tree::TerminalNode *> Parser::StatementClosedBitOrExpressionContext::PIPE() {
-  return getTokens(Parser::PIPE);
+std::vector<tree::TerminalNode *> RxParser::StatementClosedBitOrExpressionContext::PIPE() {
+  return getTokens(RxParser::PIPE);
 }
 
-tree::TerminalNode* Parser::StatementClosedBitOrExpressionContext::PIPE(size_t i) {
-  return getToken(Parser::PIPE, i);
+tree::TerminalNode* RxParser::StatementClosedBitOrExpressionContext::PIPE(size_t i) {
+  return getToken(RxParser::PIPE, i);
 }
 
-Parser::ClosedBitXorExpressionContext* Parser::StatementClosedBitOrExpressionContext::closedBitXorExpression() {
-  return getRuleContext<Parser::ClosedBitXorExpressionContext>(0);
+RxParser::ClosedBitXorExpressionContext* RxParser::StatementClosedBitOrExpressionContext::closedBitXorExpression() {
+  return getRuleContext<RxParser::ClosedBitXorExpressionContext>(0);
 }
 
-std::vector<Parser::BitXorExpressionContext *> Parser::StatementClosedBitOrExpressionContext::bitXorExpression() {
-  return getRuleContexts<Parser::BitXorExpressionContext>();
+std::vector<RxParser::BitXorExpressionContext *> RxParser::StatementClosedBitOrExpressionContext::bitXorExpression() {
+  return getRuleContexts<RxParser::BitXorExpressionContext>();
 }
 
-Parser::BitXorExpressionContext* Parser::StatementClosedBitOrExpressionContext::bitXorExpression(size_t i) {
-  return getRuleContext<Parser::BitXorExpressionContext>(i);
-}
-
-
-size_t Parser::StatementClosedBitOrExpressionContext::getRuleIndex() const {
-  return Parser::RuleStatementClosedBitOrExpression;
+RxParser::BitXorExpressionContext* RxParser::StatementClosedBitOrExpressionContext::bitXorExpression(size_t i) {
+  return getRuleContext<RxParser::BitXorExpressionContext>(i);
 }
 
 
-std::any Parser::StatementClosedBitOrExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::StatementClosedBitOrExpressionContext::getRuleIndex() const {
+  return RxParser::RuleStatementClosedBitOrExpression;
+}
+
+
+std::any RxParser::StatementClosedBitOrExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitStatementClosedBitOrExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::StatementClosedBitOrExpressionContext* Parser::statementClosedBitOrExpression() {
+RxParser::StatementClosedBitOrExpressionContext* RxParser::statementClosedBitOrExpression() {
   StatementClosedBitOrExpressionContext *_localctx = _tracker.createInstance<StatementClosedBitOrExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 226, Parser::RuleStatementClosedBitOrExpression);
+  enterRule(_localctx, 226, RxParser::RuleStatementClosedBitOrExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -10967,7 +10967,7 @@ Parser::StatementClosedBitOrExpressionContext* Parser::statementClosedBitOrExpre
       setState(1404);
       statementBitXorExpression();
       setState(1405);
-      match(Parser::PIPE);
+      match(RxParser::PIPE);
       setState(1411);
       _errHandler->sync(this);
       alt = getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 166, _ctx);
@@ -10976,7 +10976,7 @@ Parser::StatementClosedBitOrExpressionContext* Parser::statementClosedBitOrExpre
           setState(1406);
           bitXorExpression();
           setState(1407);
-          match(Parser::PIPE); 
+          match(RxParser::PIPE); 
         }
         setState(1413);
         _errHandler->sync(this);
@@ -11003,46 +11003,46 @@ Parser::StatementClosedBitOrExpressionContext* Parser::statementClosedBitOrExpre
 
 //----------------- StatementBitXorExpressionContext ------------------------------------------------------------------
 
-Parser::StatementBitXorExpressionContext::StatementBitXorExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::StatementBitXorExpressionContext::StatementBitXorExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::StatementBitAndExpressionContext* Parser::StatementBitXorExpressionContext::statementBitAndExpression() {
-  return getRuleContext<Parser::StatementBitAndExpressionContext>(0);
+RxParser::StatementBitAndExpressionContext* RxParser::StatementBitXorExpressionContext::statementBitAndExpression() {
+  return getRuleContext<RxParser::StatementBitAndExpressionContext>(0);
 }
 
-std::vector<tree::TerminalNode *> Parser::StatementBitXorExpressionContext::CARET() {
-  return getTokens(Parser::CARET);
+std::vector<tree::TerminalNode *> RxParser::StatementBitXorExpressionContext::CARET() {
+  return getTokens(RxParser::CARET);
 }
 
-tree::TerminalNode* Parser::StatementBitXorExpressionContext::CARET(size_t i) {
-  return getToken(Parser::CARET, i);
+tree::TerminalNode* RxParser::StatementBitXorExpressionContext::CARET(size_t i) {
+  return getToken(RxParser::CARET, i);
 }
 
-std::vector<Parser::BitAndExpressionContext *> Parser::StatementBitXorExpressionContext::bitAndExpression() {
-  return getRuleContexts<Parser::BitAndExpressionContext>();
+std::vector<RxParser::BitAndExpressionContext *> RxParser::StatementBitXorExpressionContext::bitAndExpression() {
+  return getRuleContexts<RxParser::BitAndExpressionContext>();
 }
 
-Parser::BitAndExpressionContext* Parser::StatementBitXorExpressionContext::bitAndExpression(size_t i) {
-  return getRuleContext<Parser::BitAndExpressionContext>(i);
-}
-
-
-size_t Parser::StatementBitXorExpressionContext::getRuleIndex() const {
-  return Parser::RuleStatementBitXorExpression;
+RxParser::BitAndExpressionContext* RxParser::StatementBitXorExpressionContext::bitAndExpression(size_t i) {
+  return getRuleContext<RxParser::BitAndExpressionContext>(i);
 }
 
 
-std::any Parser::StatementBitXorExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::StatementBitXorExpressionContext::getRuleIndex() const {
+  return RxParser::RuleStatementBitXorExpression;
+}
+
+
+std::any RxParser::StatementBitXorExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitStatementBitXorExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::StatementBitXorExpressionContext* Parser::statementBitXorExpression() {
+RxParser::StatementBitXorExpressionContext* RxParser::statementBitXorExpression() {
   StatementBitXorExpressionContext *_localctx = _tracker.createInstance<StatementBitXorExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 228, Parser::RuleStatementBitXorExpression);
+  enterRule(_localctx, 228, RxParser::RuleStatementBitXorExpression);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -11059,9 +11059,9 @@ Parser::StatementBitXorExpressionContext* Parser::statementBitXorExpression() {
     setState(1423);
     _errHandler->sync(this);
     _la = _input->LA(1);
-    while (_la == Parser::CARET) {
+    while (_la == RxParser::CARET) {
       setState(1419);
-      match(Parser::CARET);
+      match(RxParser::CARET);
       setState(1420);
       bitAndExpression();
       setState(1425);
@@ -11081,54 +11081,54 @@ Parser::StatementBitXorExpressionContext* Parser::statementBitXorExpression() {
 
 //----------------- StatementClosedBitXorExpressionContext ------------------------------------------------------------------
 
-Parser::StatementClosedBitXorExpressionContext::StatementClosedBitXorExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::StatementClosedBitXorExpressionContext::StatementClosedBitXorExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::StatementClosedBitAndExpressionContext* Parser::StatementClosedBitXorExpressionContext::statementClosedBitAndExpression() {
-  return getRuleContext<Parser::StatementClosedBitAndExpressionContext>(0);
+RxParser::StatementClosedBitAndExpressionContext* RxParser::StatementClosedBitXorExpressionContext::statementClosedBitAndExpression() {
+  return getRuleContext<RxParser::StatementClosedBitAndExpressionContext>(0);
 }
 
-Parser::StatementBitAndExpressionContext* Parser::StatementClosedBitXorExpressionContext::statementBitAndExpression() {
-  return getRuleContext<Parser::StatementBitAndExpressionContext>(0);
+RxParser::StatementBitAndExpressionContext* RxParser::StatementClosedBitXorExpressionContext::statementBitAndExpression() {
+  return getRuleContext<RxParser::StatementBitAndExpressionContext>(0);
 }
 
-std::vector<tree::TerminalNode *> Parser::StatementClosedBitXorExpressionContext::CARET() {
-  return getTokens(Parser::CARET);
+std::vector<tree::TerminalNode *> RxParser::StatementClosedBitXorExpressionContext::CARET() {
+  return getTokens(RxParser::CARET);
 }
 
-tree::TerminalNode* Parser::StatementClosedBitXorExpressionContext::CARET(size_t i) {
-  return getToken(Parser::CARET, i);
+tree::TerminalNode* RxParser::StatementClosedBitXorExpressionContext::CARET(size_t i) {
+  return getToken(RxParser::CARET, i);
 }
 
-Parser::ClosedBitAndExpressionContext* Parser::StatementClosedBitXorExpressionContext::closedBitAndExpression() {
-  return getRuleContext<Parser::ClosedBitAndExpressionContext>(0);
+RxParser::ClosedBitAndExpressionContext* RxParser::StatementClosedBitXorExpressionContext::closedBitAndExpression() {
+  return getRuleContext<RxParser::ClosedBitAndExpressionContext>(0);
 }
 
-std::vector<Parser::BitAndExpressionContext *> Parser::StatementClosedBitXorExpressionContext::bitAndExpression() {
-  return getRuleContexts<Parser::BitAndExpressionContext>();
+std::vector<RxParser::BitAndExpressionContext *> RxParser::StatementClosedBitXorExpressionContext::bitAndExpression() {
+  return getRuleContexts<RxParser::BitAndExpressionContext>();
 }
 
-Parser::BitAndExpressionContext* Parser::StatementClosedBitXorExpressionContext::bitAndExpression(size_t i) {
-  return getRuleContext<Parser::BitAndExpressionContext>(i);
-}
-
-
-size_t Parser::StatementClosedBitXorExpressionContext::getRuleIndex() const {
-  return Parser::RuleStatementClosedBitXorExpression;
+RxParser::BitAndExpressionContext* RxParser::StatementClosedBitXorExpressionContext::bitAndExpression(size_t i) {
+  return getRuleContext<RxParser::BitAndExpressionContext>(i);
 }
 
 
-std::any Parser::StatementClosedBitXorExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::StatementClosedBitXorExpressionContext::getRuleIndex() const {
+  return RxParser::RuleStatementClosedBitXorExpression;
+}
+
+
+std::any RxParser::StatementClosedBitXorExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitStatementClosedBitXorExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::StatementClosedBitXorExpressionContext* Parser::statementClosedBitXorExpression() {
+RxParser::StatementClosedBitXorExpressionContext* RxParser::statementClosedBitXorExpression() {
   StatementClosedBitXorExpressionContext *_localctx = _tracker.createInstance<StatementClosedBitXorExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 230, Parser::RuleStatementClosedBitXorExpression);
+  enterRule(_localctx, 230, RxParser::RuleStatementClosedBitXorExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -11154,7 +11154,7 @@ Parser::StatementClosedBitXorExpressionContext* Parser::statementClosedBitXorExp
       setState(1427);
       statementBitAndExpression();
       setState(1428);
-      match(Parser::CARET);
+      match(RxParser::CARET);
       setState(1434);
       _errHandler->sync(this);
       alt = getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 169, _ctx);
@@ -11163,7 +11163,7 @@ Parser::StatementClosedBitXorExpressionContext* Parser::statementClosedBitXorExp
           setState(1429);
           bitAndExpression();
           setState(1430);
-          match(Parser::CARET); 
+          match(RxParser::CARET); 
         }
         setState(1436);
         _errHandler->sync(this);
@@ -11190,46 +11190,46 @@ Parser::StatementClosedBitXorExpressionContext* Parser::statementClosedBitXorExp
 
 //----------------- StatementBitAndExpressionContext ------------------------------------------------------------------
 
-Parser::StatementBitAndExpressionContext::StatementBitAndExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::StatementBitAndExpressionContext::StatementBitAndExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::StatementShiftExpressionContext* Parser::StatementBitAndExpressionContext::statementShiftExpression() {
-  return getRuleContext<Parser::StatementShiftExpressionContext>(0);
+RxParser::StatementShiftExpressionContext* RxParser::StatementBitAndExpressionContext::statementShiftExpression() {
+  return getRuleContext<RxParser::StatementShiftExpressionContext>(0);
 }
 
-std::vector<tree::TerminalNode *> Parser::StatementBitAndExpressionContext::AMP() {
-  return getTokens(Parser::AMP);
+std::vector<tree::TerminalNode *> RxParser::StatementBitAndExpressionContext::AMP() {
+  return getTokens(RxParser::AMP);
 }
 
-tree::TerminalNode* Parser::StatementBitAndExpressionContext::AMP(size_t i) {
-  return getToken(Parser::AMP, i);
+tree::TerminalNode* RxParser::StatementBitAndExpressionContext::AMP(size_t i) {
+  return getToken(RxParser::AMP, i);
 }
 
-std::vector<Parser::ShiftExpressionContext *> Parser::StatementBitAndExpressionContext::shiftExpression() {
-  return getRuleContexts<Parser::ShiftExpressionContext>();
+std::vector<RxParser::ShiftExpressionContext *> RxParser::StatementBitAndExpressionContext::shiftExpression() {
+  return getRuleContexts<RxParser::ShiftExpressionContext>();
 }
 
-Parser::ShiftExpressionContext* Parser::StatementBitAndExpressionContext::shiftExpression(size_t i) {
-  return getRuleContext<Parser::ShiftExpressionContext>(i);
-}
-
-
-size_t Parser::StatementBitAndExpressionContext::getRuleIndex() const {
-  return Parser::RuleStatementBitAndExpression;
+RxParser::ShiftExpressionContext* RxParser::StatementBitAndExpressionContext::shiftExpression(size_t i) {
+  return getRuleContext<RxParser::ShiftExpressionContext>(i);
 }
 
 
-std::any Parser::StatementBitAndExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::StatementBitAndExpressionContext::getRuleIndex() const {
+  return RxParser::RuleStatementBitAndExpression;
+}
+
+
+std::any RxParser::StatementBitAndExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitStatementBitAndExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::StatementBitAndExpressionContext* Parser::statementBitAndExpression() {
+RxParser::StatementBitAndExpressionContext* RxParser::statementBitAndExpression() {
   StatementBitAndExpressionContext *_localctx = _tracker.createInstance<StatementBitAndExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 232, Parser::RuleStatementBitAndExpression);
+  enterRule(_localctx, 232, RxParser::RuleStatementBitAndExpression);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -11246,9 +11246,9 @@ Parser::StatementBitAndExpressionContext* Parser::statementBitAndExpression() {
     setState(1446);
     _errHandler->sync(this);
     _la = _input->LA(1);
-    while (_la == Parser::AMP) {
+    while (_la == RxParser::AMP) {
       setState(1442);
-      match(Parser::AMP);
+      match(RxParser::AMP);
       setState(1443);
       shiftExpression();
       setState(1448);
@@ -11268,54 +11268,54 @@ Parser::StatementBitAndExpressionContext* Parser::statementBitAndExpression() {
 
 //----------------- StatementClosedBitAndExpressionContext ------------------------------------------------------------------
 
-Parser::StatementClosedBitAndExpressionContext::StatementClosedBitAndExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::StatementClosedBitAndExpressionContext::StatementClosedBitAndExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::StatementClosedShiftExpressionContext* Parser::StatementClosedBitAndExpressionContext::statementClosedShiftExpression() {
-  return getRuleContext<Parser::StatementClosedShiftExpressionContext>(0);
+RxParser::StatementClosedShiftExpressionContext* RxParser::StatementClosedBitAndExpressionContext::statementClosedShiftExpression() {
+  return getRuleContext<RxParser::StatementClosedShiftExpressionContext>(0);
 }
 
-Parser::StatementShiftExpressionContext* Parser::StatementClosedBitAndExpressionContext::statementShiftExpression() {
-  return getRuleContext<Parser::StatementShiftExpressionContext>(0);
+RxParser::StatementShiftExpressionContext* RxParser::StatementClosedBitAndExpressionContext::statementShiftExpression() {
+  return getRuleContext<RxParser::StatementShiftExpressionContext>(0);
 }
 
-std::vector<tree::TerminalNode *> Parser::StatementClosedBitAndExpressionContext::AMP() {
-  return getTokens(Parser::AMP);
+std::vector<tree::TerminalNode *> RxParser::StatementClosedBitAndExpressionContext::AMP() {
+  return getTokens(RxParser::AMP);
 }
 
-tree::TerminalNode* Parser::StatementClosedBitAndExpressionContext::AMP(size_t i) {
-  return getToken(Parser::AMP, i);
+tree::TerminalNode* RxParser::StatementClosedBitAndExpressionContext::AMP(size_t i) {
+  return getToken(RxParser::AMP, i);
 }
 
-Parser::ClosedShiftExpressionContext* Parser::StatementClosedBitAndExpressionContext::closedShiftExpression() {
-  return getRuleContext<Parser::ClosedShiftExpressionContext>(0);
+RxParser::ClosedShiftExpressionContext* RxParser::StatementClosedBitAndExpressionContext::closedShiftExpression() {
+  return getRuleContext<RxParser::ClosedShiftExpressionContext>(0);
 }
 
-std::vector<Parser::ShiftExpressionContext *> Parser::StatementClosedBitAndExpressionContext::shiftExpression() {
-  return getRuleContexts<Parser::ShiftExpressionContext>();
+std::vector<RxParser::ShiftExpressionContext *> RxParser::StatementClosedBitAndExpressionContext::shiftExpression() {
+  return getRuleContexts<RxParser::ShiftExpressionContext>();
 }
 
-Parser::ShiftExpressionContext* Parser::StatementClosedBitAndExpressionContext::shiftExpression(size_t i) {
-  return getRuleContext<Parser::ShiftExpressionContext>(i);
-}
-
-
-size_t Parser::StatementClosedBitAndExpressionContext::getRuleIndex() const {
-  return Parser::RuleStatementClosedBitAndExpression;
+RxParser::ShiftExpressionContext* RxParser::StatementClosedBitAndExpressionContext::shiftExpression(size_t i) {
+  return getRuleContext<RxParser::ShiftExpressionContext>(i);
 }
 
 
-std::any Parser::StatementClosedBitAndExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::StatementClosedBitAndExpressionContext::getRuleIndex() const {
+  return RxParser::RuleStatementClosedBitAndExpression;
+}
+
+
+std::any RxParser::StatementClosedBitAndExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitStatementClosedBitAndExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::StatementClosedBitAndExpressionContext* Parser::statementClosedBitAndExpression() {
+RxParser::StatementClosedBitAndExpressionContext* RxParser::statementClosedBitAndExpression() {
   StatementClosedBitAndExpressionContext *_localctx = _tracker.createInstance<StatementClosedBitAndExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 234, Parser::RuleStatementClosedBitAndExpression);
+  enterRule(_localctx, 234, RxParser::RuleStatementClosedBitAndExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -11341,7 +11341,7 @@ Parser::StatementClosedBitAndExpressionContext* Parser::statementClosedBitAndExp
       setState(1450);
       statementShiftExpression();
       setState(1451);
-      match(Parser::AMP);
+      match(RxParser::AMP);
       setState(1457);
       _errHandler->sync(this);
       alt = getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 172, _ctx);
@@ -11350,7 +11350,7 @@ Parser::StatementClosedBitAndExpressionContext* Parser::statementClosedBitAndExp
           setState(1452);
           shiftExpression();
           setState(1453);
-          match(Parser::AMP); 
+          match(RxParser::AMP); 
         }
         setState(1459);
         _errHandler->sync(this);
@@ -11377,66 +11377,66 @@ Parser::StatementClosedBitAndExpressionContext* Parser::statementClosedBitAndExp
 
 //----------------- StatementShiftExpressionContext ------------------------------------------------------------------
 
-Parser::StatementShiftExpressionContext::StatementShiftExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::StatementShiftExpressionContext::StatementShiftExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::StatementAdditiveExpressionContext* Parser::StatementShiftExpressionContext::statementAdditiveExpression() {
-  return getRuleContext<Parser::StatementAdditiveExpressionContext>(0);
+RxParser::StatementAdditiveExpressionContext* RxParser::StatementShiftExpressionContext::statementAdditiveExpression() {
+  return getRuleContext<RxParser::StatementAdditiveExpressionContext>(0);
 }
 
-std::vector<Parser::AdditiveExpressionContext *> Parser::StatementShiftExpressionContext::additiveExpression() {
-  return getRuleContexts<Parser::AdditiveExpressionContext>();
+std::vector<RxParser::AdditiveExpressionContext *> RxParser::StatementShiftExpressionContext::additiveExpression() {
+  return getRuleContexts<RxParser::AdditiveExpressionContext>();
 }
 
-Parser::AdditiveExpressionContext* Parser::StatementShiftExpressionContext::additiveExpression(size_t i) {
-  return getRuleContext<Parser::AdditiveExpressionContext>(i);
+RxParser::AdditiveExpressionContext* RxParser::StatementShiftExpressionContext::additiveExpression(size_t i) {
+  return getRuleContext<RxParser::AdditiveExpressionContext>(i);
 }
 
-Parser::StatementClosedAdditiveExpressionContext* Parser::StatementShiftExpressionContext::statementClosedAdditiveExpression() {
-  return getRuleContext<Parser::StatementClosedAdditiveExpressionContext>(0);
+RxParser::StatementClosedAdditiveExpressionContext* RxParser::StatementShiftExpressionContext::statementClosedAdditiveExpression() {
+  return getRuleContext<RxParser::StatementClosedAdditiveExpressionContext>(0);
 }
 
-std::vector<tree::TerminalNode *> Parser::StatementShiftExpressionContext::SHL() {
-  return getTokens(Parser::SHL);
+std::vector<tree::TerminalNode *> RxParser::StatementShiftExpressionContext::SHL() {
+  return getTokens(RxParser::SHL);
 }
 
-tree::TerminalNode* Parser::StatementShiftExpressionContext::SHL(size_t i) {
-  return getToken(Parser::SHL, i);
+tree::TerminalNode* RxParser::StatementShiftExpressionContext::SHL(size_t i) {
+  return getToken(RxParser::SHL, i);
 }
 
-std::vector<Parser::ShiftRightContext *> Parser::StatementShiftExpressionContext::shiftRight() {
-  return getRuleContexts<Parser::ShiftRightContext>();
+std::vector<RxParser::ShiftRightContext *> RxParser::StatementShiftExpressionContext::shiftRight() {
+  return getRuleContexts<RxParser::ShiftRightContext>();
 }
 
-Parser::ShiftRightContext* Parser::StatementShiftExpressionContext::shiftRight(size_t i) {
-  return getRuleContext<Parser::ShiftRightContext>(i);
+RxParser::ShiftRightContext* RxParser::StatementShiftExpressionContext::shiftRight(size_t i) {
+  return getRuleContext<RxParser::ShiftRightContext>(i);
 }
 
-std::vector<Parser::ClosedAdditiveExpressionContext *> Parser::StatementShiftExpressionContext::closedAdditiveExpression() {
-  return getRuleContexts<Parser::ClosedAdditiveExpressionContext>();
+std::vector<RxParser::ClosedAdditiveExpressionContext *> RxParser::StatementShiftExpressionContext::closedAdditiveExpression() {
+  return getRuleContexts<RxParser::ClosedAdditiveExpressionContext>();
 }
 
-Parser::ClosedAdditiveExpressionContext* Parser::StatementShiftExpressionContext::closedAdditiveExpression(size_t i) {
-  return getRuleContext<Parser::ClosedAdditiveExpressionContext>(i);
-}
-
-
-size_t Parser::StatementShiftExpressionContext::getRuleIndex() const {
-  return Parser::RuleStatementShiftExpression;
+RxParser::ClosedAdditiveExpressionContext* RxParser::StatementShiftExpressionContext::closedAdditiveExpression(size_t i) {
+  return getRuleContext<RxParser::ClosedAdditiveExpressionContext>(i);
 }
 
 
-std::any Parser::StatementShiftExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::StatementShiftExpressionContext::getRuleIndex() const {
+  return RxParser::RuleStatementShiftExpression;
+}
+
+
+std::any RxParser::StatementShiftExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitStatementShiftExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::StatementShiftExpressionContext* Parser::statementShiftExpression() {
+RxParser::StatementShiftExpressionContext* RxParser::statementShiftExpression() {
   StatementShiftExpressionContext *_localctx = _tracker.createInstance<StatementShiftExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 236, Parser::RuleStatementShiftExpression);
+  enterRule(_localctx, 236, RxParser::RuleStatementShiftExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -11466,7 +11466,7 @@ Parser::StatementShiftExpressionContext* Parser::statementShiftExpression() {
         setState(1465);
         statementClosedAdditiveExpression();
         setState(1466);
-        match(Parser::SHL);
+        match(RxParser::SHL);
         break;
       }
 
@@ -11493,7 +11493,7 @@ Parser::StatementShiftExpressionContext* Parser::statementShiftExpression() {
             setState(1473);
             closedAdditiveExpression();
             setState(1474);
-            match(Parser::SHL);
+            match(RxParser::SHL);
             break;
           }
 
@@ -11534,66 +11534,66 @@ Parser::StatementShiftExpressionContext* Parser::statementShiftExpression() {
 
 //----------------- StatementClosedShiftExpressionContext ------------------------------------------------------------------
 
-Parser::StatementClosedShiftExpressionContext::StatementClosedShiftExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::StatementClosedShiftExpressionContext::StatementClosedShiftExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::StatementClosedAdditiveExpressionContext* Parser::StatementClosedShiftExpressionContext::statementClosedAdditiveExpression() {
-  return getRuleContext<Parser::StatementClosedAdditiveExpressionContext>(0);
+RxParser::StatementClosedAdditiveExpressionContext* RxParser::StatementClosedShiftExpressionContext::statementClosedAdditiveExpression() {
+  return getRuleContext<RxParser::StatementClosedAdditiveExpressionContext>(0);
 }
 
-std::vector<Parser::ClosedAdditiveExpressionContext *> Parser::StatementClosedShiftExpressionContext::closedAdditiveExpression() {
-  return getRuleContexts<Parser::ClosedAdditiveExpressionContext>();
+std::vector<RxParser::ClosedAdditiveExpressionContext *> RxParser::StatementClosedShiftExpressionContext::closedAdditiveExpression() {
+  return getRuleContexts<RxParser::ClosedAdditiveExpressionContext>();
 }
 
-Parser::ClosedAdditiveExpressionContext* Parser::StatementClosedShiftExpressionContext::closedAdditiveExpression(size_t i) {
-  return getRuleContext<Parser::ClosedAdditiveExpressionContext>(i);
+RxParser::ClosedAdditiveExpressionContext* RxParser::StatementClosedShiftExpressionContext::closedAdditiveExpression(size_t i) {
+  return getRuleContext<RxParser::ClosedAdditiveExpressionContext>(i);
 }
 
-std::vector<tree::TerminalNode *> Parser::StatementClosedShiftExpressionContext::SHL() {
-  return getTokens(Parser::SHL);
+std::vector<tree::TerminalNode *> RxParser::StatementClosedShiftExpressionContext::SHL() {
+  return getTokens(RxParser::SHL);
 }
 
-tree::TerminalNode* Parser::StatementClosedShiftExpressionContext::SHL(size_t i) {
-  return getToken(Parser::SHL, i);
+tree::TerminalNode* RxParser::StatementClosedShiftExpressionContext::SHL(size_t i) {
+  return getToken(RxParser::SHL, i);
 }
 
-Parser::StatementAdditiveExpressionContext* Parser::StatementClosedShiftExpressionContext::statementAdditiveExpression() {
-  return getRuleContext<Parser::StatementAdditiveExpressionContext>(0);
+RxParser::StatementAdditiveExpressionContext* RxParser::StatementClosedShiftExpressionContext::statementAdditiveExpression() {
+  return getRuleContext<RxParser::StatementAdditiveExpressionContext>(0);
 }
 
-std::vector<Parser::ShiftRightContext *> Parser::StatementClosedShiftExpressionContext::shiftRight() {
-  return getRuleContexts<Parser::ShiftRightContext>();
+std::vector<RxParser::ShiftRightContext *> RxParser::StatementClosedShiftExpressionContext::shiftRight() {
+  return getRuleContexts<RxParser::ShiftRightContext>();
 }
 
-Parser::ShiftRightContext* Parser::StatementClosedShiftExpressionContext::shiftRight(size_t i) {
-  return getRuleContext<Parser::ShiftRightContext>(i);
+RxParser::ShiftRightContext* RxParser::StatementClosedShiftExpressionContext::shiftRight(size_t i) {
+  return getRuleContext<RxParser::ShiftRightContext>(i);
 }
 
-std::vector<Parser::AdditiveExpressionContext *> Parser::StatementClosedShiftExpressionContext::additiveExpression() {
-  return getRuleContexts<Parser::AdditiveExpressionContext>();
+std::vector<RxParser::AdditiveExpressionContext *> RxParser::StatementClosedShiftExpressionContext::additiveExpression() {
+  return getRuleContexts<RxParser::AdditiveExpressionContext>();
 }
 
-Parser::AdditiveExpressionContext* Parser::StatementClosedShiftExpressionContext::additiveExpression(size_t i) {
-  return getRuleContext<Parser::AdditiveExpressionContext>(i);
-}
-
-
-size_t Parser::StatementClosedShiftExpressionContext::getRuleIndex() const {
-  return Parser::RuleStatementClosedShiftExpression;
+RxParser::AdditiveExpressionContext* RxParser::StatementClosedShiftExpressionContext::additiveExpression(size_t i) {
+  return getRuleContext<RxParser::AdditiveExpressionContext>(i);
 }
 
 
-std::any Parser::StatementClosedShiftExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::StatementClosedShiftExpressionContext::getRuleIndex() const {
+  return RxParser::RuleStatementClosedShiftExpression;
+}
+
+
+std::any RxParser::StatementClosedShiftExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitStatementClosedShiftExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::StatementClosedShiftExpressionContext* Parser::statementClosedShiftExpression() {
+RxParser::StatementClosedShiftExpressionContext* RxParser::statementClosedShiftExpression() {
   StatementClosedShiftExpressionContext *_localctx = _tracker.createInstance<StatementClosedShiftExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 238, Parser::RuleStatementClosedShiftExpression);
+  enterRule(_localctx, 238, RxParser::RuleStatementClosedShiftExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -11623,7 +11623,7 @@ Parser::StatementClosedShiftExpressionContext* Parser::statementClosedShiftExpre
         setState(1489);
         statementClosedAdditiveExpression();
         setState(1490);
-        match(Parser::SHL);
+        match(RxParser::SHL);
         break;
       }
 
@@ -11650,7 +11650,7 @@ Parser::StatementClosedShiftExpressionContext* Parser::statementClosedShiftExpre
             setState(1497);
             closedAdditiveExpression();
             setState(1498);
-            match(Parser::SHL);
+            match(RxParser::SHL);
             break;
           }
 
@@ -11691,46 +11691,46 @@ Parser::StatementClosedShiftExpressionContext* Parser::statementClosedShiftExpre
 
 //----------------- StatementAdditiveExpressionContext ------------------------------------------------------------------
 
-Parser::StatementAdditiveExpressionContext::StatementAdditiveExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::StatementAdditiveExpressionContext::StatementAdditiveExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::StatementMultiplicativeExpressionContext* Parser::StatementAdditiveExpressionContext::statementMultiplicativeExpression() {
-  return getRuleContext<Parser::StatementMultiplicativeExpressionContext>(0);
+RxParser::StatementMultiplicativeExpressionContext* RxParser::StatementAdditiveExpressionContext::statementMultiplicativeExpression() {
+  return getRuleContext<RxParser::StatementMultiplicativeExpressionContext>(0);
 }
 
-std::vector<Parser::AdditiveOperatorContext *> Parser::StatementAdditiveExpressionContext::additiveOperator() {
-  return getRuleContexts<Parser::AdditiveOperatorContext>();
+std::vector<RxParser::AdditiveOperatorContext *> RxParser::StatementAdditiveExpressionContext::additiveOperator() {
+  return getRuleContexts<RxParser::AdditiveOperatorContext>();
 }
 
-Parser::AdditiveOperatorContext* Parser::StatementAdditiveExpressionContext::additiveOperator(size_t i) {
-  return getRuleContext<Parser::AdditiveOperatorContext>(i);
+RxParser::AdditiveOperatorContext* RxParser::StatementAdditiveExpressionContext::additiveOperator(size_t i) {
+  return getRuleContext<RxParser::AdditiveOperatorContext>(i);
 }
 
-std::vector<Parser::MultiplicativeExpressionContext *> Parser::StatementAdditiveExpressionContext::multiplicativeExpression() {
-  return getRuleContexts<Parser::MultiplicativeExpressionContext>();
+std::vector<RxParser::MultiplicativeExpressionContext *> RxParser::StatementAdditiveExpressionContext::multiplicativeExpression() {
+  return getRuleContexts<RxParser::MultiplicativeExpressionContext>();
 }
 
-Parser::MultiplicativeExpressionContext* Parser::StatementAdditiveExpressionContext::multiplicativeExpression(size_t i) {
-  return getRuleContext<Parser::MultiplicativeExpressionContext>(i);
-}
-
-
-size_t Parser::StatementAdditiveExpressionContext::getRuleIndex() const {
-  return Parser::RuleStatementAdditiveExpression;
+RxParser::MultiplicativeExpressionContext* RxParser::StatementAdditiveExpressionContext::multiplicativeExpression(size_t i) {
+  return getRuleContext<RxParser::MultiplicativeExpressionContext>(i);
 }
 
 
-std::any Parser::StatementAdditiveExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::StatementAdditiveExpressionContext::getRuleIndex() const {
+  return RxParser::RuleStatementAdditiveExpression;
+}
+
+
+std::any RxParser::StatementAdditiveExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitStatementAdditiveExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::StatementAdditiveExpressionContext* Parser::statementAdditiveExpression() {
+RxParser::StatementAdditiveExpressionContext* RxParser::statementAdditiveExpression() {
   StatementAdditiveExpressionContext *_localctx = _tracker.createInstance<StatementAdditiveExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 240, Parser::RuleStatementAdditiveExpression);
+  enterRule(_localctx, 240, RxParser::RuleStatementAdditiveExpression);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -11747,9 +11747,9 @@ Parser::StatementAdditiveExpressionContext* Parser::statementAdditiveExpression(
     setState(1518);
     _errHandler->sync(this);
     _la = _input->LA(1);
-    while (_la == Parser::PLUS
+    while (_la == RxParser::PLUS
 
-    || _la == Parser::MINUS) {
+    || _la == RxParser::MINUS) {
       setState(1513);
       additiveOperator();
       setState(1514);
@@ -11771,54 +11771,54 @@ Parser::StatementAdditiveExpressionContext* Parser::statementAdditiveExpression(
 
 //----------------- StatementClosedAdditiveExpressionContext ------------------------------------------------------------------
 
-Parser::StatementClosedAdditiveExpressionContext::StatementClosedAdditiveExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::StatementClosedAdditiveExpressionContext::StatementClosedAdditiveExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::StatementClosedMultiplicativeExpressionContext* Parser::StatementClosedAdditiveExpressionContext::statementClosedMultiplicativeExpression() {
-  return getRuleContext<Parser::StatementClosedMultiplicativeExpressionContext>(0);
+RxParser::StatementClosedMultiplicativeExpressionContext* RxParser::StatementClosedAdditiveExpressionContext::statementClosedMultiplicativeExpression() {
+  return getRuleContext<RxParser::StatementClosedMultiplicativeExpressionContext>(0);
 }
 
-Parser::StatementMultiplicativeExpressionContext* Parser::StatementClosedAdditiveExpressionContext::statementMultiplicativeExpression() {
-  return getRuleContext<Parser::StatementMultiplicativeExpressionContext>(0);
+RxParser::StatementMultiplicativeExpressionContext* RxParser::StatementClosedAdditiveExpressionContext::statementMultiplicativeExpression() {
+  return getRuleContext<RxParser::StatementMultiplicativeExpressionContext>(0);
 }
 
-std::vector<Parser::AdditiveOperatorContext *> Parser::StatementClosedAdditiveExpressionContext::additiveOperator() {
-  return getRuleContexts<Parser::AdditiveOperatorContext>();
+std::vector<RxParser::AdditiveOperatorContext *> RxParser::StatementClosedAdditiveExpressionContext::additiveOperator() {
+  return getRuleContexts<RxParser::AdditiveOperatorContext>();
 }
 
-Parser::AdditiveOperatorContext* Parser::StatementClosedAdditiveExpressionContext::additiveOperator(size_t i) {
-  return getRuleContext<Parser::AdditiveOperatorContext>(i);
+RxParser::AdditiveOperatorContext* RxParser::StatementClosedAdditiveExpressionContext::additiveOperator(size_t i) {
+  return getRuleContext<RxParser::AdditiveOperatorContext>(i);
 }
 
-Parser::ClosedMultiplicativeExpressionContext* Parser::StatementClosedAdditiveExpressionContext::closedMultiplicativeExpression() {
-  return getRuleContext<Parser::ClosedMultiplicativeExpressionContext>(0);
+RxParser::ClosedMultiplicativeExpressionContext* RxParser::StatementClosedAdditiveExpressionContext::closedMultiplicativeExpression() {
+  return getRuleContext<RxParser::ClosedMultiplicativeExpressionContext>(0);
 }
 
-std::vector<Parser::MultiplicativeExpressionContext *> Parser::StatementClosedAdditiveExpressionContext::multiplicativeExpression() {
-  return getRuleContexts<Parser::MultiplicativeExpressionContext>();
+std::vector<RxParser::MultiplicativeExpressionContext *> RxParser::StatementClosedAdditiveExpressionContext::multiplicativeExpression() {
+  return getRuleContexts<RxParser::MultiplicativeExpressionContext>();
 }
 
-Parser::MultiplicativeExpressionContext* Parser::StatementClosedAdditiveExpressionContext::multiplicativeExpression(size_t i) {
-  return getRuleContext<Parser::MultiplicativeExpressionContext>(i);
-}
-
-
-size_t Parser::StatementClosedAdditiveExpressionContext::getRuleIndex() const {
-  return Parser::RuleStatementClosedAdditiveExpression;
+RxParser::MultiplicativeExpressionContext* RxParser::StatementClosedAdditiveExpressionContext::multiplicativeExpression(size_t i) {
+  return getRuleContext<RxParser::MultiplicativeExpressionContext>(i);
 }
 
 
-std::any Parser::StatementClosedAdditiveExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::StatementClosedAdditiveExpressionContext::getRuleIndex() const {
+  return RxParser::RuleStatementClosedAdditiveExpression;
+}
+
+
+std::any RxParser::StatementClosedAdditiveExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitStatementClosedAdditiveExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::StatementClosedAdditiveExpressionContext* Parser::statementClosedAdditiveExpression() {
+RxParser::StatementClosedAdditiveExpressionContext* RxParser::statementClosedAdditiveExpression() {
   StatementClosedAdditiveExpressionContext *_localctx = _tracker.createInstance<StatementClosedAdditiveExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 242, Parser::RuleStatementClosedAdditiveExpression);
+  enterRule(_localctx, 242, RxParser::RuleStatementClosedAdditiveExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -11880,46 +11880,46 @@ Parser::StatementClosedAdditiveExpressionContext* Parser::statementClosedAdditiv
 
 //----------------- StatementMultiplicativeExpressionContext ------------------------------------------------------------------
 
-Parser::StatementMultiplicativeExpressionContext::StatementMultiplicativeExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::StatementMultiplicativeExpressionContext::StatementMultiplicativeExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::StatementCastExpressionContext* Parser::StatementMultiplicativeExpressionContext::statementCastExpression() {
-  return getRuleContext<Parser::StatementCastExpressionContext>(0);
+RxParser::StatementCastExpressionContext* RxParser::StatementMultiplicativeExpressionContext::statementCastExpression() {
+  return getRuleContext<RxParser::StatementCastExpressionContext>(0);
 }
 
-std::vector<Parser::MultiplicativeOperatorContext *> Parser::StatementMultiplicativeExpressionContext::multiplicativeOperator() {
-  return getRuleContexts<Parser::MultiplicativeOperatorContext>();
+std::vector<RxParser::MultiplicativeOperatorContext *> RxParser::StatementMultiplicativeExpressionContext::multiplicativeOperator() {
+  return getRuleContexts<RxParser::MultiplicativeOperatorContext>();
 }
 
-Parser::MultiplicativeOperatorContext* Parser::StatementMultiplicativeExpressionContext::multiplicativeOperator(size_t i) {
-  return getRuleContext<Parser::MultiplicativeOperatorContext>(i);
+RxParser::MultiplicativeOperatorContext* RxParser::StatementMultiplicativeExpressionContext::multiplicativeOperator(size_t i) {
+  return getRuleContext<RxParser::MultiplicativeOperatorContext>(i);
 }
 
-std::vector<Parser::CastExpressionContext *> Parser::StatementMultiplicativeExpressionContext::castExpression() {
-  return getRuleContexts<Parser::CastExpressionContext>();
+std::vector<RxParser::CastExpressionContext *> RxParser::StatementMultiplicativeExpressionContext::castExpression() {
+  return getRuleContexts<RxParser::CastExpressionContext>();
 }
 
-Parser::CastExpressionContext* Parser::StatementMultiplicativeExpressionContext::castExpression(size_t i) {
-  return getRuleContext<Parser::CastExpressionContext>(i);
-}
-
-
-size_t Parser::StatementMultiplicativeExpressionContext::getRuleIndex() const {
-  return Parser::RuleStatementMultiplicativeExpression;
+RxParser::CastExpressionContext* RxParser::StatementMultiplicativeExpressionContext::castExpression(size_t i) {
+  return getRuleContext<RxParser::CastExpressionContext>(i);
 }
 
 
-std::any Parser::StatementMultiplicativeExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::StatementMultiplicativeExpressionContext::getRuleIndex() const {
+  return RxParser::RuleStatementMultiplicativeExpression;
+}
+
+
+std::any RxParser::StatementMultiplicativeExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitStatementMultiplicativeExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::StatementMultiplicativeExpressionContext* Parser::statementMultiplicativeExpression() {
+RxParser::StatementMultiplicativeExpressionContext* RxParser::statementMultiplicativeExpression() {
   StatementMultiplicativeExpressionContext *_localctx = _tracker.createInstance<StatementMultiplicativeExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 244, Parser::RuleStatementMultiplicativeExpression);
+  enterRule(_localctx, 244, RxParser::RuleStatementMultiplicativeExpression);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -11959,54 +11959,54 @@ Parser::StatementMultiplicativeExpressionContext* Parser::statementMultiplicativ
 
 //----------------- StatementClosedMultiplicativeExpressionContext ------------------------------------------------------------------
 
-Parser::StatementClosedMultiplicativeExpressionContext::StatementClosedMultiplicativeExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::StatementClosedMultiplicativeExpressionContext::StatementClosedMultiplicativeExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::StatementClosedCastExpressionContext* Parser::StatementClosedMultiplicativeExpressionContext::statementClosedCastExpression() {
-  return getRuleContext<Parser::StatementClosedCastExpressionContext>(0);
+RxParser::StatementClosedCastExpressionContext* RxParser::StatementClosedMultiplicativeExpressionContext::statementClosedCastExpression() {
+  return getRuleContext<RxParser::StatementClosedCastExpressionContext>(0);
 }
 
-Parser::StatementCastExpressionContext* Parser::StatementClosedMultiplicativeExpressionContext::statementCastExpression() {
-  return getRuleContext<Parser::StatementCastExpressionContext>(0);
+RxParser::StatementCastExpressionContext* RxParser::StatementClosedMultiplicativeExpressionContext::statementCastExpression() {
+  return getRuleContext<RxParser::StatementCastExpressionContext>(0);
 }
 
-std::vector<Parser::MultiplicativeOperatorContext *> Parser::StatementClosedMultiplicativeExpressionContext::multiplicativeOperator() {
-  return getRuleContexts<Parser::MultiplicativeOperatorContext>();
+std::vector<RxParser::MultiplicativeOperatorContext *> RxParser::StatementClosedMultiplicativeExpressionContext::multiplicativeOperator() {
+  return getRuleContexts<RxParser::MultiplicativeOperatorContext>();
 }
 
-Parser::MultiplicativeOperatorContext* Parser::StatementClosedMultiplicativeExpressionContext::multiplicativeOperator(size_t i) {
-  return getRuleContext<Parser::MultiplicativeOperatorContext>(i);
+RxParser::MultiplicativeOperatorContext* RxParser::StatementClosedMultiplicativeExpressionContext::multiplicativeOperator(size_t i) {
+  return getRuleContext<RxParser::MultiplicativeOperatorContext>(i);
 }
 
-Parser::ClosedCastExpressionContext* Parser::StatementClosedMultiplicativeExpressionContext::closedCastExpression() {
-  return getRuleContext<Parser::ClosedCastExpressionContext>(0);
+RxParser::ClosedCastExpressionContext* RxParser::StatementClosedMultiplicativeExpressionContext::closedCastExpression() {
+  return getRuleContext<RxParser::ClosedCastExpressionContext>(0);
 }
 
-std::vector<Parser::CastExpressionContext *> Parser::StatementClosedMultiplicativeExpressionContext::castExpression() {
-  return getRuleContexts<Parser::CastExpressionContext>();
+std::vector<RxParser::CastExpressionContext *> RxParser::StatementClosedMultiplicativeExpressionContext::castExpression() {
+  return getRuleContexts<RxParser::CastExpressionContext>();
 }
 
-Parser::CastExpressionContext* Parser::StatementClosedMultiplicativeExpressionContext::castExpression(size_t i) {
-  return getRuleContext<Parser::CastExpressionContext>(i);
-}
-
-
-size_t Parser::StatementClosedMultiplicativeExpressionContext::getRuleIndex() const {
-  return Parser::RuleStatementClosedMultiplicativeExpression;
+RxParser::CastExpressionContext* RxParser::StatementClosedMultiplicativeExpressionContext::castExpression(size_t i) {
+  return getRuleContext<RxParser::CastExpressionContext>(i);
 }
 
 
-std::any Parser::StatementClosedMultiplicativeExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::StatementClosedMultiplicativeExpressionContext::getRuleIndex() const {
+  return RxParser::RuleStatementClosedMultiplicativeExpression;
+}
+
+
+std::any RxParser::StatementClosedMultiplicativeExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitStatementClosedMultiplicativeExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::StatementClosedMultiplicativeExpressionContext* Parser::statementClosedMultiplicativeExpression() {
+RxParser::StatementClosedMultiplicativeExpressionContext* RxParser::statementClosedMultiplicativeExpression() {
   StatementClosedMultiplicativeExpressionContext *_localctx = _tracker.createInstance<StatementClosedMultiplicativeExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 246, Parser::RuleStatementClosedMultiplicativeExpression);
+  enterRule(_localctx, 246, RxParser::RuleStatementClosedMultiplicativeExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -12068,46 +12068,46 @@ Parser::StatementClosedMultiplicativeExpressionContext* Parser::statementClosedM
 
 //----------------- StatementCastExpressionContext ------------------------------------------------------------------
 
-Parser::StatementCastExpressionContext::StatementCastExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::StatementCastExpressionContext::StatementCastExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::StatementUnaryExpressionContext* Parser::StatementCastExpressionContext::statementUnaryExpression() {
-  return getRuleContext<Parser::StatementUnaryExpressionContext>(0);
+RxParser::StatementUnaryExpressionContext* RxParser::StatementCastExpressionContext::statementUnaryExpression() {
+  return getRuleContext<RxParser::StatementUnaryExpressionContext>(0);
 }
 
-std::vector<tree::TerminalNode *> Parser::StatementCastExpressionContext::AS() {
-  return getTokens(Parser::AS);
+std::vector<tree::TerminalNode *> RxParser::StatementCastExpressionContext::AS() {
+  return getTokens(RxParser::AS);
 }
 
-tree::TerminalNode* Parser::StatementCastExpressionContext::AS(size_t i) {
-  return getToken(Parser::AS, i);
+tree::TerminalNode* RxParser::StatementCastExpressionContext::AS(size_t i) {
+  return getToken(RxParser::AS, i);
 }
 
-std::vector<Parser::TypeRefContext *> Parser::StatementCastExpressionContext::typeRef() {
-  return getRuleContexts<Parser::TypeRefContext>();
+std::vector<RxParser::TypeRefContext *> RxParser::StatementCastExpressionContext::typeRef() {
+  return getRuleContexts<RxParser::TypeRefContext>();
 }
 
-Parser::TypeRefContext* Parser::StatementCastExpressionContext::typeRef(size_t i) {
-  return getRuleContext<Parser::TypeRefContext>(i);
-}
-
-
-size_t Parser::StatementCastExpressionContext::getRuleIndex() const {
-  return Parser::RuleStatementCastExpression;
+RxParser::TypeRefContext* RxParser::StatementCastExpressionContext::typeRef(size_t i) {
+  return getRuleContext<RxParser::TypeRefContext>(i);
 }
 
 
-std::any Parser::StatementCastExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::StatementCastExpressionContext::getRuleIndex() const {
+  return RxParser::RuleStatementCastExpression;
+}
+
+
+std::any RxParser::StatementCastExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitStatementCastExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::StatementCastExpressionContext* Parser::statementCastExpression() {
+RxParser::StatementCastExpressionContext* RxParser::statementCastExpression() {
   StatementCastExpressionContext *_localctx = _tracker.createInstance<StatementCastExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 248, Parser::RuleStatementCastExpression);
+  enterRule(_localctx, 248, RxParser::RuleStatementCastExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -12127,7 +12127,7 @@ Parser::StatementCastExpressionContext* Parser::statementCastExpression() {
     while (alt != 2 && alt != atn::ATN::INVALID_ALT_NUMBER) {
       if (alt == 1) {
         setState(1561);
-        match(Parser::AS);
+        match(RxParser::AS);
         setState(1562);
         typeRef(); 
       }
@@ -12148,42 +12148,42 @@ Parser::StatementCastExpressionContext* Parser::statementCastExpression() {
 
 //----------------- StatementClosedCastExpressionContext ------------------------------------------------------------------
 
-Parser::StatementClosedCastExpressionContext::StatementClosedCastExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::StatementClosedCastExpressionContext::StatementClosedCastExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::StatementUnaryExpressionContext* Parser::StatementClosedCastExpressionContext::statementUnaryExpression() {
-  return getRuleContext<Parser::StatementUnaryExpressionContext>(0);
+RxParser::StatementUnaryExpressionContext* RxParser::StatementClosedCastExpressionContext::statementUnaryExpression() {
+  return getRuleContext<RxParser::StatementUnaryExpressionContext>(0);
 }
 
-Parser::StatementCastExpressionContext* Parser::StatementClosedCastExpressionContext::statementCastExpression() {
-  return getRuleContext<Parser::StatementCastExpressionContext>(0);
+RxParser::StatementCastExpressionContext* RxParser::StatementClosedCastExpressionContext::statementCastExpression() {
+  return getRuleContext<RxParser::StatementCastExpressionContext>(0);
 }
 
-tree::TerminalNode* Parser::StatementClosedCastExpressionContext::AS() {
-  return getToken(Parser::AS, 0);
+tree::TerminalNode* RxParser::StatementClosedCastExpressionContext::AS() {
+  return getToken(RxParser::AS, 0);
 }
 
-Parser::ClosedCastTypeContext* Parser::StatementClosedCastExpressionContext::closedCastType() {
-  return getRuleContext<Parser::ClosedCastTypeContext>(0);
-}
-
-
-size_t Parser::StatementClosedCastExpressionContext::getRuleIndex() const {
-  return Parser::RuleStatementClosedCastExpression;
+RxParser::ClosedCastTypeContext* RxParser::StatementClosedCastExpressionContext::closedCastType() {
+  return getRuleContext<RxParser::ClosedCastTypeContext>(0);
 }
 
 
-std::any Parser::StatementClosedCastExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::StatementClosedCastExpressionContext::getRuleIndex() const {
+  return RxParser::RuleStatementClosedCastExpression;
+}
+
+
+std::any RxParser::StatementClosedCastExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitStatementClosedCastExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::StatementClosedCastExpressionContext* Parser::statementClosedCastExpression() {
+RxParser::StatementClosedCastExpressionContext* RxParser::statementClosedCastExpression() {
   StatementClosedCastExpressionContext *_localctx = _tracker.createInstance<StatementClosedCastExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 250, Parser::RuleStatementClosedCastExpression);
+  enterRule(_localctx, 250, RxParser::RuleStatementClosedCastExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -12208,7 +12208,7 @@ Parser::StatementClosedCastExpressionContext* Parser::statementClosedCastExpress
       setState(1569);
       statementCastExpression();
       setState(1570);
-      match(Parser::AS);
+      match(RxParser::AS);
       setState(1571);
       closedCastType();
       break;
@@ -12230,38 +12230,38 @@ Parser::StatementClosedCastExpressionContext* Parser::statementClosedCastExpress
 
 //----------------- StatementUnaryExpressionContext ------------------------------------------------------------------
 
-Parser::StatementUnaryExpressionContext::StatementUnaryExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::StatementUnaryExpressionContext::StatementUnaryExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::UnaryOperatorContext* Parser::StatementUnaryExpressionContext::unaryOperator() {
-  return getRuleContext<Parser::UnaryOperatorContext>(0);
+RxParser::UnaryOperatorContext* RxParser::StatementUnaryExpressionContext::unaryOperator() {
+  return getRuleContext<RxParser::UnaryOperatorContext>(0);
 }
 
-Parser::UnaryExpressionContext* Parser::StatementUnaryExpressionContext::unaryExpression() {
-  return getRuleContext<Parser::UnaryExpressionContext>(0);
+RxParser::UnaryExpressionContext* RxParser::StatementUnaryExpressionContext::unaryExpression() {
+  return getRuleContext<RxParser::UnaryExpressionContext>(0);
 }
 
-Parser::StatementPostfixExpressionContext* Parser::StatementUnaryExpressionContext::statementPostfixExpression() {
-  return getRuleContext<Parser::StatementPostfixExpressionContext>(0);
-}
-
-
-size_t Parser::StatementUnaryExpressionContext::getRuleIndex() const {
-  return Parser::RuleStatementUnaryExpression;
+RxParser::StatementPostfixExpressionContext* RxParser::StatementUnaryExpressionContext::statementPostfixExpression() {
+  return getRuleContext<RxParser::StatementPostfixExpressionContext>(0);
 }
 
 
-std::any Parser::StatementUnaryExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::StatementUnaryExpressionContext::getRuleIndex() const {
+  return RxParser::RuleStatementUnaryExpression;
+}
+
+
+std::any RxParser::StatementUnaryExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitStatementUnaryExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::StatementUnaryExpressionContext* Parser::statementUnaryExpression() {
+RxParser::StatementUnaryExpressionContext* RxParser::statementUnaryExpression() {
   StatementUnaryExpressionContext *_localctx = _tracker.createInstance<StatementUnaryExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 252, Parser::RuleStatementUnaryExpression);
+  enterRule(_localctx, 252, RxParser::RuleStatementUnaryExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -12274,11 +12274,11 @@ Parser::StatementUnaryExpressionContext* Parser::statementUnaryExpression() {
     setState(1579);
     _errHandler->sync(this);
     switch (_input->LA(1)) {
-      case Parser::ANDAND:
-      case Parser::NOT:
-      case Parser::MINUS:
-      case Parser::STAR:
-      case Parser::AMP: {
+      case RxParser::ANDAND:
+      case RxParser::NOT:
+      case RxParser::MINUS:
+      case RxParser::STAR:
+      case RxParser::AMP: {
         enterOuterAlt(_localctx, 1);
         setState(1575);
         unaryOperator();
@@ -12287,26 +12287,26 @@ Parser::StatementUnaryExpressionContext* Parser::statementUnaryExpression() {
         break;
       }
 
-      case Parser::BREAK:
-      case Parser::CONTINUE:
-      case Parser::FALSE:
-      case Parser::IF:
-      case Parser::LOOP:
-      case Parser::RETURN:
-      case Parser::SELF_VALUE:
-      case Parser::SELF_TYPE:
-      case Parser::TRUE:
-      case Parser::WHILE:
-      case Parser::DERIVE:
-      case Parser::COPY:
-      case Parser::CLONE:
-      case Parser::PARTIAL_EQ:
-      case Parser::EQ:
-      case Parser::IDENTIFIER:
-      case Parser::INTEGER_LITERAL:
-      case Parser::LBRACE:
-      case Parser::LBRACKET:
-      case Parser::LPAREN: {
+      case RxParser::BREAK:
+      case RxParser::CONTINUE:
+      case RxParser::FALSE:
+      case RxParser::IF:
+      case RxParser::LOOP:
+      case RxParser::RETURN:
+      case RxParser::SELF_VALUE:
+      case RxParser::SELF_TYPE:
+      case RxParser::TRUE:
+      case RxParser::WHILE:
+      case RxParser::DERIVE:
+      case RxParser::COPY:
+      case RxParser::CLONE:
+      case RxParser::PARTIAL_EQ:
+      case RxParser::EQ:
+      case RxParser::IDENTIFIER:
+      case RxParser::INTEGER_LITERAL:
+      case RxParser::LBRACE:
+      case RxParser::LBRACKET:
+      case RxParser::LPAREN: {
         enterOuterAlt(_localctx, 2);
         setState(1578);
         statementPostfixExpression();
@@ -12329,46 +12329,46 @@ Parser::StatementUnaryExpressionContext* Parser::statementUnaryExpression() {
 
 //----------------- StatementPostfixExpressionContext ------------------------------------------------------------------
 
-Parser::StatementPostfixExpressionContext::StatementPostfixExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::StatementPostfixExpressionContext::StatementPostfixExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::NonBlockPrimaryContext* Parser::StatementPostfixExpressionContext::nonBlockPrimary() {
-  return getRuleContext<Parser::NonBlockPrimaryContext>(0);
+RxParser::NonBlockPrimaryContext* RxParser::StatementPostfixExpressionContext::nonBlockPrimary() {
+  return getRuleContext<RxParser::NonBlockPrimaryContext>(0);
 }
 
-std::vector<Parser::PostfixSuffixContext *> Parser::StatementPostfixExpressionContext::postfixSuffix() {
-  return getRuleContexts<Parser::PostfixSuffixContext>();
+std::vector<RxParser::PostfixSuffixContext *> RxParser::StatementPostfixExpressionContext::postfixSuffix() {
+  return getRuleContexts<RxParser::PostfixSuffixContext>();
 }
 
-Parser::PostfixSuffixContext* Parser::StatementPostfixExpressionContext::postfixSuffix(size_t i) {
-  return getRuleContext<Parser::PostfixSuffixContext>(i);
+RxParser::PostfixSuffixContext* RxParser::StatementPostfixExpressionContext::postfixSuffix(size_t i) {
+  return getRuleContext<RxParser::PostfixSuffixContext>(i);
 }
 
-Parser::ExpressionWithBlockContext* Parser::StatementPostfixExpressionContext::expressionWithBlock() {
-  return getRuleContext<Parser::ExpressionWithBlockContext>(0);
+RxParser::ExpressionWithBlockContext* RxParser::StatementPostfixExpressionContext::expressionWithBlock() {
+  return getRuleContext<RxParser::ExpressionWithBlockContext>(0);
 }
 
-Parser::DotSuffixContext* Parser::StatementPostfixExpressionContext::dotSuffix() {
-  return getRuleContext<Parser::DotSuffixContext>(0);
-}
-
-
-size_t Parser::StatementPostfixExpressionContext::getRuleIndex() const {
-  return Parser::RuleStatementPostfixExpression;
+RxParser::DotSuffixContext* RxParser::StatementPostfixExpressionContext::dotSuffix() {
+  return getRuleContext<RxParser::DotSuffixContext>(0);
 }
 
 
-std::any Parser::StatementPostfixExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::StatementPostfixExpressionContext::getRuleIndex() const {
+  return RxParser::RuleStatementPostfixExpression;
+}
+
+
+std::any RxParser::StatementPostfixExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitStatementPostfixExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::StatementPostfixExpressionContext* Parser::statementPostfixExpression() {
+RxParser::StatementPostfixExpressionContext* RxParser::statementPostfixExpression() {
   StatementPostfixExpressionContext *_localctx = _tracker.createInstance<StatementPostfixExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 254, Parser::RuleStatementPostfixExpression);
+  enterRule(_localctx, 254, RxParser::RuleStatementPostfixExpression);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -12382,22 +12382,22 @@ Parser::StatementPostfixExpressionContext* Parser::statementPostfixExpression() 
     setState(1596);
     _errHandler->sync(this);
     switch (_input->LA(1)) {
-      case Parser::BREAK:
-      case Parser::CONTINUE:
-      case Parser::FALSE:
-      case Parser::RETURN:
-      case Parser::SELF_VALUE:
-      case Parser::SELF_TYPE:
-      case Parser::TRUE:
-      case Parser::DERIVE:
-      case Parser::COPY:
-      case Parser::CLONE:
-      case Parser::PARTIAL_EQ:
-      case Parser::EQ:
-      case Parser::IDENTIFIER:
-      case Parser::INTEGER_LITERAL:
-      case Parser::LBRACKET:
-      case Parser::LPAREN: {
+      case RxParser::BREAK:
+      case RxParser::CONTINUE:
+      case RxParser::FALSE:
+      case RxParser::RETURN:
+      case RxParser::SELF_VALUE:
+      case RxParser::SELF_TYPE:
+      case RxParser::TRUE:
+      case RxParser::DERIVE:
+      case RxParser::COPY:
+      case RxParser::CLONE:
+      case RxParser::PARTIAL_EQ:
+      case RxParser::EQ:
+      case RxParser::IDENTIFIER:
+      case RxParser::INTEGER_LITERAL:
+      case RxParser::LBRACKET:
+      case RxParser::LPAREN: {
         enterOuterAlt(_localctx, 1);
         setState(1581);
         nonBlockPrimary();
@@ -12415,10 +12415,10 @@ Parser::StatementPostfixExpressionContext* Parser::statementPostfixExpression() 
         break;
       }
 
-      case Parser::IF:
-      case Parser::LOOP:
-      case Parser::WHILE:
-      case Parser::LBRACE: {
+      case RxParser::IF:
+      case RxParser::LOOP:
+      case RxParser::WHILE:
+      case RxParser::LBRACE: {
         enterOuterAlt(_localctx, 2);
         setState(1588);
         expressionWithBlock();
@@ -12454,34 +12454,34 @@ Parser::StatementPostfixExpressionContext* Parser::statementPostfixExpression() 
 
 //----------------- PrimaryExpressionContext ------------------------------------------------------------------
 
-Parser::PrimaryExpressionContext::PrimaryExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::PrimaryExpressionContext::PrimaryExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::NonBlockPrimaryContext* Parser::PrimaryExpressionContext::nonBlockPrimary() {
-  return getRuleContext<Parser::NonBlockPrimaryContext>(0);
+RxParser::NonBlockPrimaryContext* RxParser::PrimaryExpressionContext::nonBlockPrimary() {
+  return getRuleContext<RxParser::NonBlockPrimaryContext>(0);
 }
 
-Parser::ExpressionWithBlockContext* Parser::PrimaryExpressionContext::expressionWithBlock() {
-  return getRuleContext<Parser::ExpressionWithBlockContext>(0);
-}
-
-
-size_t Parser::PrimaryExpressionContext::getRuleIndex() const {
-  return Parser::RulePrimaryExpression;
+RxParser::ExpressionWithBlockContext* RxParser::PrimaryExpressionContext::expressionWithBlock() {
+  return getRuleContext<RxParser::ExpressionWithBlockContext>(0);
 }
 
 
-std::any Parser::PrimaryExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::PrimaryExpressionContext::getRuleIndex() const {
+  return RxParser::RulePrimaryExpression;
+}
+
+
+std::any RxParser::PrimaryExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitPrimaryExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::PrimaryExpressionContext* Parser::primaryExpression() {
+RxParser::PrimaryExpressionContext* RxParser::primaryExpression() {
   PrimaryExpressionContext *_localctx = _tracker.createInstance<PrimaryExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 256, Parser::RulePrimaryExpression);
+  enterRule(_localctx, 256, RxParser::RulePrimaryExpression);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -12494,32 +12494,32 @@ Parser::PrimaryExpressionContext* Parser::primaryExpression() {
     setState(1600);
     _errHandler->sync(this);
     switch (_input->LA(1)) {
-      case Parser::BREAK:
-      case Parser::CONTINUE:
-      case Parser::FALSE:
-      case Parser::RETURN:
-      case Parser::SELF_VALUE:
-      case Parser::SELF_TYPE:
-      case Parser::TRUE:
-      case Parser::DERIVE:
-      case Parser::COPY:
-      case Parser::CLONE:
-      case Parser::PARTIAL_EQ:
-      case Parser::EQ:
-      case Parser::IDENTIFIER:
-      case Parser::INTEGER_LITERAL:
-      case Parser::LBRACKET:
-      case Parser::LPAREN: {
+      case RxParser::BREAK:
+      case RxParser::CONTINUE:
+      case RxParser::FALSE:
+      case RxParser::RETURN:
+      case RxParser::SELF_VALUE:
+      case RxParser::SELF_TYPE:
+      case RxParser::TRUE:
+      case RxParser::DERIVE:
+      case RxParser::COPY:
+      case RxParser::CLONE:
+      case RxParser::PARTIAL_EQ:
+      case RxParser::EQ:
+      case RxParser::IDENTIFIER:
+      case RxParser::INTEGER_LITERAL:
+      case RxParser::LBRACKET:
+      case RxParser::LPAREN: {
         enterOuterAlt(_localctx, 1);
         setState(1598);
         nonBlockPrimary();
         break;
       }
 
-      case Parser::IF:
-      case Parser::LOOP:
-      case Parser::WHILE:
-      case Parser::LBRACE: {
+      case RxParser::IF:
+      case RxParser::LOOP:
+      case RxParser::WHILE:
+      case RxParser::LBRACE: {
         enterOuterAlt(_localctx, 2);
         setState(1599);
         expressionWithBlock();
@@ -12542,74 +12542,74 @@ Parser::PrimaryExpressionContext* Parser::primaryExpression() {
 
 //----------------- NonBlockPrimaryContext ------------------------------------------------------------------
 
-Parser::NonBlockPrimaryContext::NonBlockPrimaryContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::NonBlockPrimaryContext::NonBlockPrimaryContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::LiteralExpressionContext* Parser::NonBlockPrimaryContext::literalExpression() {
-  return getRuleContext<Parser::LiteralExpressionContext>(0);
+RxParser::LiteralExpressionContext* RxParser::NonBlockPrimaryContext::literalExpression() {
+  return getRuleContext<RxParser::LiteralExpressionContext>(0);
 }
 
-Parser::PathInExpressionContext* Parser::NonBlockPrimaryContext::pathInExpression() {
-  return getRuleContext<Parser::PathInExpressionContext>(0);
+RxParser::PathInExpressionContext* RxParser::NonBlockPrimaryContext::pathInExpression() {
+  return getRuleContext<RxParser::PathInExpressionContext>(0);
 }
 
-tree::TerminalNode* Parser::NonBlockPrimaryContext::LBRACE() {
-  return getToken(Parser::LBRACE, 0);
+tree::TerminalNode* RxParser::NonBlockPrimaryContext::LBRACE() {
+  return getToken(RxParser::LBRACE, 0);
 }
 
-tree::TerminalNode* Parser::NonBlockPrimaryContext::RBRACE() {
-  return getToken(Parser::RBRACE, 0);
+tree::TerminalNode* RxParser::NonBlockPrimaryContext::RBRACE() {
+  return getToken(RxParser::RBRACE, 0);
 }
 
-Parser::StructExprFieldsContext* Parser::NonBlockPrimaryContext::structExprFields() {
-  return getRuleContext<Parser::StructExprFieldsContext>(0);
+RxParser::StructExprFieldsContext* RxParser::NonBlockPrimaryContext::structExprFields() {
+  return getRuleContext<RxParser::StructExprFieldsContext>(0);
 }
 
-tree::TerminalNode* Parser::NonBlockPrimaryContext::LPAREN() {
-  return getToken(Parser::LPAREN, 0);
+tree::TerminalNode* RxParser::NonBlockPrimaryContext::LPAREN() {
+  return getToken(RxParser::LPAREN, 0);
 }
 
-tree::TerminalNode* Parser::NonBlockPrimaryContext::RPAREN() {
-  return getToken(Parser::RPAREN, 0);
+tree::TerminalNode* RxParser::NonBlockPrimaryContext::RPAREN() {
+  return getToken(RxParser::RPAREN, 0);
 }
 
-Parser::ExpressionContext* Parser::NonBlockPrimaryContext::expression() {
-  return getRuleContext<Parser::ExpressionContext>(0);
+RxParser::ExpressionContext* RxParser::NonBlockPrimaryContext::expression() {
+  return getRuleContext<RxParser::ExpressionContext>(0);
 }
 
-Parser::ArrayExpressionContext* Parser::NonBlockPrimaryContext::arrayExpression() {
-  return getRuleContext<Parser::ArrayExpressionContext>(0);
+RxParser::ArrayExpressionContext* RxParser::NonBlockPrimaryContext::arrayExpression() {
+  return getRuleContext<RxParser::ArrayExpressionContext>(0);
 }
 
-tree::TerminalNode* Parser::NonBlockPrimaryContext::BREAK() {
-  return getToken(Parser::BREAK, 0);
+tree::TerminalNode* RxParser::NonBlockPrimaryContext::BREAK() {
+  return getToken(RxParser::BREAK, 0);
 }
 
-tree::TerminalNode* Parser::NonBlockPrimaryContext::RETURN() {
-  return getToken(Parser::RETURN, 0);
+tree::TerminalNode* RxParser::NonBlockPrimaryContext::RETURN() {
+  return getToken(RxParser::RETURN, 0);
 }
 
-tree::TerminalNode* Parser::NonBlockPrimaryContext::CONTINUE() {
-  return getToken(Parser::CONTINUE, 0);
-}
-
-
-size_t Parser::NonBlockPrimaryContext::getRuleIndex() const {
-  return Parser::RuleNonBlockPrimary;
+tree::TerminalNode* RxParser::NonBlockPrimaryContext::CONTINUE() {
+  return getToken(RxParser::CONTINUE, 0);
 }
 
 
-std::any Parser::NonBlockPrimaryContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::NonBlockPrimaryContext::getRuleIndex() const {
+  return RxParser::RuleNonBlockPrimary;
+}
+
+
+std::any RxParser::NonBlockPrimaryContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitNonBlockPrimary(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::NonBlockPrimaryContext* Parser::nonBlockPrimary() {
+RxParser::NonBlockPrimaryContext* RxParser::nonBlockPrimary() {
   NonBlockPrimaryContext *_localctx = _tracker.createInstance<NonBlockPrimaryContext>(_ctx, getState());
-  enterRule(_localctx, 258, Parser::RuleNonBlockPrimary);
+  enterRule(_localctx, 258, RxParser::RuleNonBlockPrimary);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -12623,23 +12623,23 @@ Parser::NonBlockPrimaryContext* Parser::nonBlockPrimary() {
     setState(1626);
     _errHandler->sync(this);
     switch (_input->LA(1)) {
-      case Parser::FALSE:
-      case Parser::TRUE:
-      case Parser::INTEGER_LITERAL: {
+      case RxParser::FALSE:
+      case RxParser::TRUE:
+      case RxParser::INTEGER_LITERAL: {
         enterOuterAlt(_localctx, 1);
         setState(1602);
         literalExpression();
         break;
       }
 
-      case Parser::SELF_VALUE:
-      case Parser::SELF_TYPE:
-      case Parser::DERIVE:
-      case Parser::COPY:
-      case Parser::CLONE:
-      case Parser::PARTIAL_EQ:
-      case Parser::EQ:
-      case Parser::IDENTIFIER: {
+      case RxParser::SELF_VALUE:
+      case RxParser::SELF_TYPE:
+      case RxParser::DERIVE:
+      case RxParser::COPY:
+      case RxParser::CLONE:
+      case RxParser::PARTIAL_EQ:
+      case RxParser::EQ:
+      case RxParser::IDENTIFIER: {
         enterOuterAlt(_localctx, 2);
         setState(1603);
         pathInExpression();
@@ -12647,9 +12647,9 @@ Parser::NonBlockPrimaryContext* Parser::nonBlockPrimary() {
         _errHandler->sync(this);
 
         _la = _input->LA(1);
-        if (_la == Parser::LBRACE) {
+        if (_la == RxParser::LBRACE) {
           setState(1604);
-          match(Parser::LBRACE);
+          match(RxParser::LBRACE);
           setState(1606);
           _errHandler->sync(this);
 
@@ -12660,15 +12660,15 @@ Parser::NonBlockPrimaryContext* Parser::nonBlockPrimary() {
             structExprFields();
           }
           setState(1608);
-          match(Parser::RBRACE);
+          match(RxParser::RBRACE);
         }
         break;
       }
 
-      case Parser::LPAREN: {
+      case RxParser::LPAREN: {
         enterOuterAlt(_localctx, 3);
         setState(1611);
-        match(Parser::LPAREN);
+        match(RxParser::LPAREN);
         setState(1613);
         _errHandler->sync(this);
 
@@ -12680,21 +12680,21 @@ Parser::NonBlockPrimaryContext* Parser::nonBlockPrimary() {
           expression();
         }
         setState(1615);
-        match(Parser::RPAREN);
+        match(RxParser::RPAREN);
         break;
       }
 
-      case Parser::LBRACKET: {
+      case RxParser::LBRACKET: {
         enterOuterAlt(_localctx, 4);
         setState(1616);
         arrayExpression();
         break;
       }
 
-      case Parser::BREAK: {
+      case RxParser::BREAK: {
         enterOuterAlt(_localctx, 5);
         setState(1617);
-        match(Parser::BREAK);
+        match(RxParser::BREAK);
         setState(1619);
         _errHandler->sync(this);
 
@@ -12711,10 +12711,10 @@ Parser::NonBlockPrimaryContext* Parser::nonBlockPrimary() {
         break;
       }
 
-      case Parser::RETURN: {
+      case RxParser::RETURN: {
         enterOuterAlt(_localctx, 6);
         setState(1621);
-        match(Parser::RETURN);
+        match(RxParser::RETURN);
         setState(1623);
         _errHandler->sync(this);
 
@@ -12731,10 +12731,10 @@ Parser::NonBlockPrimaryContext* Parser::nonBlockPrimary() {
         break;
       }
 
-      case Parser::CONTINUE: {
+      case RxParser::CONTINUE: {
         enterOuterAlt(_localctx, 7);
         setState(1625);
-        match(Parser::CONTINUE);
+        match(RxParser::CONTINUE);
         break;
       }
 
@@ -12754,34 +12754,34 @@ Parser::NonBlockPrimaryContext* Parser::nonBlockPrimary() {
 
 //----------------- ConditionPrimaryContext ------------------------------------------------------------------
 
-Parser::ConditionPrimaryContext::ConditionPrimaryContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ConditionPrimaryContext::ConditionPrimaryContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::ConditionPrimaryWithoutBareBlockContext* Parser::ConditionPrimaryContext::conditionPrimaryWithoutBareBlock() {
-  return getRuleContext<Parser::ConditionPrimaryWithoutBareBlockContext>(0);
+RxParser::ConditionPrimaryWithoutBareBlockContext* RxParser::ConditionPrimaryContext::conditionPrimaryWithoutBareBlock() {
+  return getRuleContext<RxParser::ConditionPrimaryWithoutBareBlockContext>(0);
 }
 
-Parser::BlockExpressionContext* Parser::ConditionPrimaryContext::blockExpression() {
-  return getRuleContext<Parser::BlockExpressionContext>(0);
-}
-
-
-size_t Parser::ConditionPrimaryContext::getRuleIndex() const {
-  return Parser::RuleConditionPrimary;
+RxParser::BlockExpressionContext* RxParser::ConditionPrimaryContext::blockExpression() {
+  return getRuleContext<RxParser::BlockExpressionContext>(0);
 }
 
 
-std::any Parser::ConditionPrimaryContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ConditionPrimaryContext::getRuleIndex() const {
+  return RxParser::RuleConditionPrimary;
+}
+
+
+std::any RxParser::ConditionPrimaryContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitConditionPrimary(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ConditionPrimaryContext* Parser::conditionPrimary() {
+RxParser::ConditionPrimaryContext* RxParser::conditionPrimary() {
   ConditionPrimaryContext *_localctx = _tracker.createInstance<ConditionPrimaryContext>(_ctx, getState());
-  enterRule(_localctx, 260, Parser::RuleConditionPrimary);
+  enterRule(_localctx, 260, RxParser::RuleConditionPrimary);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -12794,32 +12794,32 @@ Parser::ConditionPrimaryContext* Parser::conditionPrimary() {
     setState(1630);
     _errHandler->sync(this);
     switch (_input->LA(1)) {
-      case Parser::BREAK:
-      case Parser::CONTINUE:
-      case Parser::FALSE:
-      case Parser::IF:
-      case Parser::LOOP:
-      case Parser::RETURN:
-      case Parser::SELF_VALUE:
-      case Parser::SELF_TYPE:
-      case Parser::TRUE:
-      case Parser::WHILE:
-      case Parser::DERIVE:
-      case Parser::COPY:
-      case Parser::CLONE:
-      case Parser::PARTIAL_EQ:
-      case Parser::EQ:
-      case Parser::IDENTIFIER:
-      case Parser::INTEGER_LITERAL:
-      case Parser::LBRACKET:
-      case Parser::LPAREN: {
+      case RxParser::BREAK:
+      case RxParser::CONTINUE:
+      case RxParser::FALSE:
+      case RxParser::IF:
+      case RxParser::LOOP:
+      case RxParser::RETURN:
+      case RxParser::SELF_VALUE:
+      case RxParser::SELF_TYPE:
+      case RxParser::TRUE:
+      case RxParser::WHILE:
+      case RxParser::DERIVE:
+      case RxParser::COPY:
+      case RxParser::CLONE:
+      case RxParser::PARTIAL_EQ:
+      case RxParser::EQ:
+      case RxParser::IDENTIFIER:
+      case RxParser::INTEGER_LITERAL:
+      case RxParser::LBRACKET:
+      case RxParser::LPAREN: {
         enterOuterAlt(_localctx, 1);
         setState(1628);
         conditionPrimaryWithoutBareBlock();
         break;
       }
 
-      case Parser::LBRACE: {
+      case RxParser::LBRACE: {
         enterOuterAlt(_localctx, 2);
         setState(1629);
         blockExpression();
@@ -12842,86 +12842,86 @@ Parser::ConditionPrimaryContext* Parser::conditionPrimary() {
 
 //----------------- ConditionPrimaryWithoutBareBlockContext ------------------------------------------------------------------
 
-Parser::ConditionPrimaryWithoutBareBlockContext::ConditionPrimaryWithoutBareBlockContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ConditionPrimaryWithoutBareBlockContext::ConditionPrimaryWithoutBareBlockContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::LiteralExpressionContext* Parser::ConditionPrimaryWithoutBareBlockContext::literalExpression() {
-  return getRuleContext<Parser::LiteralExpressionContext>(0);
+RxParser::LiteralExpressionContext* RxParser::ConditionPrimaryWithoutBareBlockContext::literalExpression() {
+  return getRuleContext<RxParser::LiteralExpressionContext>(0);
 }
 
-Parser::PathInExpressionContext* Parser::ConditionPrimaryWithoutBareBlockContext::pathInExpression() {
-  return getRuleContext<Parser::PathInExpressionContext>(0);
+RxParser::PathInExpressionContext* RxParser::ConditionPrimaryWithoutBareBlockContext::pathInExpression() {
+  return getRuleContext<RxParser::PathInExpressionContext>(0);
 }
 
-tree::TerminalNode* Parser::ConditionPrimaryWithoutBareBlockContext::LPAREN() {
-  return getToken(Parser::LPAREN, 0);
+tree::TerminalNode* RxParser::ConditionPrimaryWithoutBareBlockContext::LPAREN() {
+  return getToken(RxParser::LPAREN, 0);
 }
 
-tree::TerminalNode* Parser::ConditionPrimaryWithoutBareBlockContext::RPAREN() {
-  return getToken(Parser::RPAREN, 0);
+tree::TerminalNode* RxParser::ConditionPrimaryWithoutBareBlockContext::RPAREN() {
+  return getToken(RxParser::RPAREN, 0);
 }
 
-Parser::ExpressionContext* Parser::ConditionPrimaryWithoutBareBlockContext::expression() {
-  return getRuleContext<Parser::ExpressionContext>(0);
+RxParser::ExpressionContext* RxParser::ConditionPrimaryWithoutBareBlockContext::expression() {
+  return getRuleContext<RxParser::ExpressionContext>(0);
 }
 
-Parser::ArrayExpressionContext* Parser::ConditionPrimaryWithoutBareBlockContext::arrayExpression() {
-  return getRuleContext<Parser::ArrayExpressionContext>(0);
+RxParser::ArrayExpressionContext* RxParser::ConditionPrimaryWithoutBareBlockContext::arrayExpression() {
+  return getRuleContext<RxParser::ArrayExpressionContext>(0);
 }
 
-Parser::IfExpressionContext* Parser::ConditionPrimaryWithoutBareBlockContext::ifExpression() {
-  return getRuleContext<Parser::IfExpressionContext>(0);
+RxParser::IfExpressionContext* RxParser::ConditionPrimaryWithoutBareBlockContext::ifExpression() {
+  return getRuleContext<RxParser::IfExpressionContext>(0);
 }
 
-tree::TerminalNode* Parser::ConditionPrimaryWithoutBareBlockContext::LOOP() {
-  return getToken(Parser::LOOP, 0);
+tree::TerminalNode* RxParser::ConditionPrimaryWithoutBareBlockContext::LOOP() {
+  return getToken(RxParser::LOOP, 0);
 }
 
-Parser::BlockExpressionContext* Parser::ConditionPrimaryWithoutBareBlockContext::blockExpression() {
-  return getRuleContext<Parser::BlockExpressionContext>(0);
+RxParser::BlockExpressionContext* RxParser::ConditionPrimaryWithoutBareBlockContext::blockExpression() {
+  return getRuleContext<RxParser::BlockExpressionContext>(0);
 }
 
-tree::TerminalNode* Parser::ConditionPrimaryWithoutBareBlockContext::WHILE() {
-  return getToken(Parser::WHILE, 0);
+tree::TerminalNode* RxParser::ConditionPrimaryWithoutBareBlockContext::WHILE() {
+  return getToken(RxParser::WHILE, 0);
 }
 
-Parser::ConditionExpressionContext* Parser::ConditionPrimaryWithoutBareBlockContext::conditionExpression() {
-  return getRuleContext<Parser::ConditionExpressionContext>(0);
+RxParser::ConditionExpressionContext* RxParser::ConditionPrimaryWithoutBareBlockContext::conditionExpression() {
+  return getRuleContext<RxParser::ConditionExpressionContext>(0);
 }
 
-tree::TerminalNode* Parser::ConditionPrimaryWithoutBareBlockContext::BREAK() {
-  return getToken(Parser::BREAK, 0);
+tree::TerminalNode* RxParser::ConditionPrimaryWithoutBareBlockContext::BREAK() {
+  return getToken(RxParser::BREAK, 0);
 }
 
-Parser::ConditionBreakExpressionContext* Parser::ConditionPrimaryWithoutBareBlockContext::conditionBreakExpression() {
-  return getRuleContext<Parser::ConditionBreakExpressionContext>(0);
+RxParser::ConditionBreakExpressionContext* RxParser::ConditionPrimaryWithoutBareBlockContext::conditionBreakExpression() {
+  return getRuleContext<RxParser::ConditionBreakExpressionContext>(0);
 }
 
-tree::TerminalNode* Parser::ConditionPrimaryWithoutBareBlockContext::RETURN() {
-  return getToken(Parser::RETURN, 0);
+tree::TerminalNode* RxParser::ConditionPrimaryWithoutBareBlockContext::RETURN() {
+  return getToken(RxParser::RETURN, 0);
 }
 
-tree::TerminalNode* Parser::ConditionPrimaryWithoutBareBlockContext::CONTINUE() {
-  return getToken(Parser::CONTINUE, 0);
-}
-
-
-size_t Parser::ConditionPrimaryWithoutBareBlockContext::getRuleIndex() const {
-  return Parser::RuleConditionPrimaryWithoutBareBlock;
+tree::TerminalNode* RxParser::ConditionPrimaryWithoutBareBlockContext::CONTINUE() {
+  return getToken(RxParser::CONTINUE, 0);
 }
 
 
-std::any Parser::ConditionPrimaryWithoutBareBlockContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ConditionPrimaryWithoutBareBlockContext::getRuleIndex() const {
+  return RxParser::RuleConditionPrimaryWithoutBareBlock;
+}
+
+
+std::any RxParser::ConditionPrimaryWithoutBareBlockContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitConditionPrimaryWithoutBareBlock(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ConditionPrimaryWithoutBareBlockContext* Parser::conditionPrimaryWithoutBareBlock() {
+RxParser::ConditionPrimaryWithoutBareBlockContext* RxParser::conditionPrimaryWithoutBareBlock() {
   ConditionPrimaryWithoutBareBlockContext *_localctx = _tracker.createInstance<ConditionPrimaryWithoutBareBlockContext>(_ctx, getState());
-  enterRule(_localctx, 262, Parser::RuleConditionPrimaryWithoutBareBlock);
+  enterRule(_localctx, 262, RxParser::RuleConditionPrimaryWithoutBareBlock);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -12935,33 +12935,33 @@ Parser::ConditionPrimaryWithoutBareBlockContext* Parser::conditionPrimaryWithout
     setState(1656);
     _errHandler->sync(this);
     switch (_input->LA(1)) {
-      case Parser::FALSE:
-      case Parser::TRUE:
-      case Parser::INTEGER_LITERAL: {
+      case RxParser::FALSE:
+      case RxParser::TRUE:
+      case RxParser::INTEGER_LITERAL: {
         enterOuterAlt(_localctx, 1);
         setState(1632);
         literalExpression();
         break;
       }
 
-      case Parser::SELF_VALUE:
-      case Parser::SELF_TYPE:
-      case Parser::DERIVE:
-      case Parser::COPY:
-      case Parser::CLONE:
-      case Parser::PARTIAL_EQ:
-      case Parser::EQ:
-      case Parser::IDENTIFIER: {
+      case RxParser::SELF_VALUE:
+      case RxParser::SELF_TYPE:
+      case RxParser::DERIVE:
+      case RxParser::COPY:
+      case RxParser::CLONE:
+      case RxParser::PARTIAL_EQ:
+      case RxParser::EQ:
+      case RxParser::IDENTIFIER: {
         enterOuterAlt(_localctx, 2);
         setState(1633);
         pathInExpression();
         break;
       }
 
-      case Parser::LPAREN: {
+      case RxParser::LPAREN: {
         enterOuterAlt(_localctx, 3);
         setState(1634);
-        match(Parser::LPAREN);
+        match(RxParser::LPAREN);
         setState(1636);
         _errHandler->sync(this);
 
@@ -12973,37 +12973,37 @@ Parser::ConditionPrimaryWithoutBareBlockContext* Parser::conditionPrimaryWithout
           expression();
         }
         setState(1638);
-        match(Parser::RPAREN);
+        match(RxParser::RPAREN);
         break;
       }
 
-      case Parser::LBRACKET: {
+      case RxParser::LBRACKET: {
         enterOuterAlt(_localctx, 4);
         setState(1639);
         arrayExpression();
         break;
       }
 
-      case Parser::IF: {
+      case RxParser::IF: {
         enterOuterAlt(_localctx, 5);
         setState(1640);
         ifExpression();
         break;
       }
 
-      case Parser::LOOP: {
+      case RxParser::LOOP: {
         enterOuterAlt(_localctx, 6);
         setState(1641);
-        match(Parser::LOOP);
+        match(RxParser::LOOP);
         setState(1642);
         blockExpression();
         break;
       }
 
-      case Parser::WHILE: {
+      case RxParser::WHILE: {
         enterOuterAlt(_localctx, 7);
         setState(1643);
-        match(Parser::WHILE);
+        match(RxParser::WHILE);
         setState(1644);
         conditionExpression();
         setState(1645);
@@ -13011,10 +13011,10 @@ Parser::ConditionPrimaryWithoutBareBlockContext* Parser::conditionPrimaryWithout
         break;
       }
 
-      case Parser::BREAK: {
+      case RxParser::BREAK: {
         enterOuterAlt(_localctx, 8);
         setState(1647);
-        match(Parser::BREAK);
+        match(RxParser::BREAK);
         setState(1649);
         _errHandler->sync(this);
 
@@ -13031,10 +13031,10 @@ Parser::ConditionPrimaryWithoutBareBlockContext* Parser::conditionPrimaryWithout
         break;
       }
 
-      case Parser::RETURN: {
+      case RxParser::RETURN: {
         enterOuterAlt(_localctx, 9);
         setState(1651);
-        match(Parser::RETURN);
+        match(RxParser::RETURN);
         setState(1653);
         _errHandler->sync(this);
 
@@ -13051,10 +13051,10 @@ Parser::ConditionPrimaryWithoutBareBlockContext* Parser::conditionPrimaryWithout
         break;
       }
 
-      case Parser::CONTINUE: {
+      case RxParser::CONTINUE: {
         enterOuterAlt(_localctx, 10);
         setState(1655);
-        match(Parser::CONTINUE);
+        match(RxParser::CONTINUE);
         break;
       }
 
@@ -13074,38 +13074,38 @@ Parser::ConditionPrimaryWithoutBareBlockContext* Parser::conditionPrimaryWithout
 
 //----------------- LiteralExpressionContext ------------------------------------------------------------------
 
-Parser::LiteralExpressionContext::LiteralExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::LiteralExpressionContext::LiteralExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-tree::TerminalNode* Parser::LiteralExpressionContext::INTEGER_LITERAL() {
-  return getToken(Parser::INTEGER_LITERAL, 0);
+tree::TerminalNode* RxParser::LiteralExpressionContext::INTEGER_LITERAL() {
+  return getToken(RxParser::INTEGER_LITERAL, 0);
 }
 
-tree::TerminalNode* Parser::LiteralExpressionContext::TRUE() {
-  return getToken(Parser::TRUE, 0);
+tree::TerminalNode* RxParser::LiteralExpressionContext::TRUE() {
+  return getToken(RxParser::TRUE, 0);
 }
 
-tree::TerminalNode* Parser::LiteralExpressionContext::FALSE() {
-  return getToken(Parser::FALSE, 0);
-}
-
-
-size_t Parser::LiteralExpressionContext::getRuleIndex() const {
-  return Parser::RuleLiteralExpression;
+tree::TerminalNode* RxParser::LiteralExpressionContext::FALSE() {
+  return getToken(RxParser::FALSE, 0);
 }
 
 
-std::any Parser::LiteralExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::LiteralExpressionContext::getRuleIndex() const {
+  return RxParser::RuleLiteralExpression;
+}
+
+
+std::any RxParser::LiteralExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitLiteralExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::LiteralExpressionContext* Parser::literalExpression() {
+RxParser::LiteralExpressionContext* RxParser::literalExpression() {
   LiteralExpressionContext *_localctx = _tracker.createInstance<LiteralExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 264, Parser::RuleLiteralExpression);
+  enterRule(_localctx, 264, RxParser::RuleLiteralExpression);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -13140,42 +13140,42 @@ Parser::LiteralExpressionContext* Parser::literalExpression() {
 
 //----------------- StructExprFieldsContext ------------------------------------------------------------------
 
-Parser::StructExprFieldsContext::StructExprFieldsContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::StructExprFieldsContext::StructExprFieldsContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-std::vector<Parser::StructExprFieldContext *> Parser::StructExprFieldsContext::structExprField() {
-  return getRuleContexts<Parser::StructExprFieldContext>();
+std::vector<RxParser::StructExprFieldContext *> RxParser::StructExprFieldsContext::structExprField() {
+  return getRuleContexts<RxParser::StructExprFieldContext>();
 }
 
-Parser::StructExprFieldContext* Parser::StructExprFieldsContext::structExprField(size_t i) {
-  return getRuleContext<Parser::StructExprFieldContext>(i);
+RxParser::StructExprFieldContext* RxParser::StructExprFieldsContext::structExprField(size_t i) {
+  return getRuleContext<RxParser::StructExprFieldContext>(i);
 }
 
-std::vector<tree::TerminalNode *> Parser::StructExprFieldsContext::COMMA() {
-  return getTokens(Parser::COMMA);
+std::vector<tree::TerminalNode *> RxParser::StructExprFieldsContext::COMMA() {
+  return getTokens(RxParser::COMMA);
 }
 
-tree::TerminalNode* Parser::StructExprFieldsContext::COMMA(size_t i) {
-  return getToken(Parser::COMMA, i);
-}
-
-
-size_t Parser::StructExprFieldsContext::getRuleIndex() const {
-  return Parser::RuleStructExprFields;
+tree::TerminalNode* RxParser::StructExprFieldsContext::COMMA(size_t i) {
+  return getToken(RxParser::COMMA, i);
 }
 
 
-std::any Parser::StructExprFieldsContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::StructExprFieldsContext::getRuleIndex() const {
+  return RxParser::RuleStructExprFields;
+}
+
+
+std::any RxParser::StructExprFieldsContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitStructExprFields(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::StructExprFieldsContext* Parser::structExprFields() {
+RxParser::StructExprFieldsContext* RxParser::structExprFields() {
   StructExprFieldsContext *_localctx = _tracker.createInstance<StructExprFieldsContext>(_ctx, getState());
-  enterRule(_localctx, 266, Parser::RuleStructExprFields);
+  enterRule(_localctx, 266, RxParser::RuleStructExprFields);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -13196,7 +13196,7 @@ Parser::StructExprFieldsContext* Parser::structExprFields() {
     while (alt != 2 && alt != atn::ATN::INVALID_ALT_NUMBER) {
       if (alt == 1) {
         setState(1661);
-        match(Parser::COMMA);
+        match(RxParser::COMMA);
         setState(1662);
         structExprField(); 
       }
@@ -13208,9 +13208,9 @@ Parser::StructExprFieldsContext* Parser::structExprFields() {
     _errHandler->sync(this);
 
     _la = _input->LA(1);
-    if (_la == Parser::COMMA) {
+    if (_la == RxParser::COMMA) {
       setState(1668);
-      match(Parser::COMMA);
+      match(RxParser::COMMA);
     }
    
   }
@@ -13225,38 +13225,38 @@ Parser::StructExprFieldsContext* Parser::structExprFields() {
 
 //----------------- StructExprFieldContext ------------------------------------------------------------------
 
-Parser::StructExprFieldContext::StructExprFieldContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::StructExprFieldContext::StructExprFieldContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::IdentifierContext* Parser::StructExprFieldContext::identifier() {
-  return getRuleContext<Parser::IdentifierContext>(0);
+RxParser::IdentifierContext* RxParser::StructExprFieldContext::identifier() {
+  return getRuleContext<RxParser::IdentifierContext>(0);
 }
 
-tree::TerminalNode* Parser::StructExprFieldContext::COLON() {
-  return getToken(Parser::COLON, 0);
+tree::TerminalNode* RxParser::StructExprFieldContext::COLON() {
+  return getToken(RxParser::COLON, 0);
 }
 
-Parser::ExpressionContext* Parser::StructExprFieldContext::expression() {
-  return getRuleContext<Parser::ExpressionContext>(0);
-}
-
-
-size_t Parser::StructExprFieldContext::getRuleIndex() const {
-  return Parser::RuleStructExprField;
+RxParser::ExpressionContext* RxParser::StructExprFieldContext::expression() {
+  return getRuleContext<RxParser::ExpressionContext>(0);
 }
 
 
-std::any Parser::StructExprFieldContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::StructExprFieldContext::getRuleIndex() const {
+  return RxParser::RuleStructExprField;
+}
+
+
+std::any RxParser::StructExprFieldContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitStructExprField(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::StructExprFieldContext* Parser::structExprField() {
+RxParser::StructExprFieldContext* RxParser::structExprField() {
   StructExprFieldContext *_localctx = _tracker.createInstance<StructExprFieldContext>(_ctx, getState());
-  enterRule(_localctx, 268, Parser::RuleStructExprField);
+  enterRule(_localctx, 268, RxParser::RuleStructExprField);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -13270,7 +13270,7 @@ Parser::StructExprFieldContext* Parser::structExprField() {
     setState(1671);
     identifier();
     setState(1672);
-    match(Parser::COLON);
+    match(RxParser::COLON);
     setState(1673);
     expression();
    
@@ -13286,58 +13286,58 @@ Parser::StructExprFieldContext* Parser::structExprField() {
 
 //----------------- ArrayExpressionContext ------------------------------------------------------------------
 
-Parser::ArrayExpressionContext::ArrayExpressionContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ArrayExpressionContext::ArrayExpressionContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-tree::TerminalNode* Parser::ArrayExpressionContext::LBRACKET() {
-  return getToken(Parser::LBRACKET, 0);
+tree::TerminalNode* RxParser::ArrayExpressionContext::LBRACKET() {
+  return getToken(RxParser::LBRACKET, 0);
 }
 
-tree::TerminalNode* Parser::ArrayExpressionContext::RBRACKET() {
-  return getToken(Parser::RBRACKET, 0);
+tree::TerminalNode* RxParser::ArrayExpressionContext::RBRACKET() {
+  return getToken(RxParser::RBRACKET, 0);
 }
 
-std::vector<Parser::ExpressionContext *> Parser::ArrayExpressionContext::expression() {
-  return getRuleContexts<Parser::ExpressionContext>();
+std::vector<RxParser::ExpressionContext *> RxParser::ArrayExpressionContext::expression() {
+  return getRuleContexts<RxParser::ExpressionContext>();
 }
 
-Parser::ExpressionContext* Parser::ArrayExpressionContext::expression(size_t i) {
-  return getRuleContext<Parser::ExpressionContext>(i);
+RxParser::ExpressionContext* RxParser::ArrayExpressionContext::expression(size_t i) {
+  return getRuleContext<RxParser::ExpressionContext>(i);
 }
 
-tree::TerminalNode* Parser::ArrayExpressionContext::SEMI() {
-  return getToken(Parser::SEMI, 0);
+tree::TerminalNode* RxParser::ArrayExpressionContext::SEMI() {
+  return getToken(RxParser::SEMI, 0);
 }
 
-Parser::ConstValueContext* Parser::ArrayExpressionContext::constValue() {
-  return getRuleContext<Parser::ConstValueContext>(0);
+RxParser::ConstValueContext* RxParser::ArrayExpressionContext::constValue() {
+  return getRuleContext<RxParser::ConstValueContext>(0);
 }
 
-std::vector<tree::TerminalNode *> Parser::ArrayExpressionContext::COMMA() {
-  return getTokens(Parser::COMMA);
+std::vector<tree::TerminalNode *> RxParser::ArrayExpressionContext::COMMA() {
+  return getTokens(RxParser::COMMA);
 }
 
-tree::TerminalNode* Parser::ArrayExpressionContext::COMMA(size_t i) {
-  return getToken(Parser::COMMA, i);
-}
-
-
-size_t Parser::ArrayExpressionContext::getRuleIndex() const {
-  return Parser::RuleArrayExpression;
+tree::TerminalNode* RxParser::ArrayExpressionContext::COMMA(size_t i) {
+  return getToken(RxParser::COMMA, i);
 }
 
 
-std::any Parser::ArrayExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ArrayExpressionContext::getRuleIndex() const {
+  return RxParser::RuleArrayExpression;
+}
+
+
+std::any RxParser::ArrayExpressionContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitArrayExpression(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ArrayExpressionContext* Parser::arrayExpression() {
+RxParser::ArrayExpressionContext* RxParser::arrayExpression() {
   ArrayExpressionContext *_localctx = _tracker.createInstance<ArrayExpressionContext>(_ctx, getState());
-  enterRule(_localctx, 270, Parser::RuleArrayExpression);
+  enterRule(_localctx, 270, RxParser::RuleArrayExpression);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -13351,7 +13351,7 @@ Parser::ArrayExpressionContext* Parser::arrayExpression() {
     size_t alt;
     enterOuterAlt(_localctx, 1);
     setState(1675);
-    match(Parser::LBRACKET);
+    match(RxParser::LBRACKET);
     setState(1691);
     _errHandler->sync(this);
 
@@ -13364,23 +13364,23 @@ Parser::ArrayExpressionContext* Parser::arrayExpression() {
       setState(1689);
       _errHandler->sync(this);
       switch (_input->LA(1)) {
-        case Parser::SEMI: {
+        case RxParser::SEMI: {
           setState(1677);
-          match(Parser::SEMI);
+          match(RxParser::SEMI);
           setState(1678);
           constValue();
           break;
         }
 
-        case Parser::COMMA:
-        case Parser::RBRACKET: {
+        case RxParser::COMMA:
+        case RxParser::RBRACKET: {
           setState(1683);
           _errHandler->sync(this);
           alt = getInterpreter<atn::ParserATNSimulator>()->adaptivePredict(_input, 208, _ctx);
           while (alt != 2 && alt != atn::ATN::INVALID_ALT_NUMBER) {
             if (alt == 1) {
               setState(1679);
-              match(Parser::COMMA);
+              match(RxParser::COMMA);
               setState(1680);
               expression(); 
             }
@@ -13392,9 +13392,9 @@ Parser::ArrayExpressionContext* Parser::arrayExpression() {
           _errHandler->sync(this);
 
           _la = _input->LA(1);
-          if (_la == Parser::COMMA) {
+          if (_la == RxParser::COMMA) {
             setState(1686);
-            match(Parser::COMMA);
+            match(RxParser::COMMA);
           }
           break;
         }
@@ -13404,7 +13404,7 @@ Parser::ArrayExpressionContext* Parser::arrayExpression() {
       }
     }
     setState(1693);
-    match(Parser::RBRACKET);
+    match(RxParser::RBRACKET);
    
   }
   catch (RecognitionException &e) {
@@ -13418,46 +13418,46 @@ Parser::ArrayExpressionContext* Parser::arrayExpression() {
 
 //----------------- PostfixSuffixContext ------------------------------------------------------------------
 
-Parser::PostfixSuffixContext::PostfixSuffixContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::PostfixSuffixContext::PostfixSuffixContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::CallArgumentsContext* Parser::PostfixSuffixContext::callArguments() {
-  return getRuleContext<Parser::CallArgumentsContext>(0);
+RxParser::CallArgumentsContext* RxParser::PostfixSuffixContext::callArguments() {
+  return getRuleContext<RxParser::CallArgumentsContext>(0);
 }
 
-tree::TerminalNode* Parser::PostfixSuffixContext::LBRACKET() {
-  return getToken(Parser::LBRACKET, 0);
+tree::TerminalNode* RxParser::PostfixSuffixContext::LBRACKET() {
+  return getToken(RxParser::LBRACKET, 0);
 }
 
-Parser::ExpressionContext* Parser::PostfixSuffixContext::expression() {
-  return getRuleContext<Parser::ExpressionContext>(0);
+RxParser::ExpressionContext* RxParser::PostfixSuffixContext::expression() {
+  return getRuleContext<RxParser::ExpressionContext>(0);
 }
 
-tree::TerminalNode* Parser::PostfixSuffixContext::RBRACKET() {
-  return getToken(Parser::RBRACKET, 0);
+tree::TerminalNode* RxParser::PostfixSuffixContext::RBRACKET() {
+  return getToken(RxParser::RBRACKET, 0);
 }
 
-Parser::DotSuffixContext* Parser::PostfixSuffixContext::dotSuffix() {
-  return getRuleContext<Parser::DotSuffixContext>(0);
-}
-
-
-size_t Parser::PostfixSuffixContext::getRuleIndex() const {
-  return Parser::RulePostfixSuffix;
+RxParser::DotSuffixContext* RxParser::PostfixSuffixContext::dotSuffix() {
+  return getRuleContext<RxParser::DotSuffixContext>(0);
 }
 
 
-std::any Parser::PostfixSuffixContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::PostfixSuffixContext::getRuleIndex() const {
+  return RxParser::RulePostfixSuffix;
+}
+
+
+std::any RxParser::PostfixSuffixContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitPostfixSuffix(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::PostfixSuffixContext* Parser::postfixSuffix() {
+RxParser::PostfixSuffixContext* RxParser::postfixSuffix() {
   PostfixSuffixContext *_localctx = _tracker.createInstance<PostfixSuffixContext>(_ctx, getState());
-  enterRule(_localctx, 272, Parser::RulePostfixSuffix);
+  enterRule(_localctx, 272, RxParser::RulePostfixSuffix);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -13470,25 +13470,25 @@ Parser::PostfixSuffixContext* Parser::postfixSuffix() {
     setState(1701);
     _errHandler->sync(this);
     switch (_input->LA(1)) {
-      case Parser::LPAREN: {
+      case RxParser::LPAREN: {
         enterOuterAlt(_localctx, 1);
         setState(1695);
         callArguments();
         break;
       }
 
-      case Parser::LBRACKET: {
+      case RxParser::LBRACKET: {
         enterOuterAlt(_localctx, 2);
         setState(1696);
-        match(Parser::LBRACKET);
+        match(RxParser::LBRACKET);
         setState(1697);
         expression();
         setState(1698);
-        match(Parser::RBRACKET);
+        match(RxParser::RBRACKET);
         break;
       }
 
-      case Parser::DOT: {
+      case RxParser::DOT: {
         enterOuterAlt(_localctx, 3);
         setState(1700);
         dotSuffix();
@@ -13511,42 +13511,42 @@ Parser::PostfixSuffixContext* Parser::postfixSuffix() {
 
 //----------------- DotSuffixContext ------------------------------------------------------------------
 
-Parser::DotSuffixContext::DotSuffixContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::DotSuffixContext::DotSuffixContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-tree::TerminalNode* Parser::DotSuffixContext::DOT() {
-  return getToken(Parser::DOT, 0);
+tree::TerminalNode* RxParser::DotSuffixContext::DOT() {
+  return getToken(RxParser::DOT, 0);
 }
 
-Parser::PathExprSegmentContext* Parser::DotSuffixContext::pathExprSegment() {
-  return getRuleContext<Parser::PathExprSegmentContext>(0);
+RxParser::PathExprSegmentContext* RxParser::DotSuffixContext::pathExprSegment() {
+  return getRuleContext<RxParser::PathExprSegmentContext>(0);
 }
 
-Parser::CallArgumentsContext* Parser::DotSuffixContext::callArguments() {
-  return getRuleContext<Parser::CallArgumentsContext>(0);
+RxParser::CallArgumentsContext* RxParser::DotSuffixContext::callArguments() {
+  return getRuleContext<RxParser::CallArgumentsContext>(0);
 }
 
-Parser::IdentifierContext* Parser::DotSuffixContext::identifier() {
-  return getRuleContext<Parser::IdentifierContext>(0);
-}
-
-
-size_t Parser::DotSuffixContext::getRuleIndex() const {
-  return Parser::RuleDotSuffix;
+RxParser::IdentifierContext* RxParser::DotSuffixContext::identifier() {
+  return getRuleContext<RxParser::IdentifierContext>(0);
 }
 
 
-std::any Parser::DotSuffixContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::DotSuffixContext::getRuleIndex() const {
+  return RxParser::RuleDotSuffix;
+}
+
+
+std::any RxParser::DotSuffixContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitDotSuffix(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::DotSuffixContext* Parser::dotSuffix() {
+RxParser::DotSuffixContext* RxParser::dotSuffix() {
   DotSuffixContext *_localctx = _tracker.createInstance<DotSuffixContext>(_ctx, getState());
-  enterRule(_localctx, 274, Parser::RuleDotSuffix);
+  enterRule(_localctx, 274, RxParser::RuleDotSuffix);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -13562,7 +13562,7 @@ Parser::DotSuffixContext* Parser::dotSuffix() {
     case 1: {
       enterOuterAlt(_localctx, 1);
       setState(1703);
-      match(Parser::DOT);
+      match(RxParser::DOT);
       setState(1704);
       pathExprSegment();
       setState(1705);
@@ -13573,7 +13573,7 @@ Parser::DotSuffixContext* Parser::dotSuffix() {
     case 2: {
       enterOuterAlt(_localctx, 2);
       setState(1707);
-      match(Parser::DOT);
+      match(RxParser::DOT);
       setState(1708);
       identifier();
       break;
@@ -13595,50 +13595,50 @@ Parser::DotSuffixContext* Parser::dotSuffix() {
 
 //----------------- CallArgumentsContext ------------------------------------------------------------------
 
-Parser::CallArgumentsContext::CallArgumentsContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::CallArgumentsContext::CallArgumentsContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-tree::TerminalNode* Parser::CallArgumentsContext::LPAREN() {
-  return getToken(Parser::LPAREN, 0);
+tree::TerminalNode* RxParser::CallArgumentsContext::LPAREN() {
+  return getToken(RxParser::LPAREN, 0);
 }
 
-tree::TerminalNode* Parser::CallArgumentsContext::RPAREN() {
-  return getToken(Parser::RPAREN, 0);
+tree::TerminalNode* RxParser::CallArgumentsContext::RPAREN() {
+  return getToken(RxParser::RPAREN, 0);
 }
 
-std::vector<Parser::ExpressionContext *> Parser::CallArgumentsContext::expression() {
-  return getRuleContexts<Parser::ExpressionContext>();
+std::vector<RxParser::ExpressionContext *> RxParser::CallArgumentsContext::expression() {
+  return getRuleContexts<RxParser::ExpressionContext>();
 }
 
-Parser::ExpressionContext* Parser::CallArgumentsContext::expression(size_t i) {
-  return getRuleContext<Parser::ExpressionContext>(i);
+RxParser::ExpressionContext* RxParser::CallArgumentsContext::expression(size_t i) {
+  return getRuleContext<RxParser::ExpressionContext>(i);
 }
 
-std::vector<tree::TerminalNode *> Parser::CallArgumentsContext::COMMA() {
-  return getTokens(Parser::COMMA);
+std::vector<tree::TerminalNode *> RxParser::CallArgumentsContext::COMMA() {
+  return getTokens(RxParser::COMMA);
 }
 
-tree::TerminalNode* Parser::CallArgumentsContext::COMMA(size_t i) {
-  return getToken(Parser::COMMA, i);
-}
-
-
-size_t Parser::CallArgumentsContext::getRuleIndex() const {
-  return Parser::RuleCallArguments;
+tree::TerminalNode* RxParser::CallArgumentsContext::COMMA(size_t i) {
+  return getToken(RxParser::COMMA, i);
 }
 
 
-std::any Parser::CallArgumentsContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::CallArgumentsContext::getRuleIndex() const {
+  return RxParser::RuleCallArguments;
+}
+
+
+std::any RxParser::CallArgumentsContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitCallArguments(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::CallArgumentsContext* Parser::callArguments() {
+RxParser::CallArgumentsContext* RxParser::callArguments() {
   CallArgumentsContext *_localctx = _tracker.createInstance<CallArgumentsContext>(_ctx, getState());
-  enterRule(_localctx, 276, Parser::RuleCallArguments);
+  enterRule(_localctx, 276, RxParser::RuleCallArguments);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -13652,7 +13652,7 @@ Parser::CallArgumentsContext* Parser::callArguments() {
     size_t alt;
     enterOuterAlt(_localctx, 1);
     setState(1711);
-    match(Parser::LPAREN);
+    match(RxParser::LPAREN);
     setState(1723);
     _errHandler->sync(this);
 
@@ -13668,7 +13668,7 @@ Parser::CallArgumentsContext* Parser::callArguments() {
       while (alt != 2 && alt != atn::ATN::INVALID_ALT_NUMBER) {
         if (alt == 1) {
           setState(1713);
-          match(Parser::COMMA);
+          match(RxParser::COMMA);
           setState(1714);
           expression(); 
         }
@@ -13680,13 +13680,13 @@ Parser::CallArgumentsContext* Parser::callArguments() {
       _errHandler->sync(this);
 
       _la = _input->LA(1);
-      if (_la == Parser::COMMA) {
+      if (_la == RxParser::COMMA) {
         setState(1720);
-        match(Parser::COMMA);
+        match(RxParser::COMMA);
       }
     }
     setState(1725);
-    match(Parser::RPAREN);
+    match(RxParser::RPAREN);
    
   }
   catch (RecognitionException &e) {
@@ -13700,50 +13700,50 @@ Parser::CallArgumentsContext* Parser::callArguments() {
 
 //----------------- UnaryOperatorContext ------------------------------------------------------------------
 
-Parser::UnaryOperatorContext::UnaryOperatorContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::UnaryOperatorContext::UnaryOperatorContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-tree::TerminalNode* Parser::UnaryOperatorContext::MINUS() {
-  return getToken(Parser::MINUS, 0);
+tree::TerminalNode* RxParser::UnaryOperatorContext::MINUS() {
+  return getToken(RxParser::MINUS, 0);
 }
 
-tree::TerminalNode* Parser::UnaryOperatorContext::NOT() {
-  return getToken(Parser::NOT, 0);
+tree::TerminalNode* RxParser::UnaryOperatorContext::NOT() {
+  return getToken(RxParser::NOT, 0);
 }
 
-tree::TerminalNode* Parser::UnaryOperatorContext::STAR() {
-  return getToken(Parser::STAR, 0);
+tree::TerminalNode* RxParser::UnaryOperatorContext::STAR() {
+  return getToken(RxParser::STAR, 0);
 }
 
-tree::TerminalNode* Parser::UnaryOperatorContext::AMP() {
-  return getToken(Parser::AMP, 0);
+tree::TerminalNode* RxParser::UnaryOperatorContext::AMP() {
+  return getToken(RxParser::AMP, 0);
 }
 
-tree::TerminalNode* Parser::UnaryOperatorContext::ANDAND() {
-  return getToken(Parser::ANDAND, 0);
+tree::TerminalNode* RxParser::UnaryOperatorContext::ANDAND() {
+  return getToken(RxParser::ANDAND, 0);
 }
 
-tree::TerminalNode* Parser::UnaryOperatorContext::MUT() {
-  return getToken(Parser::MUT, 0);
-}
-
-
-size_t Parser::UnaryOperatorContext::getRuleIndex() const {
-  return Parser::RuleUnaryOperator;
+tree::TerminalNode* RxParser::UnaryOperatorContext::MUT() {
+  return getToken(RxParser::MUT, 0);
 }
 
 
-std::any Parser::UnaryOperatorContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::UnaryOperatorContext::getRuleIndex() const {
+  return RxParser::RuleUnaryOperator;
+}
+
+
+std::any RxParser::UnaryOperatorContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitUnaryOperator(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::UnaryOperatorContext* Parser::unaryOperator() {
+RxParser::UnaryOperatorContext* RxParser::unaryOperator() {
   UnaryOperatorContext *_localctx = _tracker.createInstance<UnaryOperatorContext>(_ctx, getState());
-  enterRule(_localctx, 278, Parser::RuleUnaryOperator);
+  enterRule(_localctx, 278, RxParser::RuleUnaryOperator);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -13757,35 +13757,35 @@ Parser::UnaryOperatorContext* Parser::unaryOperator() {
     setState(1734);
     _errHandler->sync(this);
     switch (_input->LA(1)) {
-      case Parser::MINUS: {
+      case RxParser::MINUS: {
         enterOuterAlt(_localctx, 1);
         setState(1727);
-        match(Parser::MINUS);
+        match(RxParser::MINUS);
         break;
       }
 
-      case Parser::NOT: {
+      case RxParser::NOT: {
         enterOuterAlt(_localctx, 2);
         setState(1728);
-        match(Parser::NOT);
+        match(RxParser::NOT);
         break;
       }
 
-      case Parser::STAR: {
+      case RxParser::STAR: {
         enterOuterAlt(_localctx, 3);
         setState(1729);
-        match(Parser::STAR);
+        match(RxParser::STAR);
         break;
       }
 
-      case Parser::ANDAND:
-      case Parser::AMP: {
+      case RxParser::ANDAND:
+      case RxParser::AMP: {
         enterOuterAlt(_localctx, 4);
         setState(1730);
         _la = _input->LA(1);
-        if (!(_la == Parser::ANDAND
+        if (!(_la == RxParser::ANDAND
 
-        || _la == Parser::AMP)) {
+        || _la == RxParser::AMP)) {
         _errHandler->recoverInline(this);
         }
         else {
@@ -13796,9 +13796,9 @@ Parser::UnaryOperatorContext* Parser::unaryOperator() {
         _errHandler->sync(this);
 
         _la = _input->LA(1);
-        if (_la == Parser::MUT) {
+        if (_la == RxParser::MUT) {
           setState(1731);
-          match(Parser::MUT);
+          match(RxParser::MUT);
         }
         break;
       }
@@ -13819,38 +13819,38 @@ Parser::UnaryOperatorContext* Parser::unaryOperator() {
 
 //----------------- MultiplicativeOperatorContext ------------------------------------------------------------------
 
-Parser::MultiplicativeOperatorContext::MultiplicativeOperatorContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::MultiplicativeOperatorContext::MultiplicativeOperatorContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-tree::TerminalNode* Parser::MultiplicativeOperatorContext::STAR() {
-  return getToken(Parser::STAR, 0);
+tree::TerminalNode* RxParser::MultiplicativeOperatorContext::STAR() {
+  return getToken(RxParser::STAR, 0);
 }
 
-tree::TerminalNode* Parser::MultiplicativeOperatorContext::SLASH() {
-  return getToken(Parser::SLASH, 0);
+tree::TerminalNode* RxParser::MultiplicativeOperatorContext::SLASH() {
+  return getToken(RxParser::SLASH, 0);
 }
 
-tree::TerminalNode* Parser::MultiplicativeOperatorContext::PERCENT() {
-  return getToken(Parser::PERCENT, 0);
-}
-
-
-size_t Parser::MultiplicativeOperatorContext::getRuleIndex() const {
-  return Parser::RuleMultiplicativeOperator;
+tree::TerminalNode* RxParser::MultiplicativeOperatorContext::PERCENT() {
+  return getToken(RxParser::PERCENT, 0);
 }
 
 
-std::any Parser::MultiplicativeOperatorContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::MultiplicativeOperatorContext::getRuleIndex() const {
+  return RxParser::RuleMultiplicativeOperator;
+}
+
+
+std::any RxParser::MultiplicativeOperatorContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitMultiplicativeOperator(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::MultiplicativeOperatorContext* Parser::multiplicativeOperator() {
+RxParser::MultiplicativeOperatorContext* RxParser::multiplicativeOperator() {
   MultiplicativeOperatorContext *_localctx = _tracker.createInstance<MultiplicativeOperatorContext>(_ctx, getState());
-  enterRule(_localctx, 280, Parser::RuleMultiplicativeOperator);
+  enterRule(_localctx, 280, RxParser::RuleMultiplicativeOperator);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -13885,34 +13885,34 @@ Parser::MultiplicativeOperatorContext* Parser::multiplicativeOperator() {
 
 //----------------- AdditiveOperatorContext ------------------------------------------------------------------
 
-Parser::AdditiveOperatorContext::AdditiveOperatorContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::AdditiveOperatorContext::AdditiveOperatorContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-tree::TerminalNode* Parser::AdditiveOperatorContext::PLUS() {
-  return getToken(Parser::PLUS, 0);
+tree::TerminalNode* RxParser::AdditiveOperatorContext::PLUS() {
+  return getToken(RxParser::PLUS, 0);
 }
 
-tree::TerminalNode* Parser::AdditiveOperatorContext::MINUS() {
-  return getToken(Parser::MINUS, 0);
-}
-
-
-size_t Parser::AdditiveOperatorContext::getRuleIndex() const {
-  return Parser::RuleAdditiveOperator;
+tree::TerminalNode* RxParser::AdditiveOperatorContext::MINUS() {
+  return getToken(RxParser::MINUS, 0);
 }
 
 
-std::any Parser::AdditiveOperatorContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::AdditiveOperatorContext::getRuleIndex() const {
+  return RxParser::RuleAdditiveOperator;
+}
+
+
+std::any RxParser::AdditiveOperatorContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitAdditiveOperator(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::AdditiveOperatorContext* Parser::additiveOperator() {
+RxParser::AdditiveOperatorContext* RxParser::additiveOperator() {
   AdditiveOperatorContext *_localctx = _tracker.createInstance<AdditiveOperatorContext>(_ctx, getState());
-  enterRule(_localctx, 282, Parser::RuleAdditiveOperator);
+  enterRule(_localctx, 282, RxParser::RuleAdditiveOperator);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -13926,9 +13926,9 @@ Parser::AdditiveOperatorContext* Parser::additiveOperator() {
     enterOuterAlt(_localctx, 1);
     setState(1738);
     _la = _input->LA(1);
-    if (!(_la == Parser::PLUS
+    if (!(_la == RxParser::PLUS
 
-    || _la == Parser::MINUS)) {
+    || _la == RxParser::MINUS)) {
     _errHandler->recoverInline(this);
     }
     else {
@@ -13948,34 +13948,34 @@ Parser::AdditiveOperatorContext* Parser::additiveOperator() {
 
 //----------------- ShiftRightContext ------------------------------------------------------------------
 
-Parser::ShiftRightContext::ShiftRightContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ShiftRightContext::ShiftRightContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-tree::TerminalNode* Parser::ShiftRightContext::GT() {
-  return getToken(Parser::GT, 0);
+tree::TerminalNode* RxParser::ShiftRightContext::GT() {
+  return getToken(RxParser::GT, 0);
 }
 
-tree::TerminalNode* Parser::ShiftRightContext::GT_SECOND() {
-  return getToken(Parser::GT_SECOND, 0);
-}
-
-
-size_t Parser::ShiftRightContext::getRuleIndex() const {
-  return Parser::RuleShiftRight;
+tree::TerminalNode* RxParser::ShiftRightContext::GT_SECOND() {
+  return getToken(RxParser::GT_SECOND, 0);
 }
 
 
-std::any Parser::ShiftRightContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ShiftRightContext::getRuleIndex() const {
+  return RxParser::RuleShiftRight;
+}
+
+
+std::any RxParser::ShiftRightContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitShiftRight(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ShiftRightContext* Parser::shiftRight() {
+RxParser::ShiftRightContext* RxParser::shiftRight() {
   ShiftRightContext *_localctx = _tracker.createInstance<ShiftRightContext>(_ctx, getState());
-  enterRule(_localctx, 284, Parser::RuleShiftRight);
+  enterRule(_localctx, 284, RxParser::RuleShiftRight);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -13987,9 +13987,9 @@ Parser::ShiftRightContext* Parser::shiftRight() {
   try {
     enterOuterAlt(_localctx, 1);
     setState(1740);
-    match(Parser::GT);
+    match(RxParser::GT);
     setState(1741);
-    match(Parser::GT_SECOND);
+    match(RxParser::GT_SECOND);
    
   }
   catch (RecognitionException &e) {
@@ -14003,58 +14003,58 @@ Parser::ShiftRightContext* Parser::shiftRight() {
 
 //----------------- ComparisonExceptLtContext ------------------------------------------------------------------
 
-Parser::ComparisonExceptLtContext::ComparisonExceptLtContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::ComparisonExceptLtContext::ComparisonExceptLtContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-tree::TerminalNode* Parser::ComparisonExceptLtContext::EQEQ() {
-  return getToken(Parser::EQEQ, 0);
+tree::TerminalNode* RxParser::ComparisonExceptLtContext::EQEQ() {
+  return getToken(RxParser::EQEQ, 0);
 }
 
-tree::TerminalNode* Parser::ComparisonExceptLtContext::NE() {
-  return getToken(Parser::NE, 0);
+tree::TerminalNode* RxParser::ComparisonExceptLtContext::NE() {
+  return getToken(RxParser::NE, 0);
 }
 
-tree::TerminalNode* Parser::ComparisonExceptLtContext::LE() {
-  return getToken(Parser::LE, 0);
+tree::TerminalNode* RxParser::ComparisonExceptLtContext::LE() {
+  return getToken(RxParser::LE, 0);
 }
 
-tree::TerminalNode* Parser::ComparisonExceptLtContext::GT() {
-  return getToken(Parser::GT, 0);
+tree::TerminalNode* RxParser::ComparisonExceptLtContext::GT() {
+  return getToken(RxParser::GT, 0);
 }
 
-tree::TerminalNode* Parser::ComparisonExceptLtContext::GE_EQ() {
-  return getToken(Parser::GE_EQ, 0);
+tree::TerminalNode* RxParser::ComparisonExceptLtContext::GE_EQ() {
+  return getToken(RxParser::GE_EQ, 0);
 }
 
-tree::TerminalNode* Parser::ComparisonExceptLtContext::GT_SECOND() {
-  return getToken(Parser::GT_SECOND, 0);
+tree::TerminalNode* RxParser::ComparisonExceptLtContext::GT_SECOND() {
+  return getToken(RxParser::GT_SECOND, 0);
 }
 
-tree::TerminalNode* Parser::ComparisonExceptLtContext::SHR_EQ() {
-  return getToken(Parser::SHR_EQ, 0);
+tree::TerminalNode* RxParser::ComparisonExceptLtContext::SHR_EQ() {
+  return getToken(RxParser::SHR_EQ, 0);
 }
 
-Parser::GenericCloseContext* Parser::ComparisonExceptLtContext::genericClose() {
-  return getRuleContext<Parser::GenericCloseContext>(0);
-}
-
-
-size_t Parser::ComparisonExceptLtContext::getRuleIndex() const {
-  return Parser::RuleComparisonExceptLt;
+RxParser::GenericCloseContext* RxParser::ComparisonExceptLtContext::genericClose() {
+  return getRuleContext<RxParser::GenericCloseContext>(0);
 }
 
 
-std::any Parser::ComparisonExceptLtContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::ComparisonExceptLtContext::getRuleIndex() const {
+  return RxParser::RuleComparisonExceptLt;
+}
+
+
+std::any RxParser::ComparisonExceptLtContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitComparisonExceptLt(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::ComparisonExceptLtContext* Parser::comparisonExceptLt() {
+RxParser::ComparisonExceptLtContext* RxParser::comparisonExceptLt() {
   ComparisonExceptLtContext *_localctx = _tracker.createInstance<ComparisonExceptLtContext>(_ctx, getState());
-  enterRule(_localctx, 286, Parser::RuleComparisonExceptLt);
+  enterRule(_localctx, 286, RxParser::RuleComparisonExceptLt);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -14070,39 +14070,39 @@ Parser::ComparisonExceptLtContext* Parser::comparisonExceptLt() {
     case 1: {
       enterOuterAlt(_localctx, 1);
       setState(1743);
-      match(Parser::EQEQ);
+      match(RxParser::EQEQ);
       break;
     }
 
     case 2: {
       enterOuterAlt(_localctx, 2);
       setState(1744);
-      match(Parser::NE);
+      match(RxParser::NE);
       break;
     }
 
     case 3: {
       enterOuterAlt(_localctx, 3);
       setState(1745);
-      match(Parser::LE);
+      match(RxParser::LE);
       break;
     }
 
     case 4: {
       enterOuterAlt(_localctx, 4);
       setState(1746);
-      match(Parser::GT);
+      match(RxParser::GT);
       setState(1747);
-      match(Parser::GE_EQ);
+      match(RxParser::GE_EQ);
       break;
     }
 
     case 5: {
       enterOuterAlt(_localctx, 5);
       setState(1748);
-      match(Parser::GT_SECOND);
+      match(RxParser::GT_SECOND);
       setState(1749);
-      match(Parser::SHR_EQ);
+      match(RxParser::SHR_EQ);
       break;
     }
 
@@ -14129,78 +14129,78 @@ Parser::ComparisonExceptLtContext* Parser::comparisonExceptLt() {
 
 //----------------- AssignmentOperatorContext ------------------------------------------------------------------
 
-Parser::AssignmentOperatorContext::AssignmentOperatorContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::AssignmentOperatorContext::AssignmentOperatorContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-Parser::EqualsSignContext* Parser::AssignmentOperatorContext::equalsSign() {
-  return getRuleContext<Parser::EqualsSignContext>(0);
+RxParser::EqualsSignContext* RxParser::AssignmentOperatorContext::equalsSign() {
+  return getRuleContext<RxParser::EqualsSignContext>(0);
 }
 
-tree::TerminalNode* Parser::AssignmentOperatorContext::PLUS_ASSIGN() {
-  return getToken(Parser::PLUS_ASSIGN, 0);
+tree::TerminalNode* RxParser::AssignmentOperatorContext::PLUS_ASSIGN() {
+  return getToken(RxParser::PLUS_ASSIGN, 0);
 }
 
-tree::TerminalNode* Parser::AssignmentOperatorContext::MINUS_ASSIGN() {
-  return getToken(Parser::MINUS_ASSIGN, 0);
+tree::TerminalNode* RxParser::AssignmentOperatorContext::MINUS_ASSIGN() {
+  return getToken(RxParser::MINUS_ASSIGN, 0);
 }
 
-tree::TerminalNode* Parser::AssignmentOperatorContext::STAR_ASSIGN() {
-  return getToken(Parser::STAR_ASSIGN, 0);
+tree::TerminalNode* RxParser::AssignmentOperatorContext::STAR_ASSIGN() {
+  return getToken(RxParser::STAR_ASSIGN, 0);
 }
 
-tree::TerminalNode* Parser::AssignmentOperatorContext::SLASH_ASSIGN() {
-  return getToken(Parser::SLASH_ASSIGN, 0);
+tree::TerminalNode* RxParser::AssignmentOperatorContext::SLASH_ASSIGN() {
+  return getToken(RxParser::SLASH_ASSIGN, 0);
 }
 
-tree::TerminalNode* Parser::AssignmentOperatorContext::PERCENT_ASSIGN() {
-  return getToken(Parser::PERCENT_ASSIGN, 0);
+tree::TerminalNode* RxParser::AssignmentOperatorContext::PERCENT_ASSIGN() {
+  return getToken(RxParser::PERCENT_ASSIGN, 0);
 }
 
-tree::TerminalNode* Parser::AssignmentOperatorContext::AMP_ASSIGN() {
-  return getToken(Parser::AMP_ASSIGN, 0);
+tree::TerminalNode* RxParser::AssignmentOperatorContext::AMP_ASSIGN() {
+  return getToken(RxParser::AMP_ASSIGN, 0);
 }
 
-tree::TerminalNode* Parser::AssignmentOperatorContext::PIPE_ASSIGN() {
-  return getToken(Parser::PIPE_ASSIGN, 0);
+tree::TerminalNode* RxParser::AssignmentOperatorContext::PIPE_ASSIGN() {
+  return getToken(RxParser::PIPE_ASSIGN, 0);
 }
 
-tree::TerminalNode* Parser::AssignmentOperatorContext::CARET_ASSIGN() {
-  return getToken(Parser::CARET_ASSIGN, 0);
+tree::TerminalNode* RxParser::AssignmentOperatorContext::CARET_ASSIGN() {
+  return getToken(RxParser::CARET_ASSIGN, 0);
 }
 
-tree::TerminalNode* Parser::AssignmentOperatorContext::SHL_ASSIGN() {
-  return getToken(Parser::SHL_ASSIGN, 0);
+tree::TerminalNode* RxParser::AssignmentOperatorContext::SHL_ASSIGN() {
+  return getToken(RxParser::SHL_ASSIGN, 0);
 }
 
-tree::TerminalNode* Parser::AssignmentOperatorContext::GT() {
-  return getToken(Parser::GT, 0);
+tree::TerminalNode* RxParser::AssignmentOperatorContext::GT() {
+  return getToken(RxParser::GT, 0);
 }
 
-tree::TerminalNode* Parser::AssignmentOperatorContext::GT_SECOND() {
-  return getToken(Parser::GT_SECOND, 0);
+tree::TerminalNode* RxParser::AssignmentOperatorContext::GT_SECOND() {
+  return getToken(RxParser::GT_SECOND, 0);
 }
 
-tree::TerminalNode* Parser::AssignmentOperatorContext::SHR_EQ() {
-  return getToken(Parser::SHR_EQ, 0);
-}
-
-
-size_t Parser::AssignmentOperatorContext::getRuleIndex() const {
-  return Parser::RuleAssignmentOperator;
+tree::TerminalNode* RxParser::AssignmentOperatorContext::SHR_EQ() {
+  return getToken(RxParser::SHR_EQ, 0);
 }
 
 
-std::any Parser::AssignmentOperatorContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::AssignmentOperatorContext::getRuleIndex() const {
+  return RxParser::RuleAssignmentOperator;
+}
+
+
+std::any RxParser::AssignmentOperatorContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitAssignmentOperator(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::AssignmentOperatorContext* Parser::assignmentOperator() {
+RxParser::AssignmentOperatorContext* RxParser::assignmentOperator() {
   AssignmentOperatorContext *_localctx = _tracker.createInstance<AssignmentOperatorContext>(_ctx, getState());
-  enterRule(_localctx, 288, Parser::RuleAssignmentOperator);
+  enterRule(_localctx, 288, RxParser::RuleAssignmentOperator);
 
 #if __cplusplus > 201703L
   auto onExit = finally([=, this] {
@@ -14213,86 +14213,86 @@ Parser::AssignmentOperatorContext* Parser::assignmentOperator() {
     setState(1766);
     _errHandler->sync(this);
     switch (_input->LA(1)) {
-      case Parser::ASSIGN:
-      case Parser::GE_EQ:
-      case Parser::SHR_EQ: {
+      case RxParser::ASSIGN:
+      case RxParser::GE_EQ:
+      case RxParser::SHR_EQ: {
         enterOuterAlt(_localctx, 1);
         setState(1753);
         equalsSign();
         break;
       }
 
-      case Parser::PLUS_ASSIGN: {
+      case RxParser::PLUS_ASSIGN: {
         enterOuterAlt(_localctx, 2);
         setState(1754);
-        match(Parser::PLUS_ASSIGN);
+        match(RxParser::PLUS_ASSIGN);
         break;
       }
 
-      case Parser::MINUS_ASSIGN: {
+      case RxParser::MINUS_ASSIGN: {
         enterOuterAlt(_localctx, 3);
         setState(1755);
-        match(Parser::MINUS_ASSIGN);
+        match(RxParser::MINUS_ASSIGN);
         break;
       }
 
-      case Parser::STAR_ASSIGN: {
+      case RxParser::STAR_ASSIGN: {
         enterOuterAlt(_localctx, 4);
         setState(1756);
-        match(Parser::STAR_ASSIGN);
+        match(RxParser::STAR_ASSIGN);
         break;
       }
 
-      case Parser::SLASH_ASSIGN: {
+      case RxParser::SLASH_ASSIGN: {
         enterOuterAlt(_localctx, 5);
         setState(1757);
-        match(Parser::SLASH_ASSIGN);
+        match(RxParser::SLASH_ASSIGN);
         break;
       }
 
-      case Parser::PERCENT_ASSIGN: {
+      case RxParser::PERCENT_ASSIGN: {
         enterOuterAlt(_localctx, 6);
         setState(1758);
-        match(Parser::PERCENT_ASSIGN);
+        match(RxParser::PERCENT_ASSIGN);
         break;
       }
 
-      case Parser::AMP_ASSIGN: {
+      case RxParser::AMP_ASSIGN: {
         enterOuterAlt(_localctx, 7);
         setState(1759);
-        match(Parser::AMP_ASSIGN);
+        match(RxParser::AMP_ASSIGN);
         break;
       }
 
-      case Parser::PIPE_ASSIGN: {
+      case RxParser::PIPE_ASSIGN: {
         enterOuterAlt(_localctx, 8);
         setState(1760);
-        match(Parser::PIPE_ASSIGN);
+        match(RxParser::PIPE_ASSIGN);
         break;
       }
 
-      case Parser::CARET_ASSIGN: {
+      case RxParser::CARET_ASSIGN: {
         enterOuterAlt(_localctx, 9);
         setState(1761);
-        match(Parser::CARET_ASSIGN);
+        match(RxParser::CARET_ASSIGN);
         break;
       }
 
-      case Parser::SHL_ASSIGN: {
+      case RxParser::SHL_ASSIGN: {
         enterOuterAlt(_localctx, 10);
         setState(1762);
-        match(Parser::SHL_ASSIGN);
+        match(RxParser::SHL_ASSIGN);
         break;
       }
 
-      case Parser::GT: {
+      case RxParser::GT: {
         enterOuterAlt(_localctx, 11);
         setState(1763);
-        match(Parser::GT);
+        match(RxParser::GT);
         setState(1764);
-        match(Parser::GT_SECOND);
+        match(RxParser::GT_SECOND);
         setState(1765);
-        match(Parser::SHR_EQ);
+        match(RxParser::SHR_EQ);
         break;
       }
 
@@ -14312,38 +14312,38 @@ Parser::AssignmentOperatorContext* Parser::assignmentOperator() {
 
 //----------------- EqualsSignContext ------------------------------------------------------------------
 
-Parser::EqualsSignContext::EqualsSignContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::EqualsSignContext::EqualsSignContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-tree::TerminalNode* Parser::EqualsSignContext::ASSIGN() {
-  return getToken(Parser::ASSIGN, 0);
+tree::TerminalNode* RxParser::EqualsSignContext::ASSIGN() {
+  return getToken(RxParser::ASSIGN, 0);
 }
 
-tree::TerminalNode* Parser::EqualsSignContext::GE_EQ() {
-  return getToken(Parser::GE_EQ, 0);
+tree::TerminalNode* RxParser::EqualsSignContext::GE_EQ() {
+  return getToken(RxParser::GE_EQ, 0);
 }
 
-tree::TerminalNode* Parser::EqualsSignContext::SHR_EQ() {
-  return getToken(Parser::SHR_EQ, 0);
-}
-
-
-size_t Parser::EqualsSignContext::getRuleIndex() const {
-  return Parser::RuleEqualsSign;
+tree::TerminalNode* RxParser::EqualsSignContext::SHR_EQ() {
+  return getToken(RxParser::SHR_EQ, 0);
 }
 
 
-std::any Parser::EqualsSignContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::EqualsSignContext::getRuleIndex() const {
+  return RxParser::RuleEqualsSign;
+}
+
+
+std::any RxParser::EqualsSignContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitEqualsSign(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::EqualsSignContext* Parser::equalsSign() {
+RxParser::EqualsSignContext* RxParser::equalsSign() {
   EqualsSignContext *_localctx = _tracker.createInstance<EqualsSignContext>(_ctx, getState());
-  enterRule(_localctx, 290, Parser::RuleEqualsSign);
+  enterRule(_localctx, 290, RxParser::RuleEqualsSign);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -14378,50 +14378,50 @@ Parser::EqualsSignContext* Parser::equalsSign() {
 
 //----------------- IdentifierContext ------------------------------------------------------------------
 
-Parser::IdentifierContext::IdentifierContext(ParserRuleContext *parent, size_t invokingState)
+RxParser::IdentifierContext::IdentifierContext(ParserRuleContext *parent, size_t invokingState)
   : ParserRuleContext(parent, invokingState) {
 }
 
-tree::TerminalNode* Parser::IdentifierContext::IDENTIFIER() {
-  return getToken(Parser::IDENTIFIER, 0);
+tree::TerminalNode* RxParser::IdentifierContext::IDENTIFIER() {
+  return getToken(RxParser::IDENTIFIER, 0);
 }
 
-tree::TerminalNode* Parser::IdentifierContext::DERIVE() {
-  return getToken(Parser::DERIVE, 0);
+tree::TerminalNode* RxParser::IdentifierContext::DERIVE() {
+  return getToken(RxParser::DERIVE, 0);
 }
 
-tree::TerminalNode* Parser::IdentifierContext::COPY() {
-  return getToken(Parser::COPY, 0);
+tree::TerminalNode* RxParser::IdentifierContext::COPY() {
+  return getToken(RxParser::COPY, 0);
 }
 
-tree::TerminalNode* Parser::IdentifierContext::CLONE() {
-  return getToken(Parser::CLONE, 0);
+tree::TerminalNode* RxParser::IdentifierContext::CLONE() {
+  return getToken(RxParser::CLONE, 0);
 }
 
-tree::TerminalNode* Parser::IdentifierContext::PARTIAL_EQ() {
-  return getToken(Parser::PARTIAL_EQ, 0);
+tree::TerminalNode* RxParser::IdentifierContext::PARTIAL_EQ() {
+  return getToken(RxParser::PARTIAL_EQ, 0);
 }
 
-tree::TerminalNode* Parser::IdentifierContext::EQ() {
-  return getToken(Parser::EQ, 0);
-}
-
-
-size_t Parser::IdentifierContext::getRuleIndex() const {
-  return Parser::RuleIdentifier;
+tree::TerminalNode* RxParser::IdentifierContext::EQ() {
+  return getToken(RxParser::EQ, 0);
 }
 
 
-std::any Parser::IdentifierContext::accept(tree::ParseTreeVisitor *visitor) {
-  if (auto parserVisitor = dynamic_cast<ParserVisitor*>(visitor))
+size_t RxParser::IdentifierContext::getRuleIndex() const {
+  return RxParser::RuleIdentifier;
+}
+
+
+std::any RxParser::IdentifierContext::accept(tree::ParseTreeVisitor *visitor) {
+  if (auto parserVisitor = dynamic_cast<RxParserVisitor*>(visitor))
     return parserVisitor->visitIdentifier(this);
   else
     return visitor->visitChildren(this);
 }
 
-Parser::IdentifierContext* Parser::identifier() {
+RxParser::IdentifierContext* RxParser::identifier() {
   IdentifierContext *_localctx = _tracker.createInstance<IdentifierContext>(_ctx, getState());
-  enterRule(_localctx, 292, Parser::RuleIdentifier);
+  enterRule(_localctx, 292, RxParser::RuleIdentifier);
   size_t _la = 0;
 
 #if __cplusplus > 201703L
@@ -14454,10 +14454,10 @@ Parser::IdentifierContext* Parser::identifier() {
   return _localctx;
 }
 
-void Parser::initialize() {
+void RxParser::initialize() {
 #if ANTLR4_USE_THREAD_LOCAL_CACHE
-  parserParserInitialize();
+  rxparserParserInitialize();
 #else
-  ::antlr4::internal::call_once(parserParserOnceFlag, parserParserInitialize);
+  ::antlr4::internal::call_once(rxparserParserOnceFlag, rxparserParserInitialize);
 #endif
 }

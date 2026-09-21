@@ -1,0 +1,7 @@
+CompileFlags:
+  Add:
+    - -std=c++17
+    - -Isrc
+    - -I/opt/homebrew/include/antlr4-runtime
+    - -I/usr/local/include/antlr4-runtime
+    - -I/usr/include/antlr4-runtime

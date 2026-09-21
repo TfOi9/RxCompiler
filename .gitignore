@@ -13,5 +13,7 @@ __pycache__/
 # Local files
 dev/
 *.local.*
-.clangd
 .vscode
+
+# C++ compiler artifacts
+/build/

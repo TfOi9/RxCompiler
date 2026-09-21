@@ -1,4 +1,5 @@
 #include "diagnostic.hpp"
+#include "antlr4-runtime.h"
 
 namespace diagnostic {
 
@@ -22,5 +23,9 @@ bool DiagnosticCollector::has_error() {
 std::vector<Diagnostic> DiagnosticCollector::diagnostics() {
     return diagnostics_;
 }
+
+class AntlrErrorListener final: public antlr4::BaseErrorListener {
+    
+};
 
 } // namespace diagnostic
