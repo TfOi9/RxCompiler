@@ -41,6 +41,7 @@ enum class NodeType {
     CallExpr,
     IndexExpr,
     FieldExpr,
+    MethodCallExpr,
     BlockExpr,
     IfExpr,
     LoopExpr,
@@ -141,7 +142,7 @@ struct WhereClause {
     std::vector<WhereClauseItem> items;
 };
 
-struct BlockExpr;
+struct BlockExpression;
 
 struct FunctionItem: Item {
     std::string name;
@@ -150,7 +151,7 @@ struct FunctionItem: Item {
     std::vector<FunctionParam> function_params;
     AstPtr<TypeRef> return_type;
     std::optional<WhereClause> where_clause;
-    AstPtr<BlockExpr> body;
+    AstPtr<BlockExpression> body;
 
     explicit FunctionItem(SourceSpan span): Item(span, NodeType::FunctionItem) {} 
 };
@@ -231,17 +232,8 @@ struct LetStatement: Statement {
     explicit LetStatement(SourceSpan span): Statement(span, NodeType::LetStmt) {}
 };
 
-struct ExpressionWithoutBlock {
-    // TODO unimplemented
-};
-
-struct ExpressionWithBlock {
-    // TODO unimplemented
-};
-
 struct ExpressionStatement: Statement {
-    std::optional<ExpressionWithoutBlock> expression;
-    std::optional<ExpressionWithBlock> block_expression;
+    AstPtr<Expression> expr;
 
     explicit ExpressionStatement(SourceSpan span): Statement(span, NodeType::ExprStmt) {}
 };
@@ -303,6 +295,209 @@ struct ArrayType: TypeRef {
     AstPtr<ConstValue> length;
 
     explicit ArrayType(SourceSpan span): TypeRef(span, NodeType::ArrayType) {}
+};
+
+enum class IntegerSuffix {
+    None,
+    I32,
+    U32,
+    Isize,
+    Usize
+};
+
+struct IntegerLiteralValue {
+    SourceSpan span;
+    std::string spelling;
+    IntegerSuffix suffix = IntegerSuffix::None;
+};
+
+struct IntegerExpression: Expression {
+    IntegerLiteralValue value;
+
+    explicit IntegerExpression(SourceSpan span): Expression(span, NodeType::IntegerExpr) {}
+};
+
+struct BoolExpression: Expression {
+    bool value = false;
+
+    explicit BoolExpression(SourceSpan span): Expression(span, NodeType::BoolExpr) {}
+};
+
+struct UnitExpression: Expression {
+    explicit UnitExpression(SourceSpan span): Expression(span, NodeType::UnitExpr) {}
+};
+
+enum class UnaryOperator {
+    Negation,
+    Not,
+    Dereference,
+    Borrow,
+    BorrowMut
+};
+
+struct UnaryExpression: Expression {
+    UnaryOperator op;
+    AstPtr<Expression> operand;
+    size_t reference_depth = 1;
+
+    explicit UnaryExpression(SourceSpan span): Expression(span, NodeType::UnaryExpr) {}
+};
+
+enum class BinaryOperator {
+    Add,
+    Subtract,
+    Multiply,
+    Divide,
+    Remainder,
+    BitwiseAnd,
+    BitwiseOr,
+    BitwiseXor,
+    ShiftLeft,
+    ShiftRight,
+    Equal,
+    NotEqual,
+    Greater,
+    Less,
+    GreaterEqual,
+    LessEqual,
+    LogicalAnd,
+    LogicalOr
+};
+
+struct BinaryExpression: Expression {
+    AstPtr<Expression> lhs_operand;
+    BinaryOperator op;
+    AstPtr<Expression> rhs_operand;
+
+    explicit BinaryExpression(SourceSpan span): Expression(span, NodeType::BinaryExpr) {}
+};
+
+enum class AssignmentOperator {
+    Assign,
+    AssignAdd,
+    AssignSubtract,
+    AssignMultiply,
+    AssignDivide,
+    AssignRemainder,
+    AssignBitwiseAnd,
+    AssignBitwiseOr,
+    AssignBitwiseXor,
+    AssignShiftLeft,
+    AssignShiftRight
+};
+
+struct AssignmentExpression: Expression {
+    AstPtr<Expression> lhs_operand;
+    AssignmentOperator op;
+    AstPtr<Expression> rhs_operand;
+
+    explicit AssignmentExpression(SourceSpan span): Expression(span, NodeType::AssignExpr) {}
+};
+
+struct PathExpression: Expression {
+    PathInExpression path;
+
+    explicit PathExpression(SourceSpan span): Expression(span, NodeType::PathExpr) {}
+};
+
+struct CallExpression: Expression {
+    AstPtr<Expression> callee;
+    std::vector<AstPtr<Expression>> args;
+
+    explicit CallExpression(SourceSpan span): Expression(span, NodeType::CallExpr) {}
+};
+
+struct ArrayExpression: Expression {
+    std::vector<AstPtr<Expression>> elements;
+    std::optional<ConstValue> repeated_length;
+
+    explicit ArrayExpression(SourceSpan span): Expression(span, NodeType::ArrayExpr) {}
+};
+
+struct IndexExpression: Expression {
+    AstPtr<Expression> base;
+    AstPtr<Expression> index;
+
+    explicit IndexExpression(SourceSpan span): Expression(span, NodeType::IndexExpr) {}
+};
+
+struct FieldExpression: Expression {
+    AstPtr<Expression> base;
+    std::string field_name;
+
+    explicit FieldExpression(SourceSpan span): Expression(span, NodeType::FieldExpr) {}
+};
+
+struct MethodCallExpression: Expression {
+    AstPtr<Expression> receiver;
+    PathExprSegment method;
+    std::vector<AstPtr<Expression>> args;
+
+    explicit MethodCallExpression(SourceSpan span): Expression(span, NodeType::MethodCallExpr) {}
+};
+
+struct CastExpression: Expression {
+    AstPtr<Expression> operand;
+    AstPtr<TypeRef> target_type;
+
+    explicit CastExpression(SourceSpan span): Expression(span, NodeType::CastExpr) {}
+};
+
+struct StructExprField {
+    SourceSpan span;
+    std::string name;
+    AstPtr<Expression> value;
+};
+
+struct StructExpression: Expression {
+    PathInExpression path;
+    std::vector<StructExprField> fields;
+
+    explicit StructExpression(SourceSpan span): Expression(span, NodeType::StructExpr) {}
+};
+
+struct BlockExpression: Expression {
+    std::vector<AstPtr<Statement>> statements;
+    std::optional<AstPtr<Expression>> tail_expression;
+
+    explicit BlockExpression(SourceSpan span): Expression(span, NodeType::BlockExpr) {}
+};
+
+struct IfExpression: Expression {
+    AstPtr<Expression> condition;
+    AstPtr<BlockExpression> then_block;
+    std::optional<AstPtr<Expression>> else_branch;
+
+    explicit IfExpression(SourceSpan span): Expression(span, NodeType::IfExpr) {}
+};
+
+struct LoopExpression: Expression {
+    AstPtr<BlockExpression> body;
+
+    explicit LoopExpression(SourceSpan span): Expression(span, NodeType::LoopExpr) {}
+};
+
+struct WhileExpression: Expression {
+    AstPtr<Expression> condition;
+    AstPtr<BlockExpression> body;
+
+    explicit WhileExpression(SourceSpan span): Expression(span, NodeType::WhileExpr) {}
+};
+
+struct BreakExpression: Expression {
+    AstPtr<Expression> expr;
+
+    explicit BreakExpression(SourceSpan span): Expression(span, NodeType::BreakExpr) {}
+};
+
+struct ContinueExpression: Expression {
+    explicit ContinueExpression(SourceSpan span): Expression(span, NodeType::ContinueExpr) {}
+};
+
+struct ReturnExpression: Expression {
+    AstPtr<Expression> expr;
+
+    explicit ReturnExpression(SourceSpan span): Expression(span, NodeType::ReturnExpr) {}
 };
 
 } // namespace ast
