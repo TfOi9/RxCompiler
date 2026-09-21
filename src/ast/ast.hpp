@@ -50,6 +50,7 @@ enum class NodeType {
     ContinueExpr,
     ArrayExpr,
     StructExpr,
+    UnitExpr,
 
     UnitType,
     PathType,
@@ -85,7 +86,7 @@ struct TypeRef: AstNode {
 struct FunctionParam {
     SourceSpan span;
     std::string name;
-    bool is_mut;
+    bool is_mut = 0;
     AstPtr<TypeRef> type;
 };
 
@@ -96,8 +97,8 @@ struct Lifetime {
 
 struct SelfParam {
     SourceSpan span;
-    bool is_ref;
-    bool is_mut;
+    bool is_ref = 0;
+    bool is_mut = 0;
     std::optional<Lifetime> lifetime;
 };
 
@@ -125,7 +126,7 @@ struct LifetimeWhereClauseItem {
 
 struct TypeBoundWhereClauseItem {
     SourceSpan span;
-    TypeRef type;
+    AstPtr<TypeRef> type;
     TypeParamBounds type_param_bounds;
 };
 
@@ -143,13 +144,15 @@ struct WhereClause {
 struct BlockExpr;
 
 struct FunctionItem: Item {
-    SourceSpan span;
     std::string name;
     std::vector<GenericParam> generic_params;
+    std::optional<SelfParam> self_param;
     std::vector<FunctionParam> function_params;
     AstPtr<TypeRef> return_type;
     std::optional<WhereClause> where_clause;
     AstPtr<BlockExpr> body;
+
+    explicit FunctionItem(SourceSpan span): Item(span, NodeType::FunctionItem) {} 
 };
 
 enum class DeriveName {
@@ -171,11 +174,13 @@ struct StructField {
 };
 
 struct StructItem: Item {
-    SourceSpan span;
+    std::vector<OuterAttribute> attributes;
     std::string name;
     std::vector<GenericParam> generic_params;
     std::optional<WhereClause> where_clause;
     std::vector<StructField> struct_fields;
+
+    explicit StructItem(SourceSpan span): Item(span, NodeType::StructItem) {}
 };
 
 struct ConstValue {
@@ -183,23 +188,25 @@ struct ConstValue {
 };
 
 struct ConstantItem: Item {
-    SourceSpan span;
+    std::string name;
     AstPtr<TypeRef> type;
     AstPtr<ConstValue> value;
+
+    explicit ConstantItem(SourceSpan span): Item(span, NodeType::ConstItem) {}
 };
 
 struct AssociatedItem {
-    SourceSpan span;
-    std::optional<ConstantItem> constant;
-    std::optional<FunctionParam> function;
+    std::optional<AstPtr<ConstantItem>> constant;
+    std::optional<AstPtr<FunctionItem>> function;
 };
 
 struct ImplItem: Item {
-    SourceSpan span;
     std::vector<GenericParam> generic_params;
     AstPtr<TypeRef> type;
     std::optional<WhereClause> where_clause;
     std::vector<AssociatedItem> associated_items;
+
+    explicit ImplItem(SourceSpan span): Item(span, NodeType::ImplItem) {}
 };
 
 struct Statement: AstNode {
@@ -212,15 +219,16 @@ struct Expression: AstNode {
 
 struct IdentifierBinding {
     SourceSpan span;
-    bool is_mut;
+    bool is_mut = 0;
     std::string name;
 };
 
 struct LetStatement: Statement {
-    SourceSpan span;
     IdentifierBinding identifier_binding;
     AstPtr<TypeRef> type;
     AstPtr<Expression> expression;
+
+    explicit LetStatement(SourceSpan span): Statement(span, NodeType::LetStmt) {}
 };
 
 struct ExpressionWithoutBlock {
@@ -232,16 +240,17 @@ struct ExpressionWithBlock {
 };
 
 struct ExpressionStatement: Statement {
-    SourceSpan span;
     std::optional<ExpressionWithoutBlock> expression;
     std::optional<ExpressionWithBlock> block_expression;
+
+    explicit ExpressionStatement(SourceSpan span): Statement(span, NodeType::ExprStmt) {}
 };
 
 struct PathIdentSegment {
     SourceSpan span;
     std::optional<std::string> name;
-    bool is_self;
-    bool is_Self;
+    bool is_self = 0;
+    bool is_Self = 0;
 };
 
 struct GenericArg {
@@ -272,25 +281,28 @@ struct TypePathSegment {
 };
 
 struct TypePath: TypeRef {
-    SourceSpan span;
     std::vector<TypePathSegment> path_segments;
+
+    explicit TypePath(SourceSpan span): TypeRef(span, NodeType::PathType) {}
 };
 
 struct UnitType: TypeRef {
-    SourceSpan span;
+    explicit UnitType(SourceSpan span): TypeRef(span, NodeType::UnitType) {}
 };
 
 struct ReferenceType: TypeRef {
-    SourceSpan span;
     std::optional<Lifetime> lifetime;
-    bool is_mut;
+    bool is_mut = 0;
     AstPtr<TypeRef> type;
+
+    explicit ReferenceType(SourceSpan span): TypeRef(span, NodeType::ReferenceType) {}
 };
 
 struct ArrayType: TypeRef {
-    SourceSpan span;
     AstPtr<TypeRef> type;
     AstPtr<ConstValue> length;
+
+    explicit ArrayType(SourceSpan span): TypeRef(span, NodeType::ArrayType) {}
 };
 
 } // namespace ast
