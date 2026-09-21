@@ -78,8 +78,8 @@ struct Crate: AstNode {
     explicit Crate(SourceSpan span): AstNode(span, NodeType::Crate) {}
 };
 
-struct TypeRef {
-    // TODO unimplemented
+struct TypeRef: AstNode {
+    using AstNode::AstNode;
 };
 
 struct FunctionParam {
@@ -184,8 +184,8 @@ struct ConstValue {
 
 struct ConstantItem: Item {
     SourceSpan span;
-    TypeRef type;
-    ConstValue value;
+    AstPtr<TypeRef> type;
+    AstPtr<ConstValue> value;
 };
 
 struct AssociatedItem {
@@ -197,9 +197,100 @@ struct AssociatedItem {
 struct ImplItem: Item {
     SourceSpan span;
     std::vector<GenericParam> generic_params;
-    TypeRef type;
+    AstPtr<TypeRef> type;
     std::optional<WhereClause> where_clause;
     std::vector<AssociatedItem> associated_items;
+};
+
+struct Statement: AstNode {
+    using AstNode::AstNode;
+};
+
+struct Expression: AstNode {
+    using AstNode::AstNode;
+};
+
+struct IdentifierBinding {
+    SourceSpan span;
+    bool is_mut;
+    std::string name;
+};
+
+struct LetStatement: Statement {
+    SourceSpan span;
+    IdentifierBinding identifier_binding;
+    AstPtr<TypeRef> type;
+    AstPtr<Expression> expression;
+};
+
+struct ExpressionWithoutBlock {
+    // TODO unimplemented
+};
+
+struct ExpressionWithBlock {
+    // TODO unimplemented
+};
+
+struct ExpressionStatement: Statement {
+    SourceSpan span;
+    std::optional<ExpressionWithoutBlock> expression;
+    std::optional<ExpressionWithBlock> block_expression;
+};
+
+struct PathIdentSegment {
+    SourceSpan span;
+    std::optional<std::string> name;
+    bool is_self;
+    bool is_Self;
+};
+
+struct GenericArg {
+    SourceSpan span;
+    std::optional<Lifetime> lifetime;
+    std::optional<AstPtr<TypeRef>> type;
+};
+struct GenericArgs {
+    SourceSpan span;
+    std::vector<GenericArg> args;
+};
+
+struct PathExprSegment {
+    SourceSpan span;
+    PathIdentSegment ident_segment;
+    std::optional<GenericArgs> generic_args;
+};
+
+struct PathInExpression {
+    SourceSpan span;
+    std::vector<PathExprSegment> segments;
+};
+
+struct TypePathSegment {
+    SourceSpan span;
+    PathIdentSegment ident_segment;
+    std::optional<GenericArgs> generic_args;
+};
+
+struct TypePath: TypeRef {
+    SourceSpan span;
+    std::vector<TypePathSegment> path_segments;
+};
+
+struct UnitType: TypeRef {
+    SourceSpan span;
+};
+
+struct ReferenceType: TypeRef {
+    SourceSpan span;
+    std::optional<Lifetime> lifetime;
+    bool is_mut;
+    AstPtr<TypeRef> type;
+};
+
+struct ArrayType: TypeRef {
+    SourceSpan span;
+    AstPtr<TypeRef> type;
+    AstPtr<ConstValue> length;
 };
 
 } // namespace ast
