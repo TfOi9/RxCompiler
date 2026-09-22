@@ -61,6 +61,9 @@ private:
     GenericArgs buildGenericArgs(RxParser::GenericArgsContext* ctx);
     GenericArg buildGenericArg(RxParser::GenericArgContext* ctx);
 
+    std::vector<AssociatedItem> buildAssociatedItems(const std::vector<RxParser::AssociatedItemContext*>& ctx);
+    AssociatedItem buildAssociatedItem(RxParser::AssociatedItemContext* ctx);
+
 };
 
 } // namespace ast

@@ -414,4 +414,28 @@ GenericArg AstBuilder::buildGenericArg(RxParser::GenericArgContext* ctx) {
     };
 }
 
+AstPtr<ImplItem> AstBuilder::buildImplItem(RxParser::InherentImplContext* ctx) {
+    ImplItem impl(makeSpan(ctx));
+    impl.generic_params = ctx->genericParams() ? buildGenericParams(ctx->genericParams()) : std::vector<GenericParam>();
+    impl.type = buildTypeRef(ctx->typeRef());
+    impl.where_clause = ctx->whereClause() ? std::optional<WhereClause>(buildWhereClause(ctx->whereClause())) : std::nullopt;
+    impl.associated_items = buildAssociatedItems(ctx->associatedItem());
+    return std::make_unique<ImplItem>(std::move(impl));
+}
+
+std::vector<AssociatedItem> AstBuilder::buildAssociatedItems(const std::vector<RxParser::AssociatedItemContext*>& ctx) {
+    std::vector<AssociatedItem> items;
+    for (auto* it: ctx) {
+        items.push_back(buildAssociatedItem(it));
+    }
+    return items;
+}
+
+AssociatedItem AstBuilder::buildAssociatedItem(RxParser::AssociatedItemContext* ctx) {
+    return AssociatedItem {
+        ctx->constantItem() ? std::optional<AstPtr<ConstantItem>>(buildConstantItem(ctx->constantItem())) : std::nullopt,
+        ctx->functionDefinition() ? std::optional<AstPtr<FunctionItem>>(buildFunctionItem(ctx->functionDefinition())) : std::nullopt
+    };
+}
+
 } // namespace ast
