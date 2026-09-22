@@ -64,6 +64,11 @@ private:
     std::vector<AssociatedItem> buildAssociatedItems(const std::vector<RxParser::AssociatedItemContext*>& ctx);
     AssociatedItem buildAssociatedItem(RxParser::AssociatedItemContext* ctx);
 
+    AstPtr<TypePath> buildTypePath(RxParser::TypePathContext* ctx);
+    TypePathSegment buildTypePathSegment(RxParser::TypePathSegmentContext* ctx);
+    AstPtr<ReferenceType> buildReferenceType(RxParser::ReferenceTypeContext* ctx);
+    AstPtr<ArrayType> buildArrayType(RxParser::ArrayTypeContext* ctx);
+
 };
 
 } // namespace ast

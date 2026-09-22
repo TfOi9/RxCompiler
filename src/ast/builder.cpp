@@ -438,4 +438,68 @@ AssociatedItem AstBuilder::buildAssociatedItem(RxParser::AssociatedItemContext* 
     };
 }
 
+AstPtr<TypeRef> AstBuilder::buildTypeRef(RxParser::TypeRefContext* ctx) {
+    if (ctx->LPAREN() && ctx->RPAREN()) {
+        if (ctx->typeRef()) {
+            auto node = std::make_unique<ParenthesizedType>(ParenthesizedType(makeSpan(ctx)));
+            node->type = std::move(buildTypeRef(ctx->typeRef()));
+            return node;
+        } else {
+            return std::make_unique<TypeRef>(UnitType(makeSpan(ctx)));
+        }
+    } else if (ctx->typePath()) {
+        return buildTypePath(ctx->typePath());
+    } else if (ctx->referenceType()) {
+        return buildReferenceType(ctx->referenceType());
+    } else if (ctx->arrayType()) {
+        return buildArrayType(ctx->arrayType());
+    }
+    return nullptr;
+}
+
+AstPtr<TypePath> AstBuilder::buildTypePath(RxParser::TypePathContext* ctx) {
+    std::vector<TypePathSegment> segs;
+    for (auto* seg: ctx->typePathSegment()) {
+        segs.push_back(buildTypePathSegment(seg));
+    }
+    auto node = std::make_unique<TypePath>(makeSpan(ctx));
+    node->path_segments = segs;
+    return node;
+}
+
+TypePathSegment AstBuilder::buildTypePathSegment(RxParser::TypePathSegmentContext* ctx) {
+    return TypePathSegment {
+        makeSpan(ctx),
+        buildPathIdentSegment(ctx->pathIdentSegment()),
+        ctx->genericArgs() ? std::optional<GenericArgs>(buildGenericArgs(ctx->genericArgs())) : std::nullopt
+    };
+}
+
+AstPtr<ReferenceType> AstBuilder::buildReferenceType(RxParser::ReferenceTypeContext* ctx) {
+    if (ctx->ANDAND()) {
+        auto inner = std::make_unique<ReferenceType>(makeSpan(ctx));
+        inner->lifetime = ctx->lifetime() ? std::optional<Lifetime>(buildLifetime(ctx->lifetime())) : std::nullopt;
+        inner->is_mut = ctx->MUT() != nullptr;
+        inner->type = buildTypeRef(ctx->typeRef());
+        auto node = std::make_unique<ReferenceType>(makeSpan(ctx));
+        node->lifetime = std::nullopt;
+        node->is_mut = false;
+        node->type = std::move(inner);
+        return node;
+    } else {
+        auto node = std::make_unique<ReferenceType>(ReferenceType(makeSpan(ctx)));
+        node->lifetime = ctx->lifetime() ? std::optional<Lifetime>(buildLifetime(ctx->lifetime())) : std::nullopt;
+        node->is_mut = ctx->MUT() != nullptr;
+        node->type = buildTypeRef(ctx->typeRef());
+        return node;
+    }
+}
+
+AstPtr<ArrayType> AstBuilder::buildArrayType(RxParser::ArrayTypeContext* ctx) {
+    auto node = std::make_unique<ArrayType>(makeSpan(ctx));
+    node->type = std::move(buildTypeRef(ctx->typeRef()));
+    node->length = buildConstValue(ctx->constValue());
+    return node;
+}
+
 } // namespace ast
