@@ -36,6 +36,10 @@ private:
     WhereClause buildWhereClause(RxParser::WhereClauseContext* ctx);
     WhereClauseItem buildWhereClauseItem(RxParser::WhereClauseItemContext* ctx);
 
+    std::vector<OuterAttribute> buildOuterAttributes(const std::vector<RxParser::OuterAttributeContext*>& ctx);
+    OuterAttribute buildDeriveAttribute(RxParser::OuterAttributeContext* ctx);
+    std::vector<StructField> buildStructFields(const std::vector<RxParser::StructFieldContext*>& ctx);
+
     AstPtr<Statement> buildStatement(RxParser::StatementContext* ctx);
     AstPtr<ExpressionStatement> buildExpressionStatement(RxParser::StatementExpressionContext* ctx);
 
@@ -46,10 +50,16 @@ private:
     AstPtr<TypeRef> buildTypeRef(RxParser::TypeRefContext* ctx);
     TypeParamBounds buildTypeParamBounds(RxParser::TypeParamBoundsContext* ctx);
     AstPtr<ConstValue> buildConstValue(RxParser::ConstValueContext* ctx);
+
+    IntegerSuffix getSuffix(const std::string& spelling);
+
+    AstPtr<Magnitude> buildMagnitude(RxParser::MagnitudeContext* ctx);
     
     PathInExpression buildPathInExpression(RxParser::PathInExpressionContext* ctx);
     PathExprSegment buildPathExprSegment(RxParser::PathExprSegmentContext* ctx);
     PathIdentSegment buildPathIdentSegment(RxParser::PathIdentSegmentContext* ctx);
+    GenericArgs buildGenericArgs(RxParser::GenericArgsContext* ctx);
+    GenericArg buildGenericArg(RxParser::GenericArgContext* ctx);
 
 };
 

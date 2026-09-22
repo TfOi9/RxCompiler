@@ -1,6 +1,8 @@
 #include "builder.hpp"
 #include "ast.hpp"
+#include <memory>
 #include <optional>
+#include <vector>
 
 namespace ast {
 
@@ -160,6 +162,35 @@ WhereClauseItem AstBuilder::buildWhereClauseItem(RxParser::WhereClauseItemContex
     return item;
 }
 
+std::vector<OuterAttribute> AstBuilder::buildOuterAttributes(const std::vector<RxParser::OuterAttributeContext*>& ctx) {
+    std::vector<OuterAttribute> oa;
+    for (auto* attr: ctx) {
+        oa.push_back(buildDeriveAttribute(attr));
+    }
+    return oa;
+}
+
+OuterAttribute AstBuilder::buildDeriveAttribute(RxParser::OuterAttributeContext* ctx) {
+    std::vector<DeriveName> names;
+    for (auto* name: ctx->deriveName()) {
+        DeriveName type;
+        if (name->COPY()) {
+            type = DeriveName::Copy;
+        } else if (name->CLONE()) {
+            type = DeriveName::Clone;
+        } else if (name->PARTIAL_EQ()) {
+            type = DeriveName::PartialEq;
+        } else {
+            type = DeriveName::Eq;
+        }
+        names.push_back(type);
+    }
+    return OuterAttribute {
+        makeSpan(ctx),
+        names
+    };
+}
+
 AstPtr<FunctionItem> AstBuilder::buildFunctionItem(RxParser::FunctionDefinitionContext* ctx) {
     FunctionItem fn(makeSpan(ctx));
     fn.name = buildIdentifier(ctx->identifier());
@@ -170,6 +201,217 @@ AstPtr<FunctionItem> AstBuilder::buildFunctionItem(RxParser::FunctionDefinitionC
     fn.where_clause = ctx->whereClause() ? std::optional<WhereClause>(buildWhereClause(ctx->whereClause())) : std::nullopt;
     fn.return_type = ctx->typeRef() ? buildTypeRef(ctx->typeRef()) : nullptr;
     return std::make_unique<FunctionItem>(std::move(fn));
+}
+
+std::vector<StructField> AstBuilder::buildStructFields(const std::vector<RxParser::StructFieldContext*>& ctx) {
+    std::vector<StructField> sfs;
+    for (auto* sf: ctx) {
+        sfs.push_back(StructField {
+            makeSpan(sf),
+            buildIdentifier(sf->identifier()),
+            buildTypeRef(sf->typeRef())
+        });
+    }
+    return sfs;
+}
+
+AstPtr<StructItem> AstBuilder::buildStructItem(RxParser::StructDefinitionContext* ctx) {
+    StructItem st(makeSpan(ctx));
+    st.name = buildIdentifier(ctx->identifier());
+    st.attributes = buildOuterAttributes(ctx->outerAttribute());
+    st.generic_params = ctx->genericParams() ? buildGenericParams(ctx->genericParams()) : std::vector<GenericParam>();
+    st.where_clause = ctx->whereClause() ? std::optional<WhereClause>(buildWhereClause(ctx->whereClause())) : std::nullopt;
+    st.struct_fields = buildStructFields(ctx->structField());
+    return std::make_unique<StructItem>(std::move(st));
+}
+
+AstPtr<ConstantItem> AstBuilder::buildConstantItem(RxParser::ConstantItemContext* ctx) {
+    ConstantItem cons(makeSpan(ctx));
+    cons.name = buildIdentifier(ctx->identifier());
+    cons.type = buildTypeRef(ctx->typeRef());
+    cons.value = buildConstValue(ctx->constValue());
+    return std::make_unique<ConstantItem>(std::move(cons));
+}
+
+IntegerSuffix AstBuilder::getSuffix(const std::string& spelling) {
+    if (spelling.size() >= 3 && spelling.substr(spelling.size() - 3, 3) == "i32") {
+        return IntegerSuffix::I32;
+    } else if (spelling.size() >= 3 && spelling.substr(spelling.size() - 3, 3) == "u32") {
+        return IntegerSuffix::U32;
+    } else if (spelling.size() >= 5 && spelling.substr(spelling.size() - 5, 5) == "isize") {
+        return IntegerSuffix::Isize;
+    } else if (spelling.size() >= 5 && spelling.substr(spelling.size() - 5, 5) == "usize") {
+        return IntegerSuffix::Usize;
+    } else {
+        return IntegerSuffix::None;
+    }
+}
+
+AstPtr<ConstValue> AstBuilder::buildConstValue(RxParser::ConstValueContext* ctx) {
+    if (ctx->INTEGER_LITERAL()) {
+        return std::make_unique<ConstValue>(
+            ConstValue {
+                makeSpan(ctx),
+                ConstValueType::Integer,
+                IntegerLiteralValue {
+                    makeSpan(ctx),
+                    ctx->toString(),
+                    getSuffix(ctx->toString())
+                },
+                std::nullopt,
+                std::nullopt,
+                nullptr,
+                nullptr
+            }
+        );
+    } else if (ctx->TRUE()) {
+        return std::make_unique<ConstValue>(
+            ConstValue {
+                makeSpan(ctx),
+                ConstValueType::Boolean,
+                std::nullopt,
+                true,
+                std::nullopt,
+                nullptr,
+                nullptr
+            }
+        );
+    } else if (ctx->FALSE()) {
+        return std::make_unique<ConstValue>(
+            ConstValue {
+                makeSpan(ctx),
+                ConstValueType::Boolean,
+                std::nullopt,
+                false,
+                std::nullopt,
+                nullptr,
+                nullptr
+            }
+        );
+    } else if (ctx->pathInExpression()) {
+        return std::make_unique<ConstValue>(
+            ConstValue {
+                makeSpan(ctx),
+                ConstValueType::ConstantPath,
+                std::nullopt,
+                std::nullopt,
+                buildPathInExpression(ctx->pathInExpression()),
+                nullptr,
+                nullptr
+            }
+        );
+    } else if (ctx->magnitude()) {
+        return std::make_unique<ConstValue>(
+            ConstValue {
+                makeSpan(ctx),
+                ConstValueType::NegatedMagnitude,
+                std::nullopt,
+                std::nullopt,
+                std::nullopt,
+                buildMagnitude(ctx->magnitude()),
+                nullptr
+            }
+        );
+    } else if (ctx->constValue()) {
+        return std::make_unique<ConstValue>(
+            ConstValue {
+                makeSpan(ctx),
+                ConstValueType::Parenthesized,
+                std::nullopt,
+                std::nullopt,
+                std::nullopt,
+                nullptr,
+                buildConstValue(ctx->constValue())
+            }
+        );
+    }
+    return nullptr;
+}
+
+AstPtr<Magnitude> AstBuilder::buildMagnitude(RxParser::MagnitudeContext* ctx) {
+    if (ctx->INTEGER_LITERAL()) {
+        return std::make_unique<Magnitude>(
+            Magnitude {
+                makeSpan(ctx),
+                MagnitudeType::IntegerLiteral,
+                IntegerLiteralValue {
+                    makeSpan(ctx),
+                    ctx->toString(),
+                    getSuffix(ctx->toString())
+                },
+                std::nullopt,
+                nullptr
+            }
+        );
+    } else if (ctx->pathInExpression()) {
+        return std::make_unique<Magnitude>(
+            Magnitude {
+                makeSpan(ctx),
+                MagnitudeType::IntegerLiteral,
+                std::nullopt,
+                buildPathInExpression(ctx->pathInExpression()),
+                nullptr
+            }
+        );
+    } else if (ctx->magnitude()) {
+        return std::make_unique<Magnitude>(
+            Magnitude {
+                makeSpan(ctx),
+                MagnitudeType::IntegerLiteral,
+                std::nullopt,
+                std::nullopt,
+                buildMagnitude(ctx->magnitude())
+            }
+        );
+    }
+    return nullptr;
+}
+
+PathInExpression AstBuilder::buildPathInExpression(RxParser::PathInExpressionContext* ctx) {
+    std::vector<PathExprSegment> segments;
+    for (auto* seg: ctx->pathExprSegment()) {
+        segments.push_back(buildPathExprSegment(seg));
+    }
+    return PathInExpression {
+        makeSpan(ctx),
+        segments
+    };
+}
+
+PathExprSegment AstBuilder::buildPathExprSegment(RxParser::PathExprSegmentContext* ctx) {
+    return PathExprSegment {
+        makeSpan(ctx),
+        buildPathIdentSegment(ctx->pathIdentSegment()),
+        ctx->genericArgs() ? std::optional<GenericArgs>(buildGenericArgs(ctx->genericArgs())) : std::nullopt
+    };
+}
+
+PathIdentSegment AstBuilder::buildPathIdentSegment(RxParser::PathIdentSegmentContext* ctx) {
+    return PathIdentSegment {
+        makeSpan(ctx),
+        ctx->identifier() ? std::optional<std::string>(ctx->identifier()->toString()) : std::nullopt,
+        ctx->SELF_VALUE() != nullptr,
+        ctx->SELF_TYPE() != nullptr
+    };
+}
+
+GenericArgs AstBuilder::buildGenericArgs(RxParser::GenericArgsContext* ctx) {
+    std::vector<GenericArg> args;
+    for (auto* arg: ctx->genericArg()) {
+        args.push_back(buildGenericArg(arg));
+    }
+    return GenericArgs {
+        makeSpan(ctx),
+        args
+    };
+}
+
+GenericArg AstBuilder::buildGenericArg(RxParser::GenericArgContext* ctx) {
+    return GenericArg {
+        makeSpan(ctx),
+        ctx->lifetime() ? std::optional<Lifetime>(buildLifetime(ctx->lifetime())) : std::nullopt,
+        ctx->typeRef() ? std::optional<AstPtr<TypeRef>>(buildTypeRef(ctx->typeRef())) : std::nullopt
+    };
 }
 
 } // namespace ast
