@@ -1081,4 +1081,109 @@ AstPtr<Expression> AstBuilder::buildCastExpression(RxParser::CastExpressionConte
     return lhs;
 }
 
+AstPtr<Expression> AstBuilder::buildUnaryExpression(RxParser::UnaryExpressionContext* ctx) {
+    if (ctx->postfixExpression()) {
+        return buildPostfixExpression(ctx->postfixExpression());
+    }
+    auto node = std::make_unique<UnaryExpression>(UnaryExpression(makeSpan(ctx)));
+    if (ctx->unaryOperator()->ANDAND()) {
+        auto inner = std::make_unique<UnaryExpression>(UnaryExpression(makeSpan(ctx)));
+        inner->operand = buildUnaryExpression(ctx->unaryExpression());
+        if (ctx->unaryOperator()->MUT()) {
+            inner->op = UnaryOperator::BorrowMut;
+        } else {
+            inner->op = UnaryOperator::Borrow;
+        }
+        node->operand = std::move(inner);
+        node->op = UnaryOperator::Borrow;
+    } else {
+        node->op = buildUnaryOperator(ctx->unaryOperator());
+        node->operand = buildUnaryExpression(ctx->unaryExpression());
+    }
+    return std::move(node);
+}
+
+UnaryOperator AstBuilder::buildUnaryOperator(RxParser::UnaryOperatorContext* ctx) {
+    if (ctx->AMP()) {
+        return UnaryOperator::Borrow;
+    } else if (ctx->ANDAND()) {
+        throw std::logic_error("unexprected unary operator type");
+    } else if (ctx->MINUS()) {
+        return UnaryOperator::Negation;
+    } else if (ctx->NOT()) {
+        return UnaryOperator::Not;
+    } else if (ctx->MUT() && ctx->AMP()) {
+        return UnaryOperator::BorrowMut;
+    } else if (ctx->STAR()) {
+        return UnaryOperator::Dereference;
+    }
+    throw std::logic_error("unexprected unary operator type");
+}
+
+AstPtr<Expression> AstBuilder::buildPostfixExpression(RxParser::PostfixExpressionContext* ctx) {
+    AstPtr<Expression> value = buildPrimaryExpression(ctx->primaryExpression());
+    for (auto* suffix: ctx->postfixSuffix()) {
+        SourceSpan span{value->span.begin, makeSpan(suffix).end};
+        if (auto* args = suffix->callArguments()) {
+            auto node = std::make_unique<CallExpression>(span);
+            node->callee = std::move(value);
+            for (auto* arg: args->expression()) {
+                node->args.push_back(buildExpression(arg));
+            }
+            value = std::move(node);
+        } else if (suffix->LBRACKET()) {
+            auto node = std::make_unique<IndexExpression>(span);
+            node->base = std::move(value);
+            node->index = buildExpression(suffix->expression());
+            value = std::move(node);
+        } else {
+            auto dot = suffix->dotSuffix();
+            if (dot->identifier()) {
+                auto node = std::make_unique<FieldExpression>(span);
+                node->base = std::move(value);
+                node->field_name = buildIdentifier(dot->identifier());
+                value = std::move(node);
+            } else {
+                auto node = std::make_unique<MethodCallExpression>(span);
+                node->receiver = std::move(value);
+                node->method = buildPathExprSegment(dot->pathExprSegment());
+                value = std::move(node);
+            }
+        }
+    }
+    return value;
+}
+
+AstPtr<Expression> AstBuilder::buildPrimaryExpression(RxParser::PrimaryExpressionContext* ctx) {
+    if (ctx->expressionWithBlock()) {
+        return buildExpressionWithBlock(ctx->expressionWithBlock());
+    } else {
+        auto* non_block = ctx->nonBlockPrimary();
+        if (non_block->literalExpression()) {
+            return buildLiteralExpression(non_block->literalExpression());
+        } else if (non_block->pathInExpression()) {
+            return buildPathOrStructExpression(non_block);
+        } else if (non_block->LPAREN()) {
+            if (non_block->expression()) {
+                return buildExpression(non_block->expression());
+            } else {
+                return std::make_unique<UnitExpression>(UnitExpression(makeSpan(ctx)));
+            }
+        } else if (non_block->arrayExpression()) {
+            return buildArrayExpression(non_block->arrayExpression());
+        } else if (non_block->BREAK()) {
+            auto node = std::make_unique<BreakExpression>(BreakExpression(makeSpan(ctx)));
+            node->expr = non_block->expression() ? buildExpression(non_block->expression()) : nullptr;
+            return node;
+        } else if (non_block->RETURN()) {
+            auto node = std::make_unique<ReturnExpression>(ReturnExpression(makeSpan(ctx)));
+            node->expr = non_block->expression() ? buildExpression(non_block->expression()) : nullptr;
+            return node;
+        } else if (non_block->CONTINUE()) {
+            return std::make_unique<ContinueExpression>(ContinueExpression(makeSpan(ctx)));
+        }
+        throw std::logic_error("unexpected expression type");
+    }
+}
+
 } // namespace ast

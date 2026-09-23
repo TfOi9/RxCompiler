@@ -98,6 +98,13 @@ private:
     AstPtr<Expression> buildCastExpression(RxParser::CastExpressionContext* ctx);
     AstPtr<TypeRef> buildClosedCastType(RxParser::ClosedCastTypeContext* ctx);
     AstPtr<Expression> buildUnaryExpression(RxParser::UnaryExpressionContext* ctx);
+    UnaryOperator buildUnaryOperator(RxParser::UnaryOperatorContext* ctx);
+    AstPtr<Expression> buildPostfixExpression(RxParser::PostfixExpressionContext* ctx);
+    AstPtr<Expression> buildPrimaryExpression(RxParser::PrimaryExpressionContext* ctx);
+
+    AstPtr<Expression> buildLiteralExpression(RxParser::LiteralExpressionContext* ctx);
+    AstPtr<Expression> buildPathOrStructExpression(RxParser::NonBlockPrimaryContext* ctx);
+    AstPtr<Expression> buildArrayExpression(RxParser::ArrayExpressionContext* ctx);
 
 };
 

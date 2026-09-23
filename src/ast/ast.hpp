@@ -377,7 +377,6 @@ enum class UnaryOperator {
 struct UnaryExpression: Expression {
     UnaryOperator op;
     AstPtr<Expression> operand;
-    size_t reference_depth = 1;
 
     explicit UnaryExpression(SourceSpan span): Expression(span, NodeType::UnaryExpr) {}
 };
