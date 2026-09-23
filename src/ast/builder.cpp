@@ -2,6 +2,7 @@
 #include "ast.hpp"
 #include <memory>
 #include <optional>
+#include <stdexcept>
 #include <vector>
 
 namespace ast {
@@ -63,7 +64,7 @@ LifetimeBounds AstBuilder::buildLifetimeBounds(RxParser::LifetimeBoundsContext* 
 IdentifierBinding AstBuilder::buildIdentifierBinding(RxParser::IdentifierBindingContext* ctx) {
     return IdentifierBinding {
         makeSpan(ctx),
-        ctx->MUT() == nullptr,
+        ctx->MUT() != nullptr,
         ctx->identifier()->getText()
     };
 }
@@ -156,7 +157,7 @@ WhereClauseItem AstBuilder::buildWhereClauseItem(RxParser::WhereClauseItemContex
         item.type_bound = TypeBoundWhereClauseItem {
             makeSpan(ctx),
             buildTypeRef(ctx->typeRef()),
-            buildTypeParamBounds(ctx->typeParamBounds())
+            ctx->typeParamBounds() ? std::optional<TypeParamBounds>(buildTypeParamBounds(ctx->typeParamBounds())) : std::nullopt
         };
     }
     return item;
@@ -196,7 +197,7 @@ AstPtr<FunctionItem> AstBuilder::buildFunctionItem(RxParser::FunctionDefinitionC
     fn.name = buildIdentifier(ctx->identifier());
     fn.body = buildBlockExpression(ctx->blockExpression());
     fn.generic_params = ctx->genericParams() ? buildGenericParams(ctx->genericParams()) : std::vector<GenericParam>();
-    fn.self_param = ctx->functionParameters() ? std::optional<SelfParam>(buildSelfParam(ctx->functionParameters()->selfParam())) : std::nullopt;
+    fn.self_param = (ctx->functionParameters() && ctx->functionParameters()->selfParam()) ? std::optional<SelfParam>(buildSelfParam(ctx->functionParameters()->selfParam())) : std::nullopt;
     fn.function_params = ctx->functionParameters() ? buildFunctionParams(ctx->functionParameters()) : std::vector<FunctionParam>();
     fn.where_clause = ctx->whereClause() ? std::optional<WhereClause>(buildWhereClause(ctx->whereClause())) : std::nullopt;
     fn.return_type = ctx->typeRef() ? buildTypeRef(ctx->typeRef()) : nullptr;
@@ -347,7 +348,7 @@ AstPtr<Magnitude> AstBuilder::buildMagnitude(RxParser::MagnitudeContext* ctx) {
         return std::make_unique<Magnitude>(
             Magnitude {
                 makeSpan(ctx),
-                MagnitudeType::IntegerLiteral,
+                MagnitudeType::ConstantPath,
                 std::nullopt,
                 buildPathInExpression(ctx->pathInExpression()),
                 nullptr
@@ -357,7 +358,7 @@ AstPtr<Magnitude> AstBuilder::buildMagnitude(RxParser::MagnitudeContext* ctx) {
         return std::make_unique<Magnitude>(
             Magnitude {
                 makeSpan(ctx),
-                MagnitudeType::IntegerLiteral,
+                MagnitudeType::Parenthesized,
                 std::nullopt,
                 std::nullopt,
                 buildMagnitude(ctx->magnitude())
@@ -374,7 +375,7 @@ PathInExpression AstBuilder::buildPathInExpression(RxParser::PathInExpressionCon
     }
     return PathInExpression {
         makeSpan(ctx),
-        segments
+        std::move(segments)
     };
 }
 
@@ -402,7 +403,7 @@ GenericArgs AstBuilder::buildGenericArgs(RxParser::GenericArgsContext* ctx) {
     }
     return GenericArgs {
         makeSpan(ctx),
-        args
+        std::move(args)
     };
 }
 
@@ -442,10 +443,10 @@ AstPtr<TypeRef> AstBuilder::buildTypeRef(RxParser::TypeRefContext* ctx) {
     if (ctx->LPAREN() && ctx->RPAREN()) {
         if (ctx->typeRef()) {
             auto node = std::make_unique<ParenthesizedType>(ParenthesizedType(makeSpan(ctx)));
-            node->type = std::move(buildTypeRef(ctx->typeRef()));
+            node->type = buildTypeRef(ctx->typeRef());
             return node;
         } else {
-            return std::make_unique<TypeRef>(UnitType(makeSpan(ctx)));
+            return std::make_unique<UnitType>(UnitType(makeSpan(ctx)));
         }
     } else if (ctx->typePath()) {
         return buildTypePath(ctx->typePath());
@@ -463,7 +464,7 @@ AstPtr<TypePath> AstBuilder::buildTypePath(RxParser::TypePathContext* ctx) {
         segs.push_back(buildTypePathSegment(seg));
     }
     auto node = std::make_unique<TypePath>(makeSpan(ctx));
-    node->path_segments = segs;
+    node->path_segments = std::move(segs);
     return node;
 }
 
@@ -497,9 +498,513 @@ AstPtr<ReferenceType> AstBuilder::buildReferenceType(RxParser::ReferenceTypeCont
 
 AstPtr<ArrayType> AstBuilder::buildArrayType(RxParser::ArrayTypeContext* ctx) {
     auto node = std::make_unique<ArrayType>(makeSpan(ctx));
-    node->type = std::move(buildTypeRef(ctx->typeRef()));
+    node->type = buildTypeRef(ctx->typeRef());
     node->length = buildConstValue(ctx->constValue());
     return node;
+}
+
+AstPtr<Statement> AstBuilder::buildStatement(RxParser::StatementContext* ctx) {
+    if (ctx->letStatement()) {
+        return buildLetStatement(ctx->letStatement());
+    } else if (ctx->expressionWithBlock()) {
+        auto node = std::make_unique<ExpressionStatement>(ExpressionStatement(makeSpan(ctx)));
+        node->expr = buildExpressionWithBlock(ctx->expressionWithBlock());
+        return node;
+    } else if (ctx->statementExpression()) {
+        auto node = std::make_unique<ExpressionStatement>(ExpressionStatement(makeSpan(ctx)));
+        node->expr = buildStatementExpression(ctx->statementExpression());
+        return node;
+    } else {
+        return std::make_unique<EmptyStatement>(EmptyStatement(makeSpan(ctx)));
+    }
+}
+
+AstPtr<LetStatement> AstBuilder::buildLetStatement(RxParser::LetStatementContext* ctx) {
+    auto node = std::make_unique<LetStatement>(LetStatement(makeSpan(ctx)));
+    node->identifier_binding = buildIdentifierBinding(ctx->identifierBinding());
+    node->type = ctx->typeRef() ? buildTypeRef(ctx->typeRef()) : nullptr;
+    node->expression = buildExpression(ctx->expression());
+    return node;
+}
+
+AstPtr<Expression> AstBuilder::buildExpressionWithBlock(RxParser::ExpressionWithBlockContext* ctx) {
+    if (ctx->ifExpression()) {
+        return buildIfExpression(ctx->ifExpression());
+    } else if (ctx->LOOP()) {
+        return buildLoopExpression(ctx);
+    } else if (ctx->WHILE()) {
+        return buildWhileExpression(ctx);
+    } else if (ctx->blockExpression()) {
+        return buildBlockExpression(ctx->blockExpression());
+    }
+    return nullptr;
+}
+
+AstPtr<BlockExpression> AstBuilder::buildBlockExpression(RxParser::BlockExpressionContext* ctx) {
+    auto node = std::make_unique<BlockExpression>(BlockExpression(makeSpan(ctx)));
+    for (auto* stmt: ctx->statement()) {
+        node->statements.push_back(buildStatement(stmt));
+    }
+    node->tail_expression = ctx->statementExpression() ? buildStatementExpression(ctx->statementExpression()) : nullptr;
+    return node;
+}
+
+AstPtr<IfExpression> AstBuilder::buildIfExpression(RxParser::IfExpressionContext* ctx) {
+    auto node = std::make_unique<IfExpression>(IfExpression(makeSpan(ctx)));
+    node->condition = buildConditionExpression(ctx->conditionExpression());
+    node->then_block = buildBlockExpression(ctx->blockExpression()[0]);
+    if (ctx->ELSE()) {
+        if (ctx->ifExpression()) {
+            node->else_branch = buildIfExpression(ctx->ifExpression());
+        } else if (ctx->blockExpression().size() > 1) {
+            node->else_branch = buildBlockExpression(ctx->blockExpression()[1]);
+        } else {
+            node->else_branch = nullptr;
+        }
+    } else {
+        node->else_branch = nullptr;
+    }
+    return node;
+}
+
+AstPtr<LoopExpression> AstBuilder::buildLoopExpression(RxParser::ExpressionWithBlockContext* ctx) {
+    auto node = std::make_unique<LoopExpression>(LoopExpression(makeSpan(ctx)));
+    node->body = buildBlockExpression(ctx->blockExpression());
+    return node;
+}
+
+AstPtr<WhileExpression> AstBuilder::buildWhileExpression(RxParser::ExpressionWithBlockContext* ctx) {
+    auto node = std::make_unique<WhileExpression>(WhileExpression(makeSpan(ctx)));
+    node->condition = buildConditionExpression(ctx->conditionExpression());
+    node->body = buildBlockExpression(ctx->blockExpression());
+    return node;
+}
+
+AstPtr<Expression> AstBuilder::buildExpression(RxParser::ExpressionContext* ctx) {
+    if (ctx->assignmentExpression()) {
+        return buildAssignmentExpression(ctx->assignmentExpression());
+    } else {
+        return nullptr;
+    }
+}
+
+AstPtr<Expression> AstBuilder::buildAssignmentExpression(RxParser::AssignmentExpressionContext* ctx) {
+    auto lhs = buildLogicalOrExpression(ctx->logicalOrExpression());
+    if (!ctx->assignmentOperator()) {
+        return lhs;
+    }
+    auto* assignCtx = ctx->assignmentOperator();
+    AssignmentOperator op;
+    if (assignCtx->PLUS_ASSIGN()) {
+        op = AssignmentOperator::AssignAdd;
+    } else if (assignCtx->MINUS_ASSIGN()) {
+        op = AssignmentOperator::AssignSubtract;
+    } else if (assignCtx->STAR_ASSIGN()) {
+        op = AssignmentOperator::AssignMultiply;
+    } else if (assignCtx->SLASH_ASSIGN()) {
+        op = AssignmentOperator::AssignDivide;
+    } else if (assignCtx->PERCENT_ASSIGN()) {
+        op = AssignmentOperator::AssignRemainder;
+    } else if (assignCtx->AMP_ASSIGN()) {
+        op = AssignmentOperator::AssignBitwiseAnd;
+    } else if (assignCtx->PIPE_ASSIGN()) {
+        op = AssignmentOperator::AssignBitwiseOr;
+    } else if (assignCtx->CARET_ASSIGN()) {
+        op = AssignmentOperator::AssignBitwiseXor;
+    } else if (assignCtx->SHL_ASSIGN()) {
+        op = AssignmentOperator::AssignShiftLeft;
+    } else if (assignCtx->GT()) {
+        op = AssignmentOperator::AssignShiftRight;
+    } else {
+        op = AssignmentOperator::Assign;
+    }
+    auto rhs = buildExpression(ctx->expression());
+    auto node = std::make_unique<AssignmentExpression>(AssignmentExpression(makeSpan(ctx)));
+    node->lhs_operand = std::move(lhs);
+    node->op = op;
+    node->rhs_operand = std::move(rhs);
+    return node;
+}
+
+AstPtr<Expression> AstBuilder::buildLogicalOrExpression(RxParser::LogicalOrExpressionContext* ctx) {
+    const auto operands = ctx->logicalAndExpression();
+    const auto operators = ctx->OROR();
+    auto lhs = buildLogicalAndExpression(operands[0]);
+    for (size_t i = 0; i < operators.size(); i++) {
+        auto rhs = buildLogicalAndExpression(operands[i + 1]);
+        SourceSpan span {lhs->span.begin, rhs->span.end};
+        auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+        node->lhs_operand = std::move(lhs);
+        node->op = BinaryOperator::LogicalOr;
+        node->rhs_operand = std::move(rhs);
+        lhs = std::move(node);
+    }
+    return lhs;
+}
+
+AstPtr<Expression> AstBuilder::buildLogicalAndExpression(RxParser::LogicalAndExpressionContext* ctx) {
+    const auto operands = ctx->comparisonExpression();
+    const auto operators = ctx->ANDAND();
+    auto lhs = buildComparisonExpression(operands[0]);
+    for (size_t i = 0; i < operators.size(); i++) {
+        auto rhs = buildComparisonExpression(operands[i + 1]);
+        SourceSpan span {lhs->span.begin, rhs->span.end};
+        auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+        node->lhs_operand = std::move(lhs);
+        node->op = BinaryOperator::LogicalAnd;
+        node->rhs_operand = std::move(rhs);
+        lhs = std::move(node);
+    }
+    return lhs;
+}
+
+AstPtr<Expression> AstBuilder::buildComparisonExpression(RxParser::ComparisonExpressionContext* ctx) {
+    AstPtr<Expression> lhs, rhs;
+    BinaryOperator op;
+    if (ctx->LT()) {
+        lhs = buildClosedBitOrExpression(ctx->closedBitOrExpression());
+        rhs = buildBitOrExpression(ctx->bitOrExpression()[0]);
+        op = BinaryOperator::Less;
+    } else {
+        lhs = buildBitOrExpression(ctx->bitOrExpression()[0]);
+        if (!ctx->comparisonExceptLt()) {
+            return lhs;
+        } else {
+            op = buildComparisonExceptLtContext(ctx->comparisonExceptLt());
+            rhs = buildBitOrExpression(ctx->bitOrExpression()[1]);
+        }
+    }
+    auto node = std::make_unique<BinaryExpression>(BinaryExpression(makeSpan(ctx)));
+    node->lhs_operand = std::move(lhs);
+    node->op = op;
+    node->rhs_operand = std::move(rhs);
+    return node;
+}
+
+BinaryOperator AstBuilder::buildComparisonExceptLtContext(RxParser::ComparisonExceptLtContext* ctx) {
+    if (ctx->EQEQ()) {
+        return BinaryOperator::Equal;
+    } else if (ctx->NE()) {
+        return BinaryOperator::NotEqual;
+    } else if (ctx->LE()) {
+        return BinaryOperator::LessEqual;
+    } else if (ctx->GT() && ctx->GE_EQ()) {
+        return BinaryOperator::GreaterEqual;
+    } else if (ctx->GT_SECOND() && ctx->SHR_EQ()) {
+        return BinaryOperator::GreaterEqual;
+    } else if (ctx->genericClose()) {
+        return BinaryOperator::Greater;
+    }
+    throw std::logic_error("unexpected comparison operator");
+}
+
+AstPtr<Expression> AstBuilder::buildClosedBitOrExpression(RxParser::ClosedBitOrExpressionContext* ctx) {
+    const auto operands = ctx->bitXorExpression();
+    if (operands.empty()) {
+        return buildClosedBitXorExpression(ctx->closedBitXorExpression());
+    }
+    AstPtr<Expression> lhs, rhs;
+    lhs = buildBitXorExpression(operands[0]);
+    for (size_t i = 1; i < operands.size(); i++) {
+        rhs = buildBitXorExpression(operands[i]);
+        SourceSpan span {lhs->span.begin, rhs->span.end};
+        auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+        node->lhs_operand = std::move(lhs);
+        node->op = BinaryOperator::BitwiseOr;
+        node->rhs_operand = std::move(rhs);
+        lhs = std::move(node);
+    }
+    rhs = buildClosedBitXorExpression(ctx->closedBitXorExpression());
+    SourceSpan span {lhs->span.begin, rhs->span.end};
+    auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+    node->lhs_operand = std::move(lhs);
+    node->op = BinaryOperator::BitwiseOr;
+    node->rhs_operand = std::move(rhs);
+    return node;
+}
+
+AstPtr<Expression> AstBuilder::buildBitOrExpression(RxParser::BitOrExpressionContext* ctx) {
+    const auto operands = ctx->bitXorExpression();
+    AstPtr<Expression> lhs, rhs;
+    lhs = buildBitXorExpression(operands[0]);
+    for (size_t i = 1; i < operands.size(); i++) {
+        rhs = buildBitXorExpression(operands[i]);
+        SourceSpan span {lhs->span.begin, rhs->span.end};
+        auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+        node->lhs_operand = std::move(lhs);
+        node->op = BinaryOperator::BitwiseOr;
+        node->rhs_operand = std::move(rhs);
+        lhs = std::move(node);
+    }
+    return lhs;
+}
+
+AstPtr<Expression> AstBuilder::buildClosedBitXorExpression(RxParser::ClosedBitXorExpressionContext* ctx) {
+    const auto operands = ctx->bitAndExpression();
+    if (operands.empty()) {
+        return buildClosedBitAndExpression(ctx->closedBitAndExpression());
+    }
+    AstPtr<Expression> lhs, rhs;
+    lhs = buildBitAndExpression(operands[0]);
+    for (size_t i = 1; i < operands.size(); i++) {
+        rhs = buildBitAndExpression(operands[i]);
+        SourceSpan span {lhs->span.begin, rhs->span.end};
+        auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+        node->lhs_operand = std::move(lhs);
+        node->op = BinaryOperator::BitwiseXor;
+        node->rhs_operand = std::move(rhs);
+        lhs = std::move(node);
+    }
+    rhs = buildClosedBitAndExpression(ctx->closedBitAndExpression());
+    SourceSpan span {lhs->span.begin, rhs->span.end};
+    auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+    node->lhs_operand = std::move(lhs);
+    node->op = BinaryOperator::BitwiseXor;
+    node->rhs_operand = std::move(rhs);
+    return node;
+}
+
+AstPtr<Expression> AstBuilder::buildBitXorExpression(RxParser::BitXorExpressionContext* ctx) {
+    const auto operands = ctx->bitAndExpression();
+    AstPtr<Expression> lhs, rhs;
+    lhs = buildBitAndExpression(operands[0]);
+    for (size_t i = 1; i < operands.size(); i++) {
+        rhs = buildBitAndExpression(operands[i]);
+        SourceSpan span {lhs->span.begin, rhs->span.end};
+        auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+        node->lhs_operand = std::move(lhs);
+        node->op = BinaryOperator::BitwiseXor;
+        node->rhs_operand = std::move(rhs);
+        lhs = std::move(node);
+    }
+    return lhs;
+}
+
+AstPtr<Expression> AstBuilder::buildClosedBitAndExpression(RxParser::ClosedBitAndExpressionContext* ctx) {
+    const auto operands = ctx->shiftExpression();
+    if (operands.empty()) {
+        return buildClosedShiftExpression(ctx->closedShiftExpression());
+    }
+    AstPtr<Expression> lhs, rhs;
+    lhs = buildShiftExpression(operands[0]);
+    for (size_t i = 1; i < operands.size(); i++) {
+        rhs = buildShiftExpression(operands[i]);
+        SourceSpan span {lhs->span.begin, rhs->span.end};
+        auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+        node->lhs_operand = std::move(lhs);
+        node->op = BinaryOperator::BitwiseAnd;
+        node->rhs_operand = std::move(rhs);
+        lhs = std::move(node);
+    }
+    rhs = buildClosedShiftExpression(ctx->closedShiftExpression());
+    SourceSpan span {lhs->span.begin, rhs->span.end};
+    auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+    node->lhs_operand = std::move(lhs);
+    node->op = BinaryOperator::BitwiseAnd;
+    node->rhs_operand = std::move(rhs);
+    return node;
+}
+
+AstPtr<Expression> AstBuilder::buildBitAndExpression(RxParser::BitAndExpressionContext* ctx) {
+    const auto operands = ctx->shiftExpression();
+    AstPtr<Expression> lhs, rhs;
+    lhs = buildShiftExpression(operands[0]);
+    for (size_t i = 1; i < operands.size(); i++) {
+        rhs = buildShiftExpression(operands[i]);
+        SourceSpan span {lhs->span.begin, rhs->span.end};
+        auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+        node->lhs_operand = std::move(lhs);
+        node->op = BinaryOperator::BitwiseAnd;
+        node->rhs_operand = std::move(rhs);
+        lhs = std::move(node);
+    }
+    return lhs;
+}
+
+AstPtr<Expression> AstBuilder::buildClosedShiftExpression(RxParser::ClosedShiftExpressionContext* ctx) {
+    AstPtr<Expression> lhs;
+    std::optional<BinaryOperator> pending_op;
+    for (auto* child: ctx->children) {
+        AstPtr<Expression> operand;
+        if (auto* closed_add = dynamic_cast<RxParser::ClosedAdditiveExpressionContext*>(child)) {
+            operand = buildClosedAdditiveExpression(closed_add);
+        } else if (auto* add = dynamic_cast<RxParser::AdditiveExpressionContext*>(child)) {
+            operand = buildAdditiveExpression(add);
+        }
+        if (operand) {
+            if (!lhs) {
+                lhs = std::move(operand);
+                continue;
+            }
+            if (!pending_op) {
+                continue;
+            }
+            SourceSpan span {lhs->span.begin, operand->span.end};
+            auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+            node->lhs_operand = std::move(lhs);
+            node->op = pending_op.value();
+            node->rhs_operand = std::move(operand);
+            lhs = std::move(node);
+            pending_op.reset();
+            continue;
+        }
+        if (dynamic_cast<RxParser::ShiftRightContext*>(child)) {
+            pending_op = BinaryOperator::ShiftRight;
+        }
+        if (auto* terminal = dynamic_cast<antlr4::tree::TerminalNode*>(child)) {
+            if (terminal && terminal->getSymbol()->getType() == RxParser::SHL) {
+                pending_op = BinaryOperator::ShiftLeft;
+            }
+        }
+    }
+    if (pending_op) {
+        return nullptr;
+    }
+    return lhs;
+}
+
+AstPtr<Expression> AstBuilder::buildShiftExpression(RxParser::ShiftExpressionContext* ctx) {
+    AstPtr<Expression> lhs;
+    std::optional<BinaryOperator> pending_op;
+    for (auto* child: ctx->children) {
+        AstPtr<Expression> operand;
+        if (auto* closed_add = dynamic_cast<RxParser::ClosedAdditiveExpressionContext*>(child)) {
+            operand = buildClosedAdditiveExpression(closed_add);
+        } else if (auto* add = dynamic_cast<RxParser::AdditiveExpressionContext*>(child)) {
+            operand = buildAdditiveExpression(add);
+        }
+        if (operand) {
+            if (!lhs) {
+                lhs = std::move(operand);
+                continue;
+            }
+            if (!pending_op) {
+                continue;
+            }
+            SourceSpan span {lhs->span.begin, operand->span.end};
+            auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+            node->lhs_operand = std::move(lhs);
+            node->op = pending_op.value();
+            node->rhs_operand = std::move(operand);
+            lhs = std::move(node);
+            pending_op.reset();
+            continue;
+        }
+        if (dynamic_cast<RxParser::ShiftRightContext*>(child)) {
+            pending_op = BinaryOperator::ShiftRight;
+        }
+        if (auto* terminal = dynamic_cast<antlr4::tree::TerminalNode*>(child)) {
+            if (terminal && terminal->getSymbol()->getType() == RxParser::SHL) {
+                pending_op = BinaryOperator::ShiftLeft;
+            }
+        }
+    }
+    if (pending_op) {
+        return nullptr;
+    }
+    return lhs;
+}
+
+AstPtr<Expression> AstBuilder::buildClosedAdditiveExpression(RxParser::ClosedAdditiveExpressionContext* ctx) {
+    const auto operands = ctx->multiplicativeExpression();
+    if (operands.empty()) {
+        return buildClosedMultiplicativeExpression(ctx->closedMultiplicativeExpression());
+    }
+    AstPtr<Expression> lhs, rhs;
+    lhs = buildMultiplicativeExpression(operands[0]);
+    for (size_t i = 1; i < operands.size(); i++) {
+        rhs = buildMultiplicativeExpression(operands[i]);
+        SourceSpan span {lhs->span.begin, rhs->span.end};
+        auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+        node->lhs_operand = std::move(lhs);
+        node->op = buildAdditiveOperator(ctx->additiveOperator()[i - 1]);
+        node->rhs_operand = std::move(rhs);
+        lhs = std::move(node);
+    }
+    rhs = buildClosedMultiplicativeExpression(ctx->closedMultiplicativeExpression());
+    SourceSpan span {lhs->span.begin, rhs->span.end};
+    auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+    node->lhs_operand = std::move(lhs);
+    node->op = buildAdditiveOperator(ctx->additiveOperator()[operands.size() - 1]);
+    node->rhs_operand = std::move(rhs);
+    return node;
+}
+
+AstPtr<Expression> AstBuilder::buildAdditiveExpression(RxParser::AdditiveExpressionContext* ctx) {
+    const auto operands = ctx->multiplicativeExpression();
+    AstPtr<Expression> lhs, rhs;
+    lhs = buildMultiplicativeExpression(operands[0]);
+    for (size_t i = 1; i < operands.size(); i++) {
+        rhs = buildMultiplicativeExpression(operands[i]);
+        SourceSpan span {lhs->span.begin, rhs->span.end};
+        auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+        node->lhs_operand = std::move(lhs);
+        node->op = buildAdditiveOperator(ctx->additiveOperator()[i - 1]);
+        node->rhs_operand = std::move(rhs);
+        lhs = std::move(node);
+    }
+    return lhs;
+}
+
+BinaryOperator AstBuilder::buildAdditiveOperator(RxParser::AdditiveOperatorContext* ctx) {
+    if (ctx->PLUS()) {
+        return BinaryOperator::Add;
+    } else if (ctx->MINUS()) {
+        return BinaryOperator::Subtract;
+    }
+    throw std::logic_error("unexpected additive operator");
+}
+
+AstPtr<Expression> AstBuilder::buildClosedMultiplicativeExpression(RxParser::ClosedMultiplicativeExpressionContext* ctx) {
+    const auto operands = ctx->castExpression();
+    if (operands.empty()) {
+        return buildClosedCastExpression(ctx->closedCastExpression());
+    }
+    AstPtr<Expression> lhs, rhs;
+    lhs = buildCastExpression(operands[0]);
+    for (size_t i = 1; i < operands.size(); i++) {
+        rhs = buildCastExpression(operands[i]);
+        SourceSpan span {lhs->span.begin, rhs->span.end};
+        auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+        node->lhs_operand = std::move(lhs);
+        node->op = buildMultiplicativeOperator(ctx->multiplicativeOperator()[i - 1]);
+        node->rhs_operand = std::move(rhs);
+        lhs = std::move(node);
+    }
+    rhs = buildClosedCastExpression(ctx->closedCastExpression());
+    SourceSpan span {lhs->span.begin, rhs->span.end};
+    auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+    node->lhs_operand = std::move(lhs);
+    node->op = buildMultiplicativeOperator(ctx->multiplicativeOperator()[operands.size() - 1]);
+    node->rhs_operand = std::move(rhs);
+    return node;
+}
+
+AstPtr<Expression> AstBuilder::buildMultiplicativeExpression(RxParser::MultiplicativeExpressionContext* ctx) {
+    const auto operands = ctx->castExpression();
+    AstPtr<Expression> lhs, rhs;
+    lhs = buildCastExpression(operands[0]);
+    for (size_t i = 1; i < operands.size(); i++) {
+        rhs = buildCastExpression(operands[i]);
+        SourceSpan span {lhs->span.begin, rhs->span.end};
+        auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+        node->lhs_operand = std::move(lhs);
+        node->op = buildMultiplicativeOperator(ctx->multiplicativeOperator()[i - 1]);
+        node->rhs_operand = std::move(rhs);
+        lhs = std::move(node);
+    }
+    return lhs;
+}
+
+BinaryOperator AstBuilder::buildMultiplicativeOperator(RxParser::MultiplicativeOperatorContext* ctx) {
+    if (ctx->STAR()) {
+        return BinaryOperator::Multiply;
+    } else if (ctx->SLASH()) {
+        return BinaryOperator::Divide;
+    } else if (ctx->PERCENT()) {
+        return BinaryOperator::Remainder;
+    }
+    throw std::logic_error("unexpected multiplicative operator");
 }
 
 } // namespace ast

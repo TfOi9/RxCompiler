@@ -497,7 +497,7 @@ struct StructExpression: Expression {
 
 struct BlockExpression: Expression {
     std::vector<AstPtr<Statement>> statements;
-    std::optional<AstPtr<Expression>> tail_expression;
+    AstPtr<Expression> tail_expression;
 
     explicit BlockExpression(SourceSpan span): Expression(span, NodeType::BlockExpr) {}
 };
@@ -505,7 +505,7 @@ struct BlockExpression: Expression {
 struct IfExpression: Expression {
     AstPtr<Expression> condition;
     AstPtr<BlockExpression> then_block;
-    std::optional<AstPtr<Expression>> else_branch;
+    AstPtr<Expression> else_branch;
 
     explicit IfExpression(SourceSpan span): Expression(span, NodeType::IfExpr) {}
 };
