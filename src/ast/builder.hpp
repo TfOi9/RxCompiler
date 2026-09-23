@@ -96,6 +96,8 @@ private:
     BinaryOperator buildMultiplicativeOperator(RxParser::MultiplicativeOperatorContext* ctx);
     AstPtr<Expression> buildClosedCastExpression(RxParser::ClosedCastExpressionContext* ctx);
     AstPtr<Expression> buildCastExpression(RxParser::CastExpressionContext* ctx);
+    AstPtr<TypeRef> buildClosedCastType(RxParser::ClosedCastTypeContext* ctx);
+    AstPtr<Expression> buildUnaryExpression(RxParser::UnaryExpressionContext* ctx);
 
 };
 

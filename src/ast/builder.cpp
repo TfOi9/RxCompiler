@@ -1007,4 +1007,78 @@ BinaryOperator AstBuilder::buildMultiplicativeOperator(RxParser::MultiplicativeO
     throw std::logic_error("unexpected multiplicative operator");
 }
 
+AstPtr<Expression> AstBuilder::buildClosedCastExpression(RxParser::ClosedCastExpressionContext* ctx) {
+    if (ctx->unaryExpression()) {
+        return buildUnaryExpression(ctx->unaryExpression());
+    }
+    auto node = std::make_unique<CastExpression>(CastExpression(makeSpan(ctx)));
+    node->operand = std::move(buildCastExpression(ctx->castExpression()));
+    node->target_type = std::move(buildClosedCastType(ctx->closedCastType()));
+    return node;
+}
+
+AstPtr<TypeRef> AstBuilder::buildClosedCastType(RxParser::ClosedCastTypeContext* ctx) {
+    if (ctx->LPAREN() && ctx->RPAREN()) {
+        if (ctx->typeRef()) {
+            return buildTypeRef(ctx->typeRef());
+        } else {
+            return std::make_unique<UnitType>(UnitType(makeSpan(ctx)));
+        }
+    } else if (ctx->arrayType()) {
+        return buildArrayType(ctx->arrayType());
+    } else if (ctx->closedCastType()) {
+        if (ctx->AMP()) {
+            auto node = std::make_unique<ReferenceType>(ReferenceType(makeSpan(ctx)));
+            node->type = buildClosedCastType(ctx->closedCastType());
+            node->lifetime = ctx->lifetime() ? std::optional<Lifetime>(buildLifetime(ctx->lifetime())) : std::nullopt;
+            node->is_mut = ctx->MUT() != nullptr;
+            return std::move(node);
+        } else if (ctx->ANDAND()) {
+            auto inner = std::make_unique<ReferenceType>(ReferenceType(makeSpan(ctx)));
+            inner->type = buildClosedCastType(ctx->closedCastType());
+            inner->lifetime = ctx->lifetime() ? std::optional<Lifetime>(buildLifetime(ctx->lifetime())) : std::nullopt;
+            inner->is_mut = ctx->MUT() != nullptr;
+            auto node = std::make_unique<ReferenceType>(ReferenceType(makeSpan(ctx)));
+            node->type = std::move(inner);
+            node->lifetime = std::nullopt;
+            node->is_mut = false;
+            return std::move(node);
+        } else {
+            throw std::logic_error("missing & or &&");
+        }
+    } else if (ctx->pathIdentSegment()) {
+        auto node = std::make_unique<TypePath>(TypePath(makeSpan(ctx)));
+        for (auto* seg: ctx->typePathSegment()) {
+            node->path_segments.push_back(buildTypePathSegment(seg));
+        }
+        auto* ident_ctx = ctx->pathIdentSegment();
+        auto* args_ctx = ctx->genericArgs();
+        if (!ident_ctx || !args_ctx) {
+            throw std::logic_error("incomplete closed type path");
+        }
+        const auto ident_span = makeSpan(ident_ctx);
+        const auto args_span = makeSpan(args_ctx);
+        node->path_segments.push_back(TypePathSegment {
+            SourceSpan {ident_span.begin, args_span.end},
+            buildPathIdentSegment(ident_ctx),
+            buildGenericArgs(args_ctx)
+        });
+        return node;
+    }
+    throw std::logic_error("unexpected closed cast type");
+}
+
+AstPtr<Expression> AstBuilder::buildCastExpression(RxParser::CastExpressionContext* ctx) {
+    AstPtr<Expression> lhs = std::move(buildUnaryExpression(ctx->unaryExpression()));
+    for (auto* type: ctx->typeRef()) {
+        AstPtr<TypeRef> target_type = buildTypeRef(type);
+        SourceSpan span {lhs->span.begin, target_type->span.end};
+        auto node = std::make_unique<CastExpression>(CastExpression(span));
+        node->operand = std::move(lhs);
+        node->target_type = std::move(target_type);
+        lhs = std::move(node);
+    }
+    return lhs;
+}
+
 } // namespace ast
