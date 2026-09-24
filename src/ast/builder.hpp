@@ -105,6 +105,72 @@ private:
     AstPtr<Expression> buildPathOrStructExpression(RxParser::NonBlockPrimaryContext* ctx);
     AstPtr<Expression> buildArrayExpression(RxParser::ArrayExpressionContext* ctx);
 
+    AstPtr<Expression> buildConditionAssignmentExpression(RxParser::ConditionAssignmentExpressionContext* ctx);
+    AstPtr<Expression> buildConditionLogicalOrExpression(RxParser::ConditionLogicalOrExpressionContext* ctx);
+    AstPtr<Expression> buildConditionLogicalAndExpression(RxParser::ConditionLogicalAndExpressionContext* ctx);
+    AstPtr<Expression> buildConditionComparisonExpression(RxParser::ConditionComparisonExpressionContext* ctx);
+    AstPtr<Expression> buildConditionClosedBitOrExpression(RxParser::ConditionClosedBitOrExpressionContext* ctx);
+    AstPtr<Expression> buildConditionBitOrExpression(RxParser::ConditionBitOrExpressionContext* ctx);
+    AstPtr<Expression> buildConditionClosedBitXorExpression(RxParser::ConditionClosedBitXorExpressionContext* ctx);
+    AstPtr<Expression> buildConditionBitXorExpression(RxParser::ConditionBitXorExpressionContext* ctx);
+    AstPtr<Expression> buildConditionClosedBitAndExpression(RxParser::ConditionClosedBitAndExpressionContext* ctx);
+    AstPtr<Expression> buildConditionBitAndExpression(RxParser::ConditionBitAndExpressionContext* ctx);
+    AstPtr<Expression> buildConditionClosedShiftExpression(RxParser::ConditionClosedShiftExpressionContext* ctx);
+    AstPtr<Expression> buildConditionShiftExpression(RxParser::ConditionShiftExpressionContext* ctx);
+    AstPtr<Expression> buildConditionClosedAdditiveExpression(RxParser::ConditionClosedAdditiveExpressionContext* ctx);
+    AstPtr<Expression> buildConditionAdditiveExpression(RxParser::ConditionAdditiveExpressionContext* ctx);
+    AstPtr<Expression> buildConditionClosedMultiplicativeExpression(RxParser::ConditionClosedMultiplicativeExpressionContext* ctx);
+    AstPtr<Expression> buildConditionMultiplicativeExpression(RxParser::ConditionMultiplicativeExpressionContext* ctx);
+    AstPtr<Expression> buildConditionClosedCastExpression(RxParser::ConditionClosedCastExpressionContext* ctx);
+    AstPtr<Expression> buildConditionCastExpression(RxParser::ConditionCastExpressionContext* ctx);
+    AstPtr<Expression> buildConditionUnaryExpression(RxParser::ConditionUnaryExpressionContext* ctx);
+    AstPtr<Expression> buildConditionPostfixExpression(RxParser::ConditionPostfixExpressionContext* ctx);
+    AstPtr<Expression> buildConditionPrimary(RxParser::ConditionPrimaryContext* ctx);
+    AstPtr<Expression> buildConditionPrimaryWithoutBareBlock(RxParser::ConditionPrimaryWithoutBareBlockContext* ctx);
+
+    AstPtr<Expression> buildConditionBreakExpression(RxParser::ConditionBreakExpressionContext* ctx);
+    AstPtr<Expression> buildConditionBreakAssignmentExpression(RxParser::ConditionBreakAssignmentExpressionContext* ctx);
+    AstPtr<Expression> buildConditionBreakLogicalOrExpression(RxParser::ConditionBreakLogicalOrExpressionContext* ctx);
+    AstPtr<Expression> buildConditionBreakLogicalAndExpression(RxParser::ConditionBreakLogicalAndExpressionContext* ctx);
+    AstPtr<Expression> buildConditionBreakComparisonExpression(RxParser::ConditionBreakComparisonExpressionContext* ctx);
+    AstPtr<Expression> buildConditionBreakClosedBitOrExpression(RxParser::ConditionBreakClosedBitOrExpressionContext* ctx);
+    AstPtr<Expression> buildConditionBreakBitOrExpression(RxParser::ConditionBreakBitOrExpressionContext* ctx);
+    AstPtr<Expression> buildConditionBreakClosedBitXorExpression(RxParser::ConditionBreakClosedBitXorExpressionContext* ctx);
+    AstPtr<Expression> buildConditionBreakBitXorExpression(RxParser::ConditionBreakBitXorExpressionContext* ctx);
+    AstPtr<Expression> buildConditionBreakClosedBitAndExpression(RxParser::ConditionBreakClosedBitAndExpressionContext* ctx);
+    AstPtr<Expression> buildConditionBreakBitAndExpression(RxParser::ConditionBreakBitAndExpressionContext* ctx);
+    AstPtr<Expression> buildConditionBreakClosedShiftExpression(RxParser::ConditionBreakClosedShiftExpressionContext* ctx);
+    AstPtr<Expression> buildConditionBreakShiftExpression(RxParser::ConditionBreakShiftExpressionContext* ctx);
+    AstPtr<Expression> buildConditionBreakClosedAdditiveExpression(RxParser::ConditionBreakClosedAdditiveExpressionContext* ctx);
+    AstPtr<Expression> buildConditionBreakAdditiveExpression(RxParser::ConditionBreakAdditiveExpressionContext* ctx);
+    AstPtr<Expression> buildConditionBreakClosedMultiplicativeExpression(RxParser::ConditionBreakClosedMultiplicativeExpressionContext* ctx);
+    AstPtr<Expression> buildConditionBreakMultiplicativeExpression(RxParser::ConditionBreakMultiplicativeExpressionContext* ctx);
+    AstPtr<Expression> buildConditionBreakClosedCastExpression(RxParser::ConditionBreakClosedCastExpressionContext* ctx);
+    AstPtr<Expression> buildConditionBreakCastExpression(RxParser::ConditionBreakCastExpressionContext* ctx);
+    AstPtr<Expression> buildConditionBreakUnaryExpression(RxParser::ConditionBreakUnaryExpressionContext* ctx);
+    AstPtr<Expression> buildConditionBreakPostfixExpression(RxParser::ConditionBreakPostfixExpressionContext* ctx);
+
+    AstPtr<Expression> buildStatementAssignmentExpression(RxParser::StatementAssignmentExpressionContext* ctx);
+    AstPtr<Expression> buildStatementLogicalOrExpression(RxParser::StatementLogicalOrExpressionContext* ctx);
+    AstPtr<Expression> buildStatementLogicalAndExpression(RxParser::StatementLogicalAndExpressionContext* ctx);
+    AstPtr<Expression> buildStatementComparisonExpression(RxParser::StatementComparisonExpressionContext* ctx);
+    AstPtr<Expression> buildStatementClosedBitOrExpression(RxParser::StatementClosedBitOrExpressionContext* ctx);
+    AstPtr<Expression> buildStatementBitOrExpression(RxParser::StatementBitOrExpressionContext* ctx);
+    AstPtr<Expression> buildStatementClosedBitXorExpression(RxParser::StatementClosedBitXorExpressionContext* ctx);
+    AstPtr<Expression> buildStatementBitXorExpression(RxParser::StatementBitXorExpressionContext* ctx);
+    AstPtr<Expression> buildStatementClosedBitAndExpression(RxParser::StatementClosedBitAndExpressionContext* ctx);
+    AstPtr<Expression> buildStatementBitAndExpression(RxParser::StatementBitAndExpressionContext* ctx);
+    AstPtr<Expression> buildStatementClosedShiftExpression(RxParser::StatementClosedShiftExpressionContext* ctx);
+    AstPtr<Expression> buildStatementShiftExpression(RxParser::StatementShiftExpressionContext* ctx);
+    AstPtr<Expression> buildStatementClosedAdditiveExpression(RxParser::StatementClosedAdditiveExpressionContext* ctx);
+    AstPtr<Expression> buildStatementAdditiveExpression(RxParser::StatementAdditiveExpressionContext* ctx);
+    AstPtr<Expression> buildStatementClosedMultiplicativeExpression(RxParser::StatementClosedMultiplicativeExpressionContext* ctx);
+    AstPtr<Expression> buildStatementMultiplicativeExpression(RxParser::StatementMultiplicativeExpressionContext* ctx);
+    AstPtr<Expression> buildStatementClosedCastExpression(RxParser::StatementClosedCastExpressionContext* ctx);
+    AstPtr<Expression> buildStatementCastExpression(RxParser::StatementCastExpressionContext* ctx);
+    AstPtr<Expression> buildStatementUnaryExpression(RxParser::StatementUnaryExpressionContext* ctx);
+    AstPtr<Expression> buildStatementPostfixExpression(RxParser::StatementPostfixExpressionContext* ctx);
+
 };
 
 } // namespace ast
