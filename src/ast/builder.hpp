@@ -1,5 +1,4 @@
 #pragma once
-#include "antlr4-runtime.h"
 #include "../generated/RxParser.h"
 #include "ast.hpp"
 #include <string_view>

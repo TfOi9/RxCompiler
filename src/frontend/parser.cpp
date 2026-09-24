@@ -1,6 +1,5 @@
 #include "parser.hpp"
 #include "../ast/builder.hpp"
-#include "antlr4-runtime.h"
 #include "../generated/RxLexer.h"
 #include "../generated/RxParser.h"
 
@@ -29,14 +28,16 @@ ParseResult parseToAst(std::string_view source) {
     if (collector->has_error() || parser.getNumberOfSyntaxErrors() > 0) {
         return ParseResult {
             nullptr,
-            collector->diagnostics()
+            collector->diagnostics(),
+            false
         };
     }
 
     ast::AstBuilder builder(source);
     return ParseResult {
         builder.build(tree),
-        std::vector<diagnostic::Diagnostic>()
+        std::vector<diagnostic::Diagnostic>(),
+        true
     };
 }
 
