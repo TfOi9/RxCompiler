@@ -1786,6 +1786,48 @@ AstPtr<Expression> AstBuilder::buildConditionPrimary(RxParser::ConditionPrimaryC
     throw std::logic_error("unexpected expression primary");
 }
 
+AstPtr<Expression> AstBuilder::buildConditionPrimaryWithoutBareBlock(RxParser::ConditionPrimaryWithoutBareBlockContext* ctx) {
+    if (ctx->literalExpression()) {
+        return buildLiteralExpression(ctx->literalExpression());
+    } else if (ctx->pathInExpression()) {
+        auto node = std::make_unique<PathExpression>(PathExpression(makeSpan(ctx->pathInExpression())));
+        node->path = buildPathInExpression(ctx->pathInExpression());
+        return node;
+    } else if (ctx->LPAREN()) {
+        if (!ctx->expression()) {
+            return std::make_unique<UnitExpression>(UnitExpression(makeSpan(ctx)));
+        } else {
+            auto node = std::make_unique<GroupedExpression>(GroupedExpression(makeSpan(ctx)));
+            node->expr = buildExpression(ctx->expression());
+            return node;
+        }
+    } else if (ctx->arrayExpression()) {
+        return buildArrayExpression(ctx->arrayExpression());
+    } else if (ctx->ifExpression()) {
+        return buildIfExpression(ctx->ifExpression());
+    } else if (ctx->LOOP()) {
+        auto node = std::make_unique<LoopExpression>(LoopExpression(makeSpan(ctx)));
+        node->body = buildBlockExpression(ctx->blockExpression());
+        return node;
+    } else if (ctx->WHILE()) {
+        auto node = std::make_unique<WhileExpression>(WhileExpression(makeSpan(ctx)));
+        node->body = buildBlockExpression(ctx->blockExpression());
+        node->condition = buildConditionExpression(ctx->conditionExpression());
+        return node;
+    } else if (ctx->BREAK()) {
+        auto node = std::make_unique<BreakExpression>(BreakExpression(makeSpan(ctx)));
+        node->expr = ctx->conditionBreakExpression() ? buildConditionBreakExpression(ctx->conditionBreakExpression()) : nullptr;
+        return node;
+    } else if (ctx->RETURN()) {
+        auto node = std::make_unique<ReturnExpression>(ReturnExpression(makeSpan(ctx)));
+        node->expr = ctx->conditionExpression() ? buildConditionExpression(ctx->conditionExpression()) : nullptr;
+        return node;
+    } else if (ctx->CONTINUE()) {
+        return std::make_unique<ContinueExpression>(ContinueExpression(makeSpan(ctx)));
+    }
+    throw std::logic_error("unexpected expression primary");
+}
+
 AstPtr<Expression> AstBuilder::buildConditionBreakExpression(RxParser::ConditionBreakExpressionContext* ctx) {
     if (ctx->conditionBreakAssignmentExpression()) {
         return buildConditionBreakAssignmentExpression(ctx->conditionBreakAssignmentExpression());
@@ -1837,7 +1879,7 @@ AstPtr<Expression> AstBuilder::buildConditionBreakLogicalOrExpression(RxParser::
     const auto operators = ctx->OROR();
     auto lhs = buildConditionBreakLogicalAndExpression(ctx->conditionBreakLogicalAndExpression());
     for (size_t i = 0; i < operators.size(); i++) {
-        auto rhs = buildConditionLogicalAndExpression(operands[i + 1]);
+        auto rhs = buildConditionLogicalAndExpression(operands[i]);
         SourceSpan span {lhs->span.begin, rhs->span.end};
         auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
         node->lhs_operand = std::move(lhs);
@@ -1853,7 +1895,7 @@ AstPtr<Expression> AstBuilder::buildConditionBreakLogicalAndExpression(RxParser:
     const auto operators = ctx->ANDAND();
     auto lhs = buildConditionBreakComparisonExpression(ctx->conditionBreakComparisonExpression());
     for (size_t i = 0; i < operators.size(); i++) {
-        auto rhs = buildConditionComparisonExpression(operands[i + 1]);
+        auto rhs = buildConditionComparisonExpression(operands[i]);
         SourceSpan span {lhs->span.begin, rhs->span.end};
         auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
         node->lhs_operand = std::move(lhs);
@@ -1885,6 +1927,886 @@ AstPtr<Expression> AstBuilder::buildConditionBreakComparisonExpression(RxParser:
     node->op = op;
     node->rhs_operand = std::move(rhs);
     return node;
+}
+
+AstPtr<Expression> AstBuilder::buildConditionBreakClosedBitOrExpression(RxParser::ConditionBreakClosedBitOrExpressionContext* ctx) {
+    if (ctx->conditionBreakClosedBitXorExpression()) {
+        return buildConditionBreakClosedBitXorExpression(ctx->conditionBreakClosedBitXorExpression());
+    }
+    auto lhs = buildConditionBreakBitXorExpression(ctx->conditionBreakBitXorExpression());
+    const auto operands = ctx->conditionBitXorExpression();
+    for (size_t i = 0; i < operands.size(); i++) {
+        auto rhs = buildConditionBitXorExpression(operands[i]);
+        SourceSpan span {lhs->span.begin, rhs->span.end};
+        auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+        node->lhs_operand = std::move(lhs);
+        node->op = BinaryOperator::BitwiseOr;
+        node->rhs_operand = std::move(rhs);
+        lhs = std::move(node);
+    }
+    auto rhs = buildConditionClosedBitXorExpression(ctx->conditionClosedBitXorExpression());
+    SourceSpan span {lhs->span.begin, rhs->span.end};
+    auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+    node->lhs_operand = std::move(lhs);
+    node->op = BinaryOperator::BitwiseOr;
+    node->rhs_operand = std::move(rhs);
+    return node;
+}
+
+AstPtr<Expression> AstBuilder::buildConditionBreakBitOrExpression(RxParser::ConditionBreakBitOrExpressionContext* ctx) {
+    auto lhs = buildConditionBreakBitXorExpression(ctx->conditionBreakBitXorExpression());
+    const auto operands = ctx->conditionBitXorExpression();
+    for (auto* operand: operands) {
+        auto rhs = buildConditionBitXorExpression(operand);
+        SourceSpan span {lhs->span.begin, rhs->span.end};
+        auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+        node->lhs_operand = std::move(lhs);
+        node->op = BinaryOperator::BitwiseOr;
+        node->rhs_operand = std::move(rhs);
+        lhs = std::move(node);
+    }
+    return lhs;
+}
+
+AstPtr<Expression> AstBuilder::buildConditionBreakClosedBitXorExpression(RxParser::ConditionBreakClosedBitXorExpressionContext* ctx) {
+    if (ctx->conditionBreakClosedBitAndExpression()) {
+        return buildConditionBreakClosedBitAndExpression(ctx->conditionBreakClosedBitAndExpression());
+    }
+    auto lhs = buildConditionBreakBitAndExpression(ctx->conditionBreakBitAndExpression());
+    const auto operands = ctx->conditionBitAndExpression();
+    for (auto* operand: operands) {
+        auto rhs = buildConditionBitAndExpression(operand);
+        SourceSpan span {lhs->span.begin, rhs->span.end};
+        auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+        node->lhs_operand = std::move(lhs);
+        node->op = BinaryOperator::BitwiseXor;
+        node->rhs_operand = std::move(rhs);
+        lhs = std::move(node);
+    }
+    auto rhs = buildConditionClosedBitAndExpression(ctx->conditionClosedBitAndExpression());
+    SourceSpan span {lhs->span.begin, rhs->span.end};
+    auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+    node->lhs_operand = std::move(lhs);
+    node->op = BinaryOperator::BitwiseXor;
+    node->rhs_operand = std::move(rhs);
+    return node;
+}
+
+AstPtr<Expression> AstBuilder::buildConditionBreakBitXorExpression(RxParser::ConditionBreakBitXorExpressionContext* ctx) {
+    auto lhs = buildConditionBreakBitAndExpression(ctx->conditionBreakBitAndExpression());
+    const auto operands = ctx->conditionBitAndExpression();
+    for (auto* operand: operands) {
+        auto rhs = buildConditionBitAndExpression(operand);
+        SourceSpan span {lhs->span.begin, rhs->span.end};
+        auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+        node->lhs_operand = std::move(lhs);
+        node->op = BinaryOperator::BitwiseXor;
+        node->rhs_operand = std::move(rhs);
+        lhs = std::move(node);
+    }
+    return lhs;
+}
+
+AstPtr<Expression> AstBuilder::buildConditionBreakClosedBitAndExpression(RxParser::ConditionBreakClosedBitAndExpressionContext* ctx) {
+    if (ctx->conditionBreakClosedShiftExpression()) {
+        return buildConditionBreakClosedShiftExpression(ctx->conditionBreakClosedShiftExpression());
+    }
+    auto lhs = buildConditionBreakShiftExpression(ctx->conditionBreakShiftExpression());
+    const auto operands = ctx->conditionShiftExpression();
+    for (auto* operand: operands) {
+        auto rhs = buildConditionShiftExpression(operand);
+        SourceSpan span {lhs->span.begin, rhs->span.end};
+        auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+        node->lhs_operand = std::move(lhs);
+        node->op = BinaryOperator::BitwiseAnd;
+        node->rhs_operand = std::move(rhs);
+        lhs = std::move(node);
+    }
+    auto rhs = buildConditionClosedShiftExpression(ctx->conditionClosedShiftExpression());
+    SourceSpan span {lhs->span.begin, rhs->span.end};
+    auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+    node->lhs_operand = std::move(lhs);
+    node->op = BinaryOperator::BitwiseAnd;
+    node->rhs_operand = std::move(rhs);
+    return node;
+}
+
+AstPtr<Expression> AstBuilder::buildConditionBreakBitAndExpression(RxParser::ConditionBreakBitAndExpressionContext* ctx) {
+    auto lhs = buildConditionBreakShiftExpression(ctx->conditionBreakShiftExpression());
+    const auto operands = ctx->conditionShiftExpression();
+    for (auto* operand: operands) {
+        auto rhs = buildConditionShiftExpression(operand);
+        SourceSpan span {lhs->span.begin, rhs->span.end};
+        auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+        node->lhs_operand = std::move(lhs);
+        node->op = BinaryOperator::BitwiseAnd;
+        node->rhs_operand = std::move(rhs);
+        lhs = std::move(node);
+    }
+    return lhs;
+}
+
+AstPtr<Expression> AstBuilder::buildConditionBreakClosedShiftExpression(RxParser::ConditionBreakClosedShiftExpressionContext* ctx) {
+    AstPtr<Expression> lhs;
+    std::optional<BinaryOperator> pending_op;
+    for (auto* child: ctx->children) {
+        AstPtr<Expression> operand;
+        if (auto* closed_add = dynamic_cast<RxParser::ConditionBreakClosedAdditiveExpressionContext*>(child)) {
+            operand = buildConditionBreakClosedAdditiveExpression(closed_add);
+        } else if (auto* add = dynamic_cast<RxParser::ConditionBreakAdditiveExpressionContext*>(child)) {
+            operand = buildConditionBreakAdditiveExpression(add);
+        } else if (auto* closed_add = dynamic_cast<RxParser::ConditionClosedAdditiveExpressionContext*>(child)) {
+            operand = buildConditionClosedAdditiveExpression(closed_add);
+        } else if (auto* add = dynamic_cast<RxParser::ConditionAdditiveExpressionContext*>(child)) {
+            operand = buildConditionAdditiveExpression(add);
+        }
+        if (operand) {
+            if (!lhs) {
+                lhs = std::move(operand);
+                continue;
+            }
+            if (!pending_op) {
+                continue;
+            }
+            SourceSpan span {lhs->span.begin, operand->span.end};
+            auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+            node->lhs_operand = std::move(lhs);
+            node->op = pending_op.value();
+            node->rhs_operand = std::move(operand);
+            lhs = std::move(node);
+            pending_op.reset();
+            continue;
+        }
+        if (dynamic_cast<RxParser::ShiftRightContext*>(child)) {
+            pending_op = BinaryOperator::ShiftRight;
+        }
+        if (auto* terminal = dynamic_cast<antlr4::tree::TerminalNode*>(child)) {
+            if (terminal && terminal->getSymbol()->getType() == RxParser::SHL) {
+                pending_op = BinaryOperator::ShiftLeft;
+            }
+        }
+    }
+    if (pending_op) {
+        return nullptr;
+    }
+    return lhs;
+}
+
+AstPtr<Expression> AstBuilder::buildConditionBreakShiftExpression(RxParser::ConditionBreakShiftExpressionContext* ctx) {
+    AstPtr<Expression> lhs;
+    std::optional<BinaryOperator> pending_op;
+    for (auto* child: ctx->children) {
+        AstPtr<Expression> operand;
+        if (auto* closed_add = dynamic_cast<RxParser::ConditionBreakClosedAdditiveExpressionContext*>(child)) {
+            operand = buildConditionBreakClosedAdditiveExpression(closed_add);
+        } else if (auto* add = dynamic_cast<RxParser::ConditionBreakAdditiveExpressionContext*>(child)) {
+            operand = buildConditionBreakAdditiveExpression(add);
+        } else if (auto* closed_add = dynamic_cast<RxParser::ConditionClosedAdditiveExpressionContext*>(child)) {
+            operand = buildConditionClosedAdditiveExpression(closed_add);
+        } else if (auto* add = dynamic_cast<RxParser::ConditionAdditiveExpressionContext*>(child)) {
+            operand = buildConditionAdditiveExpression(add);
+        }
+        if (operand) {
+            if (!lhs) {
+                lhs = std::move(operand);
+                continue;
+            }
+            if (!pending_op) {
+                continue;
+            }
+            SourceSpan span {lhs->span.begin, operand->span.end};
+            auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+            node->lhs_operand = std::move(lhs);
+            node->op = pending_op.value();
+            node->rhs_operand = std::move(operand);
+            lhs = std::move(node);
+            pending_op.reset();
+            continue;
+        }
+        if (dynamic_cast<RxParser::ShiftRightContext*>(child)) {
+            pending_op = BinaryOperator::ShiftRight;
+        }
+        if (auto* terminal = dynamic_cast<antlr4::tree::TerminalNode*>(child)) {
+            if (terminal && terminal->getSymbol()->getType() == RxParser::SHL) {
+                pending_op = BinaryOperator::ShiftLeft;
+            }
+        }
+    }
+    if (pending_op) {
+        return nullptr;
+    }
+    return lhs;
+}
+
+AstPtr<Expression> AstBuilder::buildConditionBreakClosedAdditiveExpression(RxParser::ConditionBreakClosedAdditiveExpressionContext* ctx) {
+    if (ctx->conditionBreakClosedMultiplicativeExpression()) {
+        return buildConditionBreakClosedMultiplicativeExpression(ctx->conditionBreakClosedMultiplicativeExpression());
+    }
+    auto lhs = buildConditionBreakMultiplicativeExpression(ctx->conditionBreakMultiplicativeExpression());
+    const auto operands = ctx->conditionMultiplicativeExpression();
+    const auto operators = ctx->additiveOperator();
+    for (size_t i = 0; i < operands.size(); i++) {
+        auto rhs = buildConditionMultiplicativeExpression(operands[i]);
+        SourceSpan span {lhs->span.begin, rhs->span.end};
+        auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+        node->lhs_operand = std::move(lhs);
+        node->op = buildAdditiveOperator(operators[i]);
+        node->rhs_operand = std::move(rhs);
+        lhs = std::move(node);
+    }
+    auto rhs = buildConditionClosedMultiplicativeExpression(ctx->conditionClosedMultiplicativeExpression());
+    SourceSpan span {lhs->span.begin, rhs->span.end};
+    auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+    node->lhs_operand = std::move(lhs);
+    node->op = buildAdditiveOperator(operators[operands.size()]);
+    node->rhs_operand = std::move(rhs);
+    return node;
+}
+
+AstPtr<Expression> AstBuilder::buildConditionBreakAdditiveExpression(RxParser::ConditionBreakAdditiveExpressionContext* ctx) {
+    auto lhs = buildConditionBreakMultiplicativeExpression(ctx->conditionBreakMultiplicativeExpression());
+    const auto operands = ctx->conditionMultiplicativeExpression();
+    const auto operators = ctx->additiveOperator();
+    for (size_t i = 0; i < operands.size(); i++) {
+        auto rhs = buildConditionMultiplicativeExpression(operands[i]);
+        SourceSpan span {lhs->span.begin, rhs->span.end};
+        auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+        node->lhs_operand = std::move(lhs);
+        node->op = buildAdditiveOperator(operators[i]);
+        node->rhs_operand = std::move(rhs);
+        lhs = std::move(node);
+    }
+    return lhs;
+}
+
+AstPtr<Expression> AstBuilder::buildConditionBreakClosedMultiplicativeExpression(RxParser::ConditionBreakClosedMultiplicativeExpressionContext* ctx) {
+    if (ctx->conditionBreakClosedCastExpression()) {
+        return buildConditionBreakClosedCastExpression(ctx->conditionBreakClosedCastExpression());
+    }
+    auto lhs = buildConditionBreakCastExpression(ctx->conditionBreakCastExpression());
+    const auto operands = ctx->conditionCastExpression();
+    const auto operators = ctx->multiplicativeOperator();
+    for (size_t i = 0; i < operands.size(); i++) {
+        auto rhs = buildConditionCastExpression(operands[i]);
+        SourceSpan span {lhs->span.begin, rhs->span.end};
+        auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+        node->lhs_operand = std::move(lhs);
+        node->op = buildMultiplicativeOperator(operators[i]);
+        node->rhs_operand = std::move(rhs);
+        lhs = std::move(node);
+    }
+    auto rhs = buildConditionClosedCastExpression(ctx->conditionClosedCastExpression());
+    SourceSpan span {lhs->span.begin, rhs->span.end};
+    auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+    node->lhs_operand = std::move(lhs);
+    node->op = buildMultiplicativeOperator(operators[operands.size()]);
+    node->rhs_operand = std::move(rhs);
+    return node;
+}
+
+AstPtr<Expression> AstBuilder::buildConditionBreakMultiplicativeExpression(RxParser::ConditionBreakMultiplicativeExpressionContext* ctx) {
+    auto lhs = buildConditionBreakCastExpression(ctx->conditionBreakCastExpression());
+    const auto operands = ctx->conditionCastExpression();
+    const auto operators = ctx->multiplicativeOperator();
+    for (size_t i = 0; i < operands.size(); i++) {
+        auto rhs = buildConditionCastExpression(operands[i]);
+        SourceSpan span {lhs->span.begin, rhs->span.end};
+        auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+        node->lhs_operand = std::move(lhs);
+        node->op = buildMultiplicativeOperator(operators[i]);
+        node->rhs_operand = std::move(rhs);
+        lhs = std::move(node);
+    }
+    return lhs;
+}
+
+AstPtr<Expression> AstBuilder::buildConditionBreakClosedCastExpression(RxParser::ConditionBreakClosedCastExpressionContext* ctx) {
+    if (ctx->conditionBreakUnaryExpression()) {
+        return buildConditionBreakUnaryExpression(ctx->conditionBreakUnaryExpression());
+    }
+    auto node = std::make_unique<CastExpression>(CastExpression(makeSpan(ctx)));
+    node->operand = buildConditionBreakCastExpression(ctx->conditionBreakCastExpression());
+    node->target_type = buildClosedCastType(ctx->closedCastType());
+    return node;
+}
+
+AstPtr<Expression> AstBuilder::buildConditionBreakCastExpression(RxParser::ConditionBreakCastExpressionContext* ctx) {
+    AstPtr<Expression> lhs = buildConditionBreakUnaryExpression(ctx->conditionBreakUnaryExpression());
+    for (auto* type: ctx->typeRef()) {
+        AstPtr<TypeRef> target_type = buildTypeRef(type);
+        SourceSpan span {lhs->span.begin, target_type->span.end};
+        auto node = std::make_unique<CastExpression>(CastExpression(span));
+        node->operand = std::move(lhs);
+        node->target_type = std::move(target_type);
+        lhs = std::move(node);
+    }
+    return lhs;
+}
+
+AstPtr<Expression> AstBuilder::buildConditionBreakUnaryExpression(RxParser::ConditionBreakUnaryExpressionContext* ctx) {
+    if (ctx->conditionBreakPostfixExpression()) {
+        return buildConditionBreakPostfixExpression(ctx->conditionBreakPostfixExpression());
+    }
+    auto node = std::make_unique<UnaryExpression>(UnaryExpression(makeSpan(ctx)));
+    if (ctx->unaryOperator()->ANDAND()) {
+        auto inner = std::make_unique<UnaryExpression>(UnaryExpression(makeSpan(ctx)));
+        inner->operand = buildConditionUnaryExpression(ctx->conditionUnaryExpression());
+        if (ctx->unaryOperator()->MUT()) {
+            inner->op = UnaryOperator::BorrowMut;
+        } else {
+            inner->op = UnaryOperator::Borrow;
+        }
+        node->operand = std::move(inner);
+        node->op = UnaryOperator::Borrow;
+    } else {
+        node->op = buildUnaryOperator(ctx->unaryOperator());
+        node->operand = buildConditionUnaryExpression(ctx->conditionUnaryExpression());
+    }
+    return node;
+}
+
+AstPtr<Expression> AstBuilder::buildConditionBreakPostfixExpression(RxParser::ConditionBreakPostfixExpressionContext* ctx) {
+    AstPtr<Expression> value = buildConditionPrimaryWithoutBareBlock(ctx->conditionPrimaryWithoutBareBlock());
+    for (auto* suffix: ctx->postfixSuffix()) {
+        SourceSpan span {value->span.begin, makeSpan(suffix).end};
+        if (auto* args = suffix->callArguments()) {
+            auto node = std::make_unique<CallExpression>(span);
+            node->callee = std::move(value);
+            for (auto* arg: args->expression()) {
+                node->args.push_back(buildExpression(arg));
+            }
+            value = std::move(node);
+        } else if (suffix->LBRACKET()) {
+            auto node = std::make_unique<IndexExpression>(span);
+            node->base = std::move(value);
+            node->index = buildExpression(suffix->expression());
+            value = std::move(node);
+        } else {
+            auto dot = suffix->dotSuffix();
+            if (dot->identifier()) {
+                auto node = std::make_unique<FieldExpression>(span);
+                node->base = std::move(value);
+                node->field_name = buildIdentifier(dot->identifier());
+                value = std::move(node);
+            } else {
+                auto node = std::make_unique<MethodCallExpression>(span);
+                node->receiver = std::move(value);
+                node->method = buildPathExprSegment(dot->pathExprSegment());
+                std::vector<AstPtr<Expression>> args;
+                for (auto* arg: dot->callArguments()->expression()) {
+                    args.push_back(buildExpression(arg));
+                }
+                node->args = std::move(args);
+                value = std::move(node);
+            }
+        }
+    }
+    return value;
+}
+
+AstPtr<Expression> AstBuilder::buildStatementExpression(RxParser::StatementExpressionContext* ctx) {
+    return buildStatementAssignmentExpression(ctx->statementAssignmentExpression());
+}
+
+AstPtr<Expression> AstBuilder::buildStatementAssignmentExpression(RxParser::StatementAssignmentExpressionContext* ctx) {
+    auto lhs = buildStatementLogicalOrExpression(ctx->statementLogicalOrExpression());
+    if (!ctx->assignmentOperator()) {
+        return lhs;
+    }
+    auto* assignCtx = ctx->assignmentOperator();
+    AssignmentOperator op;
+    if (assignCtx->PLUS_ASSIGN()) {
+        op = AssignmentOperator::AssignAdd;
+    } else if (assignCtx->MINUS_ASSIGN()) {
+        op = AssignmentOperator::AssignSubtract;
+    } else if (assignCtx->STAR_ASSIGN()) {
+        op = AssignmentOperator::AssignMultiply;
+    } else if (assignCtx->SLASH_ASSIGN()) {
+        op = AssignmentOperator::AssignDivide;
+    } else if (assignCtx->PERCENT_ASSIGN()) {
+        op = AssignmentOperator::AssignRemainder;
+    } else if (assignCtx->AMP_ASSIGN()) {
+        op = AssignmentOperator::AssignBitwiseAnd;
+    } else if (assignCtx->PIPE_ASSIGN()) {
+        op = AssignmentOperator::AssignBitwiseOr;
+    } else if (assignCtx->CARET_ASSIGN()) {
+        op = AssignmentOperator::AssignBitwiseXor;
+    } else if (assignCtx->SHL_ASSIGN()) {
+        op = AssignmentOperator::AssignShiftLeft;
+    } else if (assignCtx->GT()) {
+        op = AssignmentOperator::AssignShiftRight;
+    } else {
+        op = AssignmentOperator::Assign;
+    }
+    auto rhs = buildExpression(ctx->expression());
+    auto node = std::make_unique<AssignmentExpression>(AssignmentExpression(makeSpan(ctx)));
+    node->lhs_operand = std::move(lhs);
+    node->op = op;
+    node->rhs_operand = std::move(rhs);
+    return node;
+}
+
+AstPtr<Expression> AstBuilder::buildStatementLogicalOrExpression(RxParser::StatementLogicalOrExpressionContext* ctx) {
+    auto lhs = buildStatementLogicalAndExpression(ctx->statementLogicalAndExpression());
+    const auto operands = ctx->logicalAndExpression();
+    const auto operators = ctx->OROR();
+    for (size_t i = 0; i < operators.size(); i++) {
+        auto rhs = buildLogicalAndExpression(operands[i]);
+        SourceSpan span {lhs->span.begin, rhs->span.end};
+        auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+        node->lhs_operand = std::move(lhs);
+        node->op = BinaryOperator::LogicalOr;
+        node->rhs_operand = std::move(rhs);
+        lhs = std::move(node);
+    }
+    return lhs;
+}
+
+AstPtr<Expression> AstBuilder::buildStatementLogicalAndExpression(RxParser::StatementLogicalAndExpressionContext* ctx) {
+    auto lhs = buildStatementComparisonExpression(ctx->statementComparisonExpression());
+    const auto operands = ctx->comparisonExpression();
+    const auto operators = ctx->ANDAND();
+    for (size_t i = 0; i < operators.size(); i++) {
+        auto rhs = buildComparisonExpression(operands[i]);
+        SourceSpan span {lhs->span.begin, rhs->span.end};
+        auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+        node->lhs_operand = std::move(lhs);
+        node->op = BinaryOperator::LogicalAnd;
+        node->rhs_operand = std::move(rhs);
+        lhs = std::move(node);
+    }
+    return lhs;
+}
+
+AstPtr<Expression> AstBuilder::buildStatementComparisonExpression(RxParser::StatementComparisonExpressionContext* ctx) {
+    AstPtr<Expression> lhs, rhs;
+    BinaryOperator op;
+    if (ctx->LT()) {
+        lhs = buildStatementClosedBitOrExpression(ctx->statementClosedBitOrExpression());
+        rhs = buildBitOrExpression(ctx->bitOrExpression());
+        op = BinaryOperator::Less;
+    } else {
+        lhs = buildStatementBitOrExpression(ctx->statementBitOrExpression());
+        if (!ctx->comparisonExceptLt()) {
+            return lhs;
+        }
+        op = buildComparisonExceptLtContext(ctx->comparisonExceptLt());
+        rhs = buildBitOrExpression(ctx->bitOrExpression());
+    }
+    auto node = std::make_unique<BinaryExpression>(BinaryExpression(makeSpan(ctx)));
+    node->lhs_operand = std::move(lhs);
+    node->op = op;
+    node->rhs_operand = std::move(rhs);
+    return node;
+}
+
+AstPtr<Expression> AstBuilder::buildStatementClosedBitOrExpression(RxParser::StatementClosedBitOrExpressionContext* ctx) {
+    if (ctx->statementClosedBitXorExpression()) {
+        return buildStatementClosedBitXorExpression(ctx->statementClosedBitXorExpression());
+    }
+    auto lhs = buildStatementBitXorExpression(ctx->statementBitXorExpression());
+    const auto operands = ctx->bitXorExpression();
+    for (size_t i = 0; i < operands.size(); i++) {
+        auto rhs = buildBitXorExpression(operands[i]);
+        SourceSpan span {lhs->span.begin, rhs->span.end};
+        auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+        node->lhs_operand = std::move(lhs);
+        node->op = BinaryOperator::BitwiseOr;
+        node->rhs_operand = std::move(rhs);
+        lhs = std::move(node);
+    }
+    auto rhs = buildClosedBitXorExpression(ctx->closedBitXorExpression());
+    SourceSpan span {lhs->span.begin, rhs->span.end};
+    auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+    node->lhs_operand = std::move(lhs);
+    node->op = BinaryOperator::BitwiseOr;
+    node->rhs_operand = std::move(rhs);
+    return node;
+}
+
+AstPtr<Expression> AstBuilder::buildStatementBitOrExpression(RxParser::StatementBitOrExpressionContext* ctx) {
+    auto lhs = buildStatementBitXorExpression(ctx->statementBitXorExpression());
+    const auto operands = ctx->bitXorExpression();
+    for (auto* operand: operands) {
+        auto rhs = buildBitXorExpression(operand);
+        SourceSpan span {lhs->span.begin, rhs->span.end};
+        auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+        node->lhs_operand = std::move(lhs);
+        node->op = BinaryOperator::BitwiseOr;
+        node->rhs_operand = std::move(rhs);
+        lhs = std::move(node);
+    }
+    return lhs;
+}
+
+AstPtr<Expression> AstBuilder::buildStatementClosedBitXorExpression(RxParser::StatementClosedBitXorExpressionContext* ctx) {
+    if (ctx->statementClosedBitAndExpression()) {
+        return buildStatementClosedBitAndExpression(ctx->statementClosedBitAndExpression());
+    }
+    auto lhs = buildStatementBitAndExpression(ctx->statementBitAndExpression());
+    const auto operands = ctx->bitAndExpression();
+    for (auto* operand: operands) {
+        auto rhs = buildBitAndExpression(operand);
+        SourceSpan span {lhs->span.begin, rhs->span.end};
+        auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+        node->lhs_operand = std::move(lhs);
+        node->op = BinaryOperator::BitwiseXor;
+        node->rhs_operand = std::move(rhs);
+        lhs = std::move(node);
+    }
+    auto rhs = buildClosedBitAndExpression(ctx->closedBitAndExpression());
+    SourceSpan span {lhs->span.begin, rhs->span.end};
+    auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+    node->lhs_operand = std::move(lhs);
+    node->op = BinaryOperator::BitwiseXor;
+    node->rhs_operand = std::move(rhs);
+    return node;
+}
+
+AstPtr<Expression> AstBuilder::buildStatementBitXorExpression(RxParser::StatementBitXorExpressionContext* ctx) {
+    auto lhs = buildStatementBitAndExpression(ctx->statementBitAndExpression());
+    const auto operands = ctx->bitAndExpression();
+    for (auto* operand: operands) {
+        auto rhs = buildBitAndExpression(operand);
+        SourceSpan span {lhs->span.begin, rhs->span.end};
+        auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+        node->lhs_operand = std::move(lhs);
+        node->op = BinaryOperator::BitwiseXor;
+        node->rhs_operand = std::move(rhs);
+        lhs = std::move(node);
+    }
+    return lhs;
+}
+
+AstPtr<Expression> AstBuilder::buildStatementClosedBitAndExpression(RxParser::StatementClosedBitAndExpressionContext* ctx) {
+    if (ctx->statementClosedShiftExpression()) {
+        return buildStatementClosedShiftExpression(ctx->statementClosedShiftExpression());
+    }
+    auto lhs = buildStatementShiftExpression(ctx->statementShiftExpression());
+    const auto operands = ctx->shiftExpression();
+    for (auto* operand: operands) {
+        auto rhs = buildShiftExpression(operand);
+        SourceSpan span {lhs->span.begin, rhs->span.end};
+        auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+        node->lhs_operand = std::move(lhs);
+        node->op = BinaryOperator::BitwiseAnd;
+        node->rhs_operand = std::move(rhs);
+        lhs = std::move(node);
+    }
+    auto rhs = buildClosedShiftExpression(ctx->closedShiftExpression());
+    SourceSpan span {lhs->span.begin, rhs->span.end};
+    auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+    node->lhs_operand = std::move(lhs);
+    node->op = BinaryOperator::BitwiseAnd;
+    node->rhs_operand = std::move(rhs);
+    return node;
+}
+
+AstPtr<Expression> AstBuilder::buildStatementBitAndExpression(RxParser::StatementBitAndExpressionContext* ctx) {
+    auto lhs = buildStatementShiftExpression(ctx->statementShiftExpression());
+    const auto operands = ctx->shiftExpression();
+    for (auto* operand: operands) {
+        auto rhs = buildShiftExpression(operand);
+        SourceSpan span {lhs->span.begin, rhs->span.end};
+        auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+        node->lhs_operand = std::move(lhs);
+        node->op = BinaryOperator::BitwiseAnd;
+        node->rhs_operand = std::move(rhs);
+        lhs = std::move(node);
+    }
+    return lhs;
+}
+
+AstPtr<Expression> AstBuilder::buildStatementClosedShiftExpression(RxParser::StatementClosedShiftExpressionContext* ctx) {
+    AstPtr<Expression> lhs;
+    std::optional<BinaryOperator> pending_op;
+    for (auto* child: ctx->children) {
+        AstPtr<Expression> operand;
+        if (auto* closed_add = dynamic_cast<RxParser::StatementClosedAdditiveExpressionContext*>(child)) {
+            operand = buildStatementClosedAdditiveExpression(closed_add);
+        } else if (auto* add = dynamic_cast<RxParser::StatementAdditiveExpressionContext*>(child)) {
+            operand = buildStatementAdditiveExpression(add);
+        } else if (auto* closed_add = dynamic_cast<RxParser::ClosedAdditiveExpressionContext*>(child)) {
+            operand = buildClosedAdditiveExpression(closed_add);
+        } else if (auto* add = dynamic_cast<RxParser::AdditiveExpressionContext*>(child)) {
+            operand = buildAdditiveExpression(add);
+        }
+        if (operand) {
+            if (!lhs) {
+                lhs = std::move(operand);
+                continue;
+            }
+            if (!pending_op) {
+                continue;
+            }
+            SourceSpan span {lhs->span.begin, operand->span.end};
+            auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+            node->lhs_operand = std::move(lhs);
+            node->op = pending_op.value();
+            node->rhs_operand = std::move(operand);
+            lhs = std::move(node);
+            pending_op.reset();
+            continue;
+        }
+        if (dynamic_cast<RxParser::ShiftRightContext*>(child)) {
+            pending_op = BinaryOperator::ShiftRight;
+        }
+        if (auto* terminal = dynamic_cast<antlr4::tree::TerminalNode*>(child)) {
+            if (terminal && terminal->getSymbol()->getType() == RxParser::SHL) {
+                pending_op = BinaryOperator::ShiftLeft;
+            }
+        }
+    }
+    if (pending_op) {
+        return nullptr;
+    }
+    return lhs;
+}
+
+AstPtr<Expression> AstBuilder::buildStatementShiftExpression(RxParser::StatementShiftExpressionContext* ctx) {
+    AstPtr<Expression> lhs;
+    std::optional<BinaryOperator> pending_op;
+    for (auto* child: ctx->children) {
+        AstPtr<Expression> operand;
+        if (auto* closed_add = dynamic_cast<RxParser::StatementClosedAdditiveExpressionContext*>(child)) {
+            operand = buildStatementClosedAdditiveExpression(closed_add);
+        } else if (auto* add = dynamic_cast<RxParser::StatementAdditiveExpressionContext*>(child)) {
+            operand = buildStatementAdditiveExpression(add);
+        } else if (auto* closed_add = dynamic_cast<RxParser::ClosedAdditiveExpressionContext*>(child)) {
+            operand = buildClosedAdditiveExpression(closed_add);
+        } else if (auto* add = dynamic_cast<RxParser::AdditiveExpressionContext*>(child)) {
+            operand = buildAdditiveExpression(add);
+        }
+        if (operand) {
+            if (!lhs) {
+                lhs = std::move(operand);
+                continue;
+            }
+            if (!pending_op) {
+                continue;
+            }
+            SourceSpan span {lhs->span.begin, operand->span.end};
+            auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+            node->lhs_operand = std::move(lhs);
+            node->op = pending_op.value();
+            node->rhs_operand = std::move(operand);
+            lhs = std::move(node);
+            pending_op.reset();
+            continue;
+        }
+        if (dynamic_cast<RxParser::ShiftRightContext*>(child)) {
+            pending_op = BinaryOperator::ShiftRight;
+        }
+        if (auto* terminal = dynamic_cast<antlr4::tree::TerminalNode*>(child)) {
+            if (terminal && terminal->getSymbol()->getType() == RxParser::SHL) {
+                pending_op = BinaryOperator::ShiftLeft;
+            }
+        }
+    }
+    if (pending_op) {
+        return nullptr;
+    }
+    return lhs;
+}
+
+AstPtr<Expression> AstBuilder::buildStatementClosedAdditiveExpression(RxParser::StatementClosedAdditiveExpressionContext* ctx) {
+    if (ctx->statementClosedMultiplicativeExpression()) {
+        return buildStatementClosedMultiplicativeExpression(ctx->statementClosedMultiplicativeExpression());
+    }
+    auto lhs = buildStatementMultiplicativeExpression(ctx->statementMultiplicativeExpression());
+    const auto operands = ctx->multiplicativeExpression();
+    const auto operators = ctx->additiveOperator();
+    for (size_t i = 0; i < operands.size(); i++) {
+        auto rhs = buildMultiplicativeExpression(operands[i]);
+        SourceSpan span {lhs->span.begin, rhs->span.end};
+        auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+        node->lhs_operand = std::move(lhs);
+        node->op = buildAdditiveOperator(operators[i]);
+        node->rhs_operand = std::move(rhs);
+        lhs = std::move(node);
+    }
+    auto rhs = buildClosedMultiplicativeExpression(ctx->closedMultiplicativeExpression());
+    SourceSpan span {lhs->span.begin, rhs->span.end};
+    auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+    node->lhs_operand = std::move(lhs);
+    node->op = buildAdditiveOperator(operators[operands.size()]);
+    node->rhs_operand = std::move(rhs);
+    return node;
+}
+
+AstPtr<Expression> AstBuilder::buildStatementAdditiveExpression(RxParser::StatementAdditiveExpressionContext* ctx) {
+    auto lhs = buildStatementMultiplicativeExpression(ctx->statementMultiplicativeExpression());
+    const auto operands = ctx->multiplicativeExpression();
+    const auto operators = ctx->additiveOperator();
+    for (size_t i = 0; i < operands.size(); i++) {
+        auto rhs = buildMultiplicativeExpression(operands[i]);
+        SourceSpan span {lhs->span.begin, rhs->span.end};
+        auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+        node->lhs_operand = std::move(lhs);
+        node->op = buildAdditiveOperator(operators[i]);
+        node->rhs_operand = std::move(rhs);
+        lhs = std::move(node);
+    }
+    return lhs;
+}
+
+AstPtr<Expression> AstBuilder::buildStatementClosedMultiplicativeExpression(RxParser::StatementClosedMultiplicativeExpressionContext* ctx) {
+    if (ctx->statementClosedCastExpression()) {
+        return buildStatementClosedCastExpression(ctx->statementClosedCastExpression());
+    }
+    auto lhs = buildStatementCastExpression(ctx->statementCastExpression());
+    const auto operands = ctx->castExpression();
+    const auto operators = ctx->multiplicativeOperator();
+    for (size_t i = 0; i < operands.size(); i++) {
+        auto rhs = buildCastExpression(operands[i]);
+        SourceSpan span {lhs->span.begin, rhs->span.end};
+        auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+        node->lhs_operand = std::move(lhs);
+        node->op = buildMultiplicativeOperator(operators[i]);
+        node->rhs_operand = std::move(rhs);
+        lhs = std::move(node);
+    }
+    auto rhs = buildClosedCastExpression(ctx->closedCastExpression());
+    SourceSpan span {lhs->span.begin, rhs->span.end};
+    auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+    node->lhs_operand = std::move(lhs);
+    node->op = buildMultiplicativeOperator(operators[operands.size()]);
+    node->rhs_operand = std::move(rhs);
+    return node;
+}
+
+AstPtr<Expression> AstBuilder::buildStatementMultiplicativeExpression(RxParser::StatementMultiplicativeExpressionContext* ctx) {
+    auto lhs = buildStatementCastExpression(ctx->statementCastExpression());
+    const auto operands = ctx->castExpression();
+    const auto operators = ctx->multiplicativeOperator();
+    for (size_t i = 0; i < operands.size(); i++) {
+        auto rhs = buildCastExpression(operands[i]);
+        SourceSpan span {lhs->span.begin, rhs->span.end};
+        auto node = std::make_unique<BinaryExpression>(BinaryExpression(span));
+        node->lhs_operand = std::move(lhs);
+        node->op = buildMultiplicativeOperator(operators[i]);
+        node->rhs_operand = std::move(rhs);
+        lhs = std::move(node);
+    }
+    return lhs;
+}
+
+AstPtr<Expression> AstBuilder::buildStatementClosedCastExpression(RxParser::StatementClosedCastExpressionContext* ctx) {
+    if (ctx->statementUnaryExpression()) {
+        return buildStatementUnaryExpression(ctx->statementUnaryExpression());
+    }
+    auto node = std::make_unique<CastExpression>(CastExpression(makeSpan(ctx)));
+    node->operand = buildStatementCastExpression(ctx->statementCastExpression());
+    node->target_type = buildClosedCastType(ctx->closedCastType());
+    return node;
+}
+
+AstPtr<Expression> AstBuilder::buildStatementCastExpression(RxParser::StatementCastExpressionContext* ctx) {
+    AstPtr<Expression> lhs = buildStatementUnaryExpression(ctx->statementUnaryExpression());
+    for (auto* type: ctx->typeRef()) {
+        AstPtr<TypeRef> target_type = buildTypeRef(type);
+        SourceSpan span {lhs->span.begin, target_type->span.end};
+        auto node = std::make_unique<CastExpression>(CastExpression(span));
+        node->operand = std::move(lhs);
+        node->target_type = std::move(target_type);
+        lhs = std::move(node);
+    }
+    return lhs;
+}
+
+AstPtr<Expression> AstBuilder::buildStatementUnaryExpression(RxParser::StatementUnaryExpressionContext* ctx) {
+    if (ctx->statementPostfixExpression()) {
+        return buildStatementPostfixExpression(ctx->statementPostfixExpression());
+    }
+    return buildUnaryExpression(ctx->unaryExpression());
+}
+
+AstPtr<Expression> AstBuilder::buildStatementPostfixExpression(RxParser::StatementPostfixExpressionContext* ctx) {
+    AstPtr<Expression> value;
+    if (auto* non_block = ctx->nonBlockPrimary()) {
+        if (non_block->literalExpression()) {
+            value = buildLiteralExpression(non_block->literalExpression());
+        } else if (non_block->pathInExpression()) {
+            value = buildPathOrStructExpression(non_block);
+        } else if (non_block->LPAREN()) {
+            if (non_block->expression()) {
+                auto node = std::make_unique<GroupedExpression>(GroupedExpression(makeSpan(non_block)));
+                node->expr = buildExpression(non_block->expression());
+                value = std::move(node);
+            } else {
+                value = std::make_unique<UnitExpression>(UnitExpression(makeSpan(non_block)));
+            }
+        } else if (non_block->arrayExpression()) {
+            value = buildArrayExpression(non_block->arrayExpression());
+        } else if (non_block->BREAK()) {
+            auto node = std::make_unique<BreakExpression>(BreakExpression(makeSpan(non_block)));
+            node->expr = non_block->expression() ? buildExpression(non_block->expression()) : nullptr;
+            value = std::move(node);
+        } else if (non_block->RETURN()) {
+            auto node = std::make_unique<ReturnExpression>(ReturnExpression(makeSpan(non_block)));
+            node->expr = non_block->expression() ? buildExpression(non_block->expression()) : nullptr;
+            value = std::move(node);
+        } else if (non_block->CONTINUE()) {
+            value = std::make_unique<ContinueExpression>(ContinueExpression(makeSpan(non_block)));
+        } else {
+            throw std::logic_error("unexpected expression type");
+        }
+    } else {
+        value = buildExpressionWithBlock(ctx->expressionWithBlock());
+        auto dot = ctx->dotSuffix();
+        SourceSpan span {value->span.begin, makeSpan(dot).end};
+        if (dot->identifier()) {
+            auto node = std::make_unique<FieldExpression>(span);
+            node->base = std::move(value);
+            node->field_name = buildIdentifier(dot->identifier());
+            value = std::move(node);
+        } else {
+            auto node = std::make_unique<MethodCallExpression>(span);
+            node->receiver = std::move(value);
+            node->method = buildPathExprSegment(dot->pathExprSegment());
+            std::vector<AstPtr<Expression>> args;
+            for (auto* arg: dot->callArguments()->expression()) {
+                args.push_back(buildExpression(arg));
+            }
+            node->args = std::move(args);
+            value = std::move(node);
+        }
+    }
+    for (auto* suffix: ctx->postfixSuffix()) {
+        SourceSpan span {value->span.begin, makeSpan(suffix).end};
+        if (auto* args = suffix->callArguments()) {
+            auto node = std::make_unique<CallExpression>(span);
+            node->callee = std::move(value);
+            for (auto* arg: args->expression()) {
+                node->args.push_back(buildExpression(arg));
+            }
+            value = std::move(node);
+        } else if (suffix->LBRACKET()) {
+            auto node = std::make_unique<IndexExpression>(span);
+            node->base = std::move(value);
+            node->index = buildExpression(suffix->expression());
+            value = std::move(node);
+        } else {
+            auto dot = suffix->dotSuffix();
+            if (dot->identifier()) {
+                auto node = std::make_unique<FieldExpression>(span);
+                node->base = std::move(value);
+                node->field_name = buildIdentifier(dot->identifier());
+                value = std::move(node);
+            } else {
+                auto node = std::make_unique<MethodCallExpression>(span);
+                node->receiver = std::move(value);
+                node->method = buildPathExprSegment(dot->pathExprSegment());
+                std::vector<AstPtr<Expression>> args;
+                for (auto* arg: dot->callArguments()->expression()) {
+                    args.push_back(buildExpression(arg));
+                }
+                node->args = std::move(args);
+                value = std::move(node);
+            }
+        }
+    }
+    return value;
 }
 
 } // namespace ast
