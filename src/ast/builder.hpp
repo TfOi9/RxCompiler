@@ -2,7 +2,6 @@
 #include "antlr4-runtime.h"
 #include "../generated/RxParser.h"
 #include "ast.hpp"
-#include <memory>
 #include <string_view>
 
 namespace ast {

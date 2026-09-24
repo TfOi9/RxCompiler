@@ -1186,4 +1186,62 @@ AstPtr<Expression> AstBuilder::buildPrimaryExpression(RxParser::PrimaryExpressio
     }
 }
 
+AstPtr<Expression> AstBuilder::buildLiteralExpression(RxParser::LiteralExpressionContext* ctx) {
+    if (ctx->INTEGER_LITERAL()) {
+        auto node = std::make_unique<IntegerExpression>(IntegerExpression(makeSpan(ctx)));
+        node->value = IntegerLiteralValue {
+            makeSpan(ctx),
+            ctx->toString(),
+            getSuffix(ctx->toString())
+        };
+        return std::move(node);
+    } else if (ctx->TRUE()) {
+        auto node = std::make_unique<BoolExpression>(BoolExpression(makeSpan(ctx)));
+        node->value = true;
+        return node;
+    } else if (ctx->FALSE()) {
+        auto node = std::make_unique<BoolExpression>(BoolExpression(makeSpan(ctx)));
+        node->value = false;
+        return node;
+    }
+    throw std::logic_error("unexpected literal expression type");
+}
+
+AstPtr<Expression> AstBuilder::buildPathOrStructExpression(RxParser::NonBlockPrimaryContext* ctx) {
+    auto path = buildPathInExpression(ctx->pathInExpression());
+    if (!ctx->LPAREN()) {
+        auto node = std::make_unique<PathExpression>(makeSpan(ctx->pathInExpression()));
+        node->path = std::move(path);
+        return std::move(node);
+    }
+    auto node = std::make_unique<StructExpression>(StructExpression(makeSpan(ctx->structExprFields())));
+    if (auto* fields = ctx->structExprFields()) {
+        for (auto* field: fields->structExprField()) {
+            node->fields.push_back(StructExprField {
+                makeSpan(field),
+                buildIdentifier(field->identifier()),
+                buildExpression(ctx->expression())
+            });
+        }
+    }
+    return node;
+}
+
+AstPtr<Expression> AstBuilder::buildArrayExpression(RxParser::ArrayExpressionContext* ctx) {
+    auto node = std::make_unique<ArrayExpression>(ArrayExpression(makeSpan(ctx)));
+    auto elements = std::vector<AstPtr<Expression>>();
+    if (!ctx->expression().empty()) {
+        if (ctx->SEMI()) {
+            elements.push_back(buildExpression(ctx->expression()[0]));
+            node->repeated_length = buildConstValue(ctx->constValue());
+        } else {
+            for (auto* elem: ctx->expression()) {
+                elements.push_back(buildExpression(elem));
+            }
+        }
+    }
+    node->elements = std::move(elements);
+    return std::move(node);
+}
+
 } // namespace ast

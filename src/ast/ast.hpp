@@ -447,7 +447,7 @@ struct CallExpression: Expression {
 
 struct ArrayExpression: Expression {
     std::vector<AstPtr<Expression>> elements;
-    std::optional<ConstValue> repeated_length;
+    AstPtr<ConstValue> repeated_length;
 
     explicit ArrayExpression(SourceSpan span): Expression(span, NodeType::ArrayExpr) {}
 };
