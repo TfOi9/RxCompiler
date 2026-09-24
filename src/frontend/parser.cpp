@@ -1,8 +1,8 @@
 #include "parser.hpp"
+#include "../ast/builder.hpp"
 #include "antlr4-runtime.h"
 #include "../generated/RxLexer.h"
 #include "../generated/RxParser.h"
-#include <vector>
 
 namespace frontend {
 
@@ -33,10 +33,9 @@ ParseResult parseToAst(std::string_view source) {
         };
     }
 
-    // call AST builder
-    // ast::AstBuilder builder(source);
+    ast::AstBuilder builder(source);
     return ParseResult {
-        /* builder.build(tree), */ nullptr,
+        builder.build(tree),
         std::vector<diagnostic::Diagnostic>()
     };
 }

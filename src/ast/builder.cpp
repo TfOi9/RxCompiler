@@ -458,6 +458,17 @@ AstPtr<TypeRef> AstBuilder::buildTypeRef(RxParser::TypeRefContext* ctx) {
     return nullptr;
 }
 
+TypeParamBounds AstBuilder::buildTypeParamBounds(RxParser::TypeParamBoundsContext* ctx) {
+    std::vector<Lifetime> lifetimes;
+    for (auto* lifetime: ctx->lifetime()) {
+        lifetimes.push_back(buildLifetime(lifetime));
+    }
+    return TypeParamBounds {
+        makeSpan(ctx),
+        lifetimes
+    };
+}
+
 AstPtr<TypePath> AstBuilder::buildTypePath(RxParser::TypePathContext* ctx) {
     std::vector<TypePathSegment> segs;
     for (auto* seg: ctx->typePathSegment()) {
@@ -1012,8 +1023,8 @@ AstPtr<Expression> AstBuilder::buildClosedCastExpression(RxParser::ClosedCastExp
         return buildUnaryExpression(ctx->unaryExpression());
     }
     auto node = std::make_unique<CastExpression>(CastExpression(makeSpan(ctx)));
-    node->operand = std::move(buildCastExpression(ctx->castExpression()));
-    node->target_type = std::move(buildClosedCastType(ctx->closedCastType()));
+    node->operand = buildCastExpression(ctx->castExpression());
+    node->target_type = buildClosedCastType(ctx->closedCastType());
     return node;
 }
 
@@ -1069,7 +1080,7 @@ AstPtr<TypeRef> AstBuilder::buildClosedCastType(RxParser::ClosedCastTypeContext*
 }
 
 AstPtr<Expression> AstBuilder::buildCastExpression(RxParser::CastExpressionContext* ctx) {
-    AstPtr<Expression> lhs = std::move(buildUnaryExpression(ctx->unaryExpression()));
+    AstPtr<Expression> lhs = buildUnaryExpression(ctx->unaryExpression());
     for (auto* type: ctx->typeRef()) {
         AstPtr<TypeRef> target_type = buildTypeRef(type);
         SourceSpan span {lhs->span.begin, target_type->span.end};
@@ -1104,7 +1115,9 @@ AstPtr<Expression> AstBuilder::buildUnaryExpression(RxParser::UnaryExpressionCon
 }
 
 UnaryOperator AstBuilder::buildUnaryOperator(RxParser::UnaryOperatorContext* ctx) {
-    if (ctx->AMP()) {
+    if (ctx->MUT() && ctx->AMP()) {
+        return UnaryOperator::BorrowMut;
+    } else if (ctx->AMP()) {
         return UnaryOperator::Borrow;
     } else if (ctx->ANDAND()) {
         throw std::logic_error("unexprected unary operator type");
@@ -1112,8 +1125,6 @@ UnaryOperator AstBuilder::buildUnaryOperator(RxParser::UnaryOperatorContext* ctx
         return UnaryOperator::Negation;
     } else if (ctx->NOT()) {
         return UnaryOperator::Not;
-    } else if (ctx->MUT() && ctx->AMP()) {
-        return UnaryOperator::BorrowMut;
     } else if (ctx->STAR()) {
         return UnaryOperator::Dereference;
     }
@@ -1147,6 +1158,11 @@ AstPtr<Expression> AstBuilder::buildPostfixExpression(RxParser::PostfixExpressio
                 auto node = std::make_unique<MethodCallExpression>(span);
                 node->receiver = std::move(value);
                 node->method = buildPathExprSegment(dot->pathExprSegment());
+                std::vector<AstPtr<Expression>> args;
+                for (auto* arg: dot->callArguments()->expression()) {
+                    args.push_back(buildExpression(arg));
+                }
+                node->args = std::move(args);
                 value = std::move(node);
             }
         }
@@ -1165,7 +1181,9 @@ AstPtr<Expression> AstBuilder::buildPrimaryExpression(RxParser::PrimaryExpressio
             return buildPathOrStructExpression(non_block);
         } else if (non_block->LPAREN()) {
             if (non_block->expression()) {
-                return buildExpression(non_block->expression());
+                auto node = std::make_unique<GroupedExpression>(GroupedExpression(makeSpan(non_block)));
+                node->expr = buildExpression(non_block->expression());
+                return node;
             } else {
                 return std::make_unique<UnitExpression>(UnitExpression(makeSpan(ctx)));
             }
@@ -1209,18 +1227,19 @@ AstPtr<Expression> AstBuilder::buildLiteralExpression(RxParser::LiteralExpressio
 
 AstPtr<Expression> AstBuilder::buildPathOrStructExpression(RxParser::NonBlockPrimaryContext* ctx) {
     auto path = buildPathInExpression(ctx->pathInExpression());
-    if (!ctx->LPAREN()) {
+    if (!ctx->LBRACE()) {
         auto node = std::make_unique<PathExpression>(makeSpan(ctx->pathInExpression()));
         node->path = std::move(path);
         return std::move(node);
     }
     auto node = std::make_unique<StructExpression>(StructExpression(makeSpan(ctx->structExprFields())));
+    node->path = std::move(path);
     if (auto* fields = ctx->structExprFields()) {
         for (auto* field: fields->structExprField()) {
             node->fields.push_back(StructExprField {
                 makeSpan(field),
                 buildIdentifier(field->identifier()),
-                buildExpression(ctx->expression())
+                buildExpression(field->expression())
             });
         }
     }
