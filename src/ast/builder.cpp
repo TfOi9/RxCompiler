@@ -2718,7 +2718,22 @@ AstPtr<Expression> AstBuilder::buildStatementUnaryExpression(RxParser::Statement
     if (ctx->statementPostfixExpression()) {
         return buildStatementPostfixExpression(ctx->statementPostfixExpression());
     }
-    return buildUnaryExpression(ctx->unaryExpression());
+    auto node = std::make_unique<UnaryExpression>(UnaryExpression(makeSpan(ctx)));
+    if (ctx->unaryOperator()->ANDAND()) {
+        auto inner = std::make_unique<UnaryExpression>(UnaryExpression(makeSpan(ctx)));
+        inner->operand = buildUnaryExpression(ctx->unaryExpression());
+        if (ctx->unaryOperator()->MUT()) {
+            inner->op = UnaryOperator::BorrowMut;
+        } else {
+            inner->op = UnaryOperator::Borrow;
+        }
+        node->operand = std::move(inner);
+        node->op = UnaryOperator::Borrow;
+    } else {
+        node->op = buildUnaryOperator(ctx->unaryOperator());
+        node->operand = buildUnaryExpression(ctx->unaryExpression());
+    }
+    return std::move(node);
 }
 
 AstPtr<Expression> AstBuilder::buildStatementPostfixExpression(RxParser::StatementPostfixExpressionContext* ctx) {

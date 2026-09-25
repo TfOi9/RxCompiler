@@ -278,7 +278,9 @@ void dumpExpressionStatement(const ExpressionStatement *ast, std::ostream &os, i
 void dumpConstValue(const ConstValue &ast, std::ostream &os, int depth) {
     PRINT(os, depth) << "ConstValue\n";
     if (ast.integer.has_value()) dumpIntegerLiteralValue(*ast.integer, os, depth + 1);
-    if (ast.boolean.has_value()) PRINT(os, depth + 1) << "Bool value=" << (*ast.boolean ? "true" : "false") << '\n';
+    if (ast.boolean.has_value()) {
+        PRINT(os, depth + 1) << "Bool value=" << (*ast.boolean ? "true" : "false") << '\n';
+    }
     if (ast.path.has_value()) dumpPathInExpression(*ast.path, os, depth + 1);
     if (ast.magnitude) dumpMagnitude(*ast.magnitude, os, depth + 1);
     if (ast.inner) dumpConstValue(*ast.inner, os, depth + 1);
