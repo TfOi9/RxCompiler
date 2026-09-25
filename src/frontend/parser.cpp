@@ -13,6 +13,7 @@ ParseResult parseToAst(std::string_view source) {
     antlr4::CommonTokenStream tokens(&lexer);
 
     std::unique_ptr<diagnostic::DiagnosticCollector> collector(new diagnostic::DiagnosticCollector());
+    auto collector_view = collector.get();
     diagnostic::AntlrErrorListener listener(std::move(collector));
 
     lexer.removeErrorListeners();
@@ -26,10 +27,10 @@ ParseResult parseToAst(std::string_view source) {
 
     auto* tree = parser.crate();
 
-    if (collector->has_error() || parser.getNumberOfSyntaxErrors() > 0) {
+    if (collector_view->has_error() || parser.getNumberOfSyntaxErrors() > 0) {
         return ParseResult {
             nullptr,
-            collector->diagnostics(),
+            collector_view->diagnostics(),
             false
         };
     }

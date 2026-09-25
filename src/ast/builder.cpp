@@ -40,7 +40,7 @@ std::string AstBuilder::getText(antlr4::tree::TerminalNode* node) const {
 }
 
 std::string AstBuilder::buildIdentifier(RxParser::IdentifierContext* ctx) {
-    return ctx->toString();
+    return ctx->getText();
 }
 
 Lifetime AstBuilder::buildLifetime(RxParser::LifetimeContext* ctx) {
@@ -256,8 +256,8 @@ AstPtr<ConstValue> AstBuilder::buildConstValue(RxParser::ConstValueContext* ctx)
                 ConstValueType::Integer,
                 IntegerLiteralValue {
                     makeSpan(ctx),
-                    ctx->toString(),
-                    getSuffix(ctx->toString())
+                    ctx->getText(),
+                    getSuffix(ctx->getText())
                 },
                 std::nullopt,
                 std::nullopt,
@@ -337,8 +337,8 @@ AstPtr<Magnitude> AstBuilder::buildMagnitude(RxParser::MagnitudeContext* ctx) {
                 MagnitudeType::IntegerLiteral,
                 IntegerLiteralValue {
                     makeSpan(ctx),
-                    ctx->toString(),
-                    getSuffix(ctx->toString())
+                    ctx->getText(),
+                    getSuffix(ctx->getText())
                 },
                 std::nullopt,
                 nullptr
@@ -390,7 +390,7 @@ PathExprSegment AstBuilder::buildPathExprSegment(RxParser::PathExprSegmentContex
 PathIdentSegment AstBuilder::buildPathIdentSegment(RxParser::PathIdentSegmentContext* ctx) {
     return PathIdentSegment {
         makeSpan(ctx),
-        ctx->identifier() ? std::optional<std::string>(ctx->identifier()->toString()) : std::nullopt,
+        ctx->identifier() ? std::optional<std::string>(ctx->identifier()->getText()) : std::nullopt,
         ctx->SELF_VALUE() != nullptr,
         ctx->SELF_TYPE() != nullptr
     };
@@ -1209,8 +1209,8 @@ AstPtr<Expression> AstBuilder::buildLiteralExpression(RxParser::LiteralExpressio
         auto node = std::make_unique<IntegerExpression>(IntegerExpression(makeSpan(ctx)));
         node->value = IntegerLiteralValue {
             makeSpan(ctx),
-            ctx->toString(),
-            getSuffix(ctx->toString())
+            ctx->getText(),
+            getSuffix(ctx->getText())
         };
         return std::move(node);
     } else if (ctx->TRUE()) {
