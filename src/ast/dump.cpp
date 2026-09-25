@@ -1,5 +1,6 @@
 #include "dump.hpp"
 #include "ast.hpp"
+#include <stdexcept>
 #define PRINT(os, depth) printIndent(depth, os); os
 #define INDENT(os, depth) printIndent(depth, os);
 
@@ -27,8 +28,7 @@ void dumpItem(const AstPtr<Item> &ast, std::ostream &os, int depth) {
         dumpConstant(*cons, os, depth);
     } else if (const auto* impl = dynamic_cast<ImplItem*>(ast.get())) {
         dumpImpl(*impl, os, depth);
-    }
-    throw std::logic_error("unexpected item type");
+    } else throw std::logic_error("unexpected item type");
 }
 
 void dumpFunction(const FunctionItem& ast, std::ostream& os, int depth) {
@@ -62,7 +62,7 @@ void dumpConstant(const ConstantItem &ast, std::ostream &os, int depth) {
 }
 
 void dumpImpl(const ImplItem &ast, std::ostream &os, int depth) {
-    PRINT(os, depth) << "implItem\n";
+    PRINT(os, depth) << "ImplItem\n";
     if (ast.generic_params.size()) dumpGenericParams(ast.generic_params, os, depth + 1);
     if (ast.type) dumpTypeRef(ast.type, os, depth + 1);
     if (ast.where_clause) dumpWhereClause(*ast.where_clause, os, depth + 1);
@@ -74,13 +74,13 @@ void dumpOuterAttributes(const OuterAttribute &ast, std::ostream &os, int depth)
     for (const auto& name: ast.derive_names) {
         switch (name) {
             case DeriveName::Copy:
-                PRINT(os, depth + 1) << "Copy\n";
+                PRINT(os, depth + 1) << "Copy\n"; break;
             case DeriveName::Clone:
-                PRINT(os, depth + 1) << "Clone\n";
+                PRINT(os, depth + 1) << "Clone\n"; break;
             case DeriveName::PartialEq:
-                PRINT(os, depth + 1) << "PartialEq\n";
+                PRINT(os, depth + 1) << "PartialEq\n"; break;
             case DeriveName::Eq:
-                PRINT(os, depth + 1) << "Eq\n";
+                PRINT(os, depth + 1) << "Eq\n"; break;
         }
     }
 }
@@ -152,9 +152,9 @@ void dumpTypeRef(const AstPtr<TypeRef> &ast, std::ostream &os, int depth) {
     } else if (const auto* ref = dynamic_cast<ReferenceType*>(ast.get())) {
         return dumpReferenceType(ref, os, depth);
     } else if (const auto* arr = dynamic_cast<ArrayType*>(ast.get())) {
-        return dumpArrayType(arr, os, depth + 1);
+        return dumpArrayType(arr, os, depth);
     } else if (const auto* paren = dynamic_cast<ParenthesizedType*>(ast.get())) {
-        return dumpParenthesizedType(paren, os, depth + 1);
+        return dumpParenthesizedType(paren, os, depth);
     }
     throw std::logic_error("unexpected type ref");
 }
@@ -246,7 +246,7 @@ void dumpBlockExpression(const BlockExpression &ast, std::ostream &os, int depth
     for (const auto& stmt: ast.statements) {
         dumpStatement(stmt, os, depth + 1);
     }
-    dumpExpression(ast.tail_expression, os, depth + 1);
+    if (ast.tail_expression) dumpExpression(ast.tail_expression, os, depth + 1);
 }
 
 void dumpStatement(const AstPtr<Statement>& ast, std::ostream& os, int depth) {
@@ -256,8 +256,7 @@ void dumpStatement(const AstPtr<Statement>& ast, std::ostream& os, int depth) {
         dumpExpressionStatement(expr, os, depth);
     } else if (const auto* emp = dynamic_cast<EmptyStatement*>(ast.get())) {
         PRINT(os, depth) << "EmptyStatement\n";
-    }
-    throw std::logic_error("unexpected statement type");
+    } else throw std::logic_error("unexpected statement type");
 }
 
 void dumpLetStatement(const LetStatement *ast, std::ostream &os, int depth) {
@@ -289,15 +288,15 @@ void dumpIntegerLiteralValue(const IntegerLiteralValue &ast, std::ostream &os, i
     PRINT(os, depth) << "IntegerLiteralValue spelling=" << ast.spelling << " suffix=";
     switch (ast.suffix) {
         case IntegerSuffix::I32:
-            os << "i32";
+            os << "i32"; break;
         case IntegerSuffix::U32:
-            os << "u32";
+            os << "u32"; break;
         case IntegerSuffix::Isize:
-            os << "isize";
+            os << "isize"; break;
         case IntegerSuffix::Usize:
-            os << "usize";
+            os << "usize"; break;
         case IntegerSuffix::None:
-            os << "none";
+            os << "none"; break;
     }
     os << '\n';
 }
@@ -367,8 +366,7 @@ void dumpExpression(const AstPtr<Expression>& ast, std::ostream& os, int depth) 
         dumpReturnExpression(retu, os, depth);
     } else if (const auto* grouped = dynamic_cast<GroupedExpression*>(ast.get())) {
         dumpGroupedExpression(grouped, os, depth);
-    }
-    throw std::logic_error("unexpected expression type");
+    } else throw std::logic_error("unexpected expression type");
 }
 
 void dumpIntegerExpression(const IntegerExpression *ast, std::ostream &os, int depth) {
@@ -507,83 +505,83 @@ void dumpGroupedExpression(const GroupedExpression *ast, std::ostream &os, int d
 void dumpUnaryOperator(const UnaryOperator &op, std::ostream& os) {
     switch (op) {
         case UnaryOperator::Negation:
-            os << '-';
+            os << '-'; break;
         case UnaryOperator::Not:
-            os << '!';
+            os << '!'; break;
         case UnaryOperator::Dereference:
-            os << '*';
+            os << '*'; break;
         case UnaryOperator::Borrow:
-            os << '&';
+            os << '&'; break;
         case UnaryOperator::BorrowMut:
-            os << "& mut";
+            os << "& mut"; break;
     }
 }
 
 void dumpBinaryOperator(const BinaryOperator &op, std::ostream &os) {
     switch (op) {
         case BinaryOperator::Add:
-            os << '+';
+            os << '+'; break;
         case BinaryOperator::Subtract:
-            os << '-';
+            os << '-'; break;
         case BinaryOperator::Multiply:
-            os << '*';
+            os << '*'; break;
         case BinaryOperator::Divide:
-            os << '/';
+            os << '/'; break;
         case BinaryOperator::Remainder:
-            os << '%';
+            os << '%'; break;
         case BinaryOperator::BitwiseAnd:
-            os << '&';
+            os << '&'; break;
         case BinaryOperator::BitwiseOr:
-            os << '|';
+            os << '|'; break;
         case BinaryOperator::BitwiseXor:
-            os << '^';
+            os << '^'; break;
         case BinaryOperator::ShiftLeft:
-            os << "<<";
+            os << "<<"; break;
         case BinaryOperator::ShiftRight:
-            os << ">>";
+            os << ">>"; break;
         case BinaryOperator::Equal:
-            os << "==";
+            os << "=="; break;
         case BinaryOperator::NotEqual:
-            os << "!=";
+            os << "!="; break;
         case BinaryOperator::Greater:
-            os << '>';
+            os << '>'; break;
         case BinaryOperator::Less:
-            os << '<';
+            os << '<'; break;
         case BinaryOperator::GreaterEqual:
-            os << ">=";
+            os << ">="; break;
         case BinaryOperator::LessEqual:
-            os << "<=";
+            os << "<="; break;
         case BinaryOperator::LogicalAnd:
-            os << "&&";
+            os << "&&"; break;
         case BinaryOperator::LogicalOr:
-            os << "||";
+            os << "||"; break;
     }
 }
 
 void dumpAssignmentOperator(const AssignmentOperator &op, std::ostream &os) {
     switch (op) {
         case AssignmentOperator::Assign:
-            os << '=';
+            os << '='; break;
         case AssignmentOperator::AssignAdd:
-            os << "+=";
+            os << "+="; break;
         case AssignmentOperator::AssignSubtract:
-            os << "-=";
+            os << "-="; break;
         case AssignmentOperator::AssignMultiply:
-            os << "*=";
+            os << "*="; break;
         case AssignmentOperator::AssignDivide:
-            os << "/=";
+            os << "/="; break;
         case AssignmentOperator::AssignRemainder:
-            os << "%=";
+            os << "%="; break;
         case AssignmentOperator::AssignBitwiseAnd:
-            os << "&=";
+            os << "&="; break;
         case AssignmentOperator::AssignBitwiseOr:
-            os << "|=";
+            os << "|="; break;
         case AssignmentOperator::AssignBitwiseXor:
-            os << "^=";
+            os << "^="; break;
         case AssignmentOperator::AssignShiftLeft:
-            os << "<<=";
+            os << "<<="; break;
         case AssignmentOperator::AssignShiftRight:
-            os << ">>=";
+            os << ">>="; break;
     }
 }
 
