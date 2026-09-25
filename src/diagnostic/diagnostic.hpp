@@ -3,6 +3,7 @@
 #include "antlr4-runtime.h"
 #include <string>
 #include <vector>
+#include <iostream>
 
 namespace diagnostic {
 
@@ -16,6 +17,8 @@ struct Diagnostic {
     ast::SourceLocation location;
     std::string message;
 };
+
+void dumpDiagnostic(const Diagnostic& diag, std::ostream& os);
 
 class DiagnosticBase {
 public:

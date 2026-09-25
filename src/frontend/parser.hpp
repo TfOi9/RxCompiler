@@ -3,6 +3,7 @@
 #include "../diagnostic/diagnostic.hpp"
 #include <string_view>
 #include <memory>
+#include <iostream>
 
 namespace frontend {
 
@@ -13,5 +14,6 @@ struct ParseResult {
 };
 
 ParseResult parseToAst(std::string_view source);
+void dump(const ParseResult& result, std::ostream& os);
 
 } // namespace frontend

@@ -1,5 +1,6 @@
 #include "parser.hpp"
 #include "../ast/builder.hpp"
+#include "../ast/dump.hpp"
 #include "../generated/RxLexer.h"
 #include "../generated/RxParser.h"
 
@@ -39,6 +40,18 @@ ParseResult parseToAst(std::string_view source) {
         std::vector<diagnostic::Diagnostic>(),
         true
     };
+}
+
+void dump(const ParseResult &result, std::ostream& os) {
+    if (result.success) {
+        os << "Parse Successed.\n";
+        if (result.crate) ast::dumpAst(*result.crate, os);
+    } else {
+        os << "Parse Failed.\n";
+        for (const auto& diag: result.diagnostics) {
+            diagnostic::dumpDiagnostic(diag, os);
+        }
+    }
 }
 
 } // namespace frontend

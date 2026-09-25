@@ -2,6 +2,15 @@
 
 namespace diagnostic {
 
+void dumpDiagnostic(const Diagnostic &diag, std::ostream &os) {
+    if (diag.severity == Severity::Warning) {
+        os << "Warning: ";
+    } else {
+        os << "Error: ";
+    }
+    os << "line: " << diag.location.line << ", column: " << diag.location.column << ", message: " << diag.message << '\n';
+}
+
 void DiagnosticCollector::add_entry(Severity severity, ast::SourceLocation location, const std::string& message) {
     diagnostics_.push_back(
         Diagnostic {
