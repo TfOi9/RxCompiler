@@ -5,10 +5,30 @@
 
 namespace ast {
 
+void dumpAst(const Crate& root, std::ostream& os) {
+    PRINT(os, 0) << "Crate\n";
+    for (const auto& item: root.items) {
+        if (item) dumpItem(item, os, 1);
+    }
+}
+
 void printIndent(int depth, std::ostream& os) {
     for (int i = 0; i < depth; i++) {
         os << '\t';
     }
+}
+
+void dumpItem(const AstPtr<Item> &ast, std::ostream &os, int depth) {
+    if (const auto* func = dynamic_cast<FunctionItem*>(ast.get())) {
+        dumpFunction(*func, os, depth);
+    } else if (const auto* stru = dynamic_cast<StructItem*>(ast.get())) {
+        dumpStruct(*stru, os, depth);
+    } else if (const auto* cons = dynamic_cast<ConstantItem*>(ast.get())) {
+        dumpConstant(*cons, os, depth);
+    } else if (const auto* impl = dynamic_cast<ImplItem*>(ast.get())) {
+        dumpImpl(*impl, os, depth);
+    }
+    throw std::logic_error("unexpected item type");
 }
 
 void dumpFunction(const FunctionItem& ast, std::ostream& os, int depth) {
@@ -19,6 +39,67 @@ void dumpFunction(const FunctionItem& ast, std::ostream& os, int depth) {
     if (ast.return_type) dumpTypeRef(ast.return_type, os, depth + 1);
     if (ast.where_clause.has_value()) dumpWhereClause(*ast.where_clause, os, depth + 1);
     dumpBlockExpression(*ast.body, os, depth + 1);
+}
+
+void dumpStruct(const StructItem &ast, std::ostream &os, int depth) {
+    PRINT(os, depth) << "StructItem name=" << ast.name << '\n';
+    for (const auto& attr: ast.attributes) {
+        dumpOuterAttributes(attr, os, depth + 1);
+    }
+    for (const auto& param: ast.generic_params) {
+        dumpGenericParam(param, os, depth + 1);
+    }
+    if (ast.where_clause.has_value()) dumpWhereClause(*ast.where_clause, os, depth + 1);
+    for (const auto& field: ast.struct_fields) {
+        dumpStructField(field, os, depth + 1);
+    }
+}
+
+void dumpConstant(const ConstantItem &ast, std::ostream &os, int depth) {
+    PRINT(os, depth) << "ConstantItem name=" << ast.name << '\n';
+    if (ast.type) dumpTypeRef(ast.type, os, depth + 1);
+    if (ast.value) dumpConstValue(*ast.value, os, depth + 1);
+}
+
+void dumpImpl(const ImplItem &ast, std::ostream &os, int depth) {
+    PRINT(os, depth) << "implItem\n";
+    if (ast.generic_params.size()) dumpGenericParams(ast.generic_params, os, depth + 1);
+    if (ast.type) dumpTypeRef(ast.type, os, depth + 1);
+    if (ast.where_clause) dumpWhereClause(*ast.where_clause, os, depth + 1);
+    if (ast.associated_items.size()) dumpAssociatedItems(ast.associated_items, os, depth + 1);
+}
+
+void dumpOuterAttributes(const OuterAttribute &ast, std::ostream &os, int depth) {
+    PRINT(os, depth) << "OuterAttribute\n";
+    for (const auto& name: ast.derive_names) {
+        switch (name) {
+            case DeriveName::Copy:
+                PRINT(os, depth + 1) << "Copy\n";
+            case DeriveName::Clone:
+                PRINT(os, depth + 1) << "Clone\n";
+            case DeriveName::PartialEq:
+                PRINT(os, depth + 1) << "PartialEq\n";
+            case DeriveName::Eq:
+                PRINT(os, depth + 1) << "Eq\n";
+        }
+    }
+}
+
+void dumpStructField(const StructField &ast, std::ostream &os, int depth) {
+    PRINT(os, depth) << "StructField name=" << ast.name << '\n';
+    if (ast.type) dumpTypeRef(ast.type, os, depth + 1);
+}
+
+void dumpAssociatedItems(const std::vector<AssociatedItem> &ast, std::ostream &os, int depth) {
+    for (const auto& item: ast) {
+        dumpAssociatedItem(item, os, depth);
+    }
+}
+
+void dumpAssociatedItem(const AssociatedItem &ast, std::ostream &os, int depth) {
+    PRINT(os, depth) << "AssociatedItem\n";
+    if (ast.constant.has_value() && *ast.constant) dumpConstant(**ast.constant, os, depth + 1);
+    if (ast.function.has_value() && *ast.function) dumpFunction(**ast.function, os, depth + 1);
 }
 
 void dumpGenericParams(const std::vector<GenericParam> &ast, std::ostream &os, int depth) {

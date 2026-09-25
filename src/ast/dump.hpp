@@ -9,6 +9,8 @@ void dumpAst(const Crate& root, std::ostream& os);
 
 void printIndent(int depth, std::ostream& os);
 
+void dumpItem(const AstPtr<Item>& ast, std::ostream& os, int depth);
+
 void dumpFunction(const FunctionItem& ast, std::ostream& os, int depth);
 void dumpStruct(const StructItem& ast, std::ostream& os, int depth);
 void dumpConstant(const ConstantItem& ast, std::ostream& os, int depth);
@@ -75,6 +77,11 @@ void dumpIntegerLiteralValue(const IntegerLiteralValue& ast, std::ostream& os, i
 void dumpPathInExpression(const PathInExpression& ast, std::ostream& os, int depth);
 void dumpPathExprSegment(const PathExprSegment& ast, std::ostream& os, int depth);
 void dumpMagnitude(const Magnitude& ast, std::ostream& os, int depth);
+
+void dumpOuterAttributes(const OuterAttribute& ast, std::ostream& os, int depth);
+void dumpStructField(const StructField& ast, std::ostream& os, int depth);
+void dumpAssociatedItems(const std::vector<AssociatedItem>& ast, std::ostream& os, int depth);
+void dumpAssociatedItem(const AssociatedItem& ast, std::ostream& os, int depth);
 
 void dumpUnaryOperator(const UnaryOperator& op, std::ostream& os);
 void dumpBinaryOperator(const BinaryOperator& op, std::ostream& os);
