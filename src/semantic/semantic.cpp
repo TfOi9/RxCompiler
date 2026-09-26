@@ -5,14 +5,13 @@
 namespace semantic {
 
 IndexResult index(const ast::Crate& crate) {
-    diagnostic::DiagnosticCollector* collector(new diagnostic::DiagnosticCollector());
-    CrateIndex index = collectDeclarations(&crate, collector);
+    diagnostic::DiagnosticCollector collector;
+    CrateIndex index = collectDeclarations(&crate, &collector);
     return IndexResult {
-        !collector->has_error(),
+        !collector.has_error(),
         std::move(index),
-        collector->diagnostics()
+        collector.diagnostics()
     };
-    delete collector;
 }
 
 void dump(const IndexResult &result, std::ostream& os) {
