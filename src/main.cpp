@@ -1,4 +1,5 @@
 #include "frontend/parser.hpp"
+#include "semantic/semantic.hpp"
 #include <iostream>
 #include <string>
 
@@ -8,6 +9,15 @@ int main() {
         code += line + '\n';
     }
     std::cerr << code << std::endl;
-    frontend::dump(frontend::parseToAst(code), std::cout);
+    auto ast = frontend::parseToAst(code);
+    frontend::dump(ast, std::cout);
+    if (!ast.success) {
+        return 1;
+    }
+    auto index = semantic::index(*ast.crate.get());
+    semantic::dump(index, std::cout);
+    if (!index.success) {
+        return 1;
+    }
     return 0;
 }
