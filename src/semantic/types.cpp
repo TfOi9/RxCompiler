@@ -13,6 +13,10 @@ TyId TypeContext::insert(const TyInfo& node) {
     }
 }
 
+TyId TypeContext::error() {
+    return insert(ErrorTy {});
+}
+
 const TyInfo& TypeContext::get(TyId id) const {
     if (id >= types_.size()) {
         throw std::runtime_error("invalid typeid");
@@ -21,8 +25,7 @@ const TyInfo& TypeContext::get(TyId id) const {
 }
 
 bool TypeContext::equal(const TyInfo& a, const TyInfo& b) const {
-    if (!ids_.count(a) || !ids_.count(b)) return false;
-    return ids_.at(a) == ids_.at(b);
+    return !(a < b) && !(b < a);
 }
 
 } // namespace semantic
