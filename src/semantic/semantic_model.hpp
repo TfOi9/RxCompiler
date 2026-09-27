@@ -39,6 +39,7 @@ struct StructInfo {
 
 class SemanticModel {
     friend class StructResolver;
+    friend class LayoutChecker;
 public:
     StructInfo* findStruct(SymbolId id);
     const FieldInfo* findField(SymbolId owner, const std::string name) const;
@@ -51,6 +52,41 @@ class StructResolver {
 public:
     void declareAll(const CrateIndex& index, SemanticModel& model);
     void resolveAll(SemanticModel& model, TypeResolver& type_resolver, ConstEvaluator& const_evaluator, diagnostic::DiagnosticCollector& diag);
+
+private:
+    std::optional<DeriveSet> getDerives(const ast::StructItem* item);
+};
+
+class LayoutChecker {
+public:
+    LayoutChecker(const TypeContext& types, const SemanticModel& model, const CrateIndex& index, diagnostic::DiagnosticCollector& diag):
+        types_(types), model_(model), index_(index), diag_(diag) {}
+    bool checkAll();
+
+private:
+    struct LayoutEdge {
+        SymbolId from;
+        SymbolId to;
+        const ast::StructField* field;
+    };
+    enum class VisitState {
+        Unknown,
+        Visiting,
+        Visited
+    };
+
+    void collectDependencies();
+    void collectInlineTargets(SymbolId owner, TyId type, const ast::StructField* field);
+    void visit(SymbolId id);
+
+    const TypeContext& types_;
+    const SemanticModel& model_;
+    const CrateIndex& index_;
+    diagnostic::DiagnosticCollector& diag_;
+    bool check_passed_;
+
+    std::unordered_map<SymbolId, VisitState> state_;
+    std::unordered_map<SymbolId, std::vector<LayoutEdge>> edges_;
 };
 
 } // namespace semantic

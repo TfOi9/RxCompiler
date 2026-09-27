@@ -3,6 +3,8 @@
 #include "diagnostic/diagnostic.hpp"
 #include "semantic/symbol.hpp"
 #include "semantic/type_resolver.hpp"
+#include "semantic/types.hpp"
+#include <optional>
 
 namespace semantic {
 
@@ -27,10 +29,16 @@ void StructResolver::resolveAll(SemanticModel& model, TypeResolver& type_resolve
         SymbolId id = it.first;
         StructInfo& info = it.second;
         const auto* decl = info.declaration;
+        auto derives = getDerives(decl);
+        if (!derives.has_value()) {
+            diag.add_entry(diagnostic::Severity::Error, decl->span.begin, "duplicated attribute entries");
+        } else {
+            info.derives = *derives;
+        }
         for (const auto& field: decl->struct_fields) {
             const auto& type = field.type;
             if (type == nullptr) {
-                diag.add_entry(diagnostic::Severity::Error, type->span.begin, "unexpected empty type");
+                diag.add_entry(diagnostic::Severity::Error, field.span.begin, "unexpected empty type");
                 continue;
             }
             TyId type_id = type_resolver.resolve(*type, ResolveContext {id});
@@ -47,6 +55,81 @@ void StructResolver::resolveAll(SemanticModel& model, TypeResolver& type_resolve
             });
         }
     }
+}
+
+std::optional<DeriveSet> StructResolver::getDerives(const ast::StructItem* item) {
+    DeriveSet set;
+    const auto& attrs = item->attributes;
+    for (const auto& attr: attrs) {
+        const auto& derives = attr.derive_names;
+        for (auto d: derives) {
+            switch (d) {
+                case ast::DeriveName::Copy:
+                    if (set.has_copy) return std::nullopt;
+                    set.has_copy = true;
+                    break;
+                case ast::DeriveName::Clone:
+                    if (set.has_clone) return std::nullopt;
+                    set.has_clone = true;
+                    break;
+                case ast::DeriveName::PartialEq:
+                    if (set.has_partial_eq) return std::nullopt;
+                    set.has_partial_eq = true;
+                    break;
+                case ast::DeriveName::Eq:
+                    if (set.has_eq) return std::nullopt;
+                    set.has_eq = true;
+                    break;
+            }
+        }
+    }
+    return set;
+}
+
+void LayoutChecker::collectDependencies() {
+    for (const auto[id, stru]: model_.structs_) {
+        for (const auto& field: stru.fields) {
+            collectInlineTargets(id, field.type, field.declaration);
+        }
+    }
+}
+
+void LayoutChecker::collectInlineTargets(SymbolId owner, TyId type, const ast::StructField* field) {
+    const TyInfo& info = types_.get(type);
+    if (const auto* stru = std::get_if<StructTy>(&info)) {
+        edges_[owner].push_back(LayoutEdge {
+            owner,
+            stru->def,
+            field
+        });
+        return;
+    }
+    if (const auto* arr = std::get_if<ArrayTy>(&info)) {
+        collectInlineTargets(owner, arr->elem, field);
+        return;
+    }
+}
+
+void LayoutChecker::visit(SymbolId id) {
+    state_[id] = VisitState::Visiting;
+    for (const auto& edge: edges_[id]) {
+        if (state_[edge.to] == VisitState::Visiting) {
+            diag_.add_entry(diagnostic::Severity::Error, edge.field->span.begin, "recursive type has infinite size");
+            check_passed_ = false;
+        } else if (state_[edge.to] == VisitState::Unknown) {
+            visit(edge.to);
+        }
+    }
+    state_[id] = VisitState::Visited;
+}
+
+bool LayoutChecker::checkAll() {
+    check_passed_ = true;
+    state_.clear();
+    for (const auto[id, stru]: model_.structs_) {
+        visit(id);
+    }
+    return check_passed_;
 }
 
 StructInfo* SemanticModel::findStruct(SymbolId id) {
