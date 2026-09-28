@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <variant>
 
 namespace semantic {
 
@@ -37,15 +38,51 @@ struct StructInfo {
     DeriveSet derives;
 };
 
+using ConstantValue = std::variant<bool, int32_t, uint32_t, int64_t, uint64_t>;
+
+struct ConstantInfo {
+    std::string name;
+    const ast::ConstantItem* declaration;
+    TyId type;
+    ConstantValue value;
+};
+
+using ImplId = uint32_t;
+using AssocId = uint32_t;
+
+enum class AssocKind {
+    Function,
+    Constant
+};
+
+struct ImplInfo {
+    ImplId id;
+    const ast::ImplItem* declaration;
+    SymbolId target_struct;
+};
+
+struct AssocInfo {
+    AssocId id;
+    SymbolId owner;
+    AssocKind kind;
+    std::string name;
+    const ast::FunctionItem* func_decl;
+    const ast::ConstantItem* const_decl;
+};
+
 class SemanticModel {
     friend class StructResolver;
     friend class LayoutChecker;
     friend class DeriveChecker;
 public:
+    TypeContext& typeContext() { return types_; }
+    const TypeContext& typeContext() const { return types_; }
+
     StructInfo* findStruct(SymbolId id);
     const FieldInfo* findField(SymbolId owner, const std::string name) const;
 
 private:
+    TypeContext types_;
     std::unordered_map<SymbolId, StructInfo> structs_;
 };
 
@@ -60,8 +97,8 @@ private:
 
 class LayoutChecker {
 public:
-    LayoutChecker(const TypeContext& types, const SemanticModel& model, const CrateIndex& index, diagnostic::DiagnosticCollector& diag):
-        types_(types), model_(model), index_(index), diag_(diag) {}
+    LayoutChecker(const SemanticModel& model, const CrateIndex& index, diagnostic::DiagnosticCollector& diag):
+        model_(model), index_(index), diag_(diag) {}
     bool checkAll();
 
 private:
@@ -80,7 +117,6 @@ private:
     void collectInlineTargets(SymbolId owner, TyId type, const ast::StructField* field);
     void visit(SymbolId id);
 
-    const TypeContext& types_;
     const SemanticModel& model_;
     const CrateIndex& index_;
     diagnostic::DiagnosticCollector& diag_;
@@ -92,14 +128,13 @@ private:
 
 class DeriveChecker {
 public:
-    DeriveChecker(const TypeContext& types, const SemanticModel& model, const CrateIndex& index, diagnostic::DiagnosticCollector& diag):
-        types_(types), model_(model), index_(index), diag_(diag) {}
+    DeriveChecker(const SemanticModel& model, const CrateIndex& index, diagnostic::DiagnosticCollector& diag):
+        model_(model), index_(index), diag_(diag) {}
     bool checkAll();
 
 private:
     void checkDerive(SymbolId sub, DeriveSet derives);
 
-    const TypeContext& types_;
     const SemanticModel& model_;
     const CrateIndex& index_;
     diagnostic::DiagnosticCollector& diag_;

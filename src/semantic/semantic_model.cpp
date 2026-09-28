@@ -95,7 +95,7 @@ void LayoutChecker::collectDependencies() {
 }
 
 void LayoutChecker::collectInlineTargets(SymbolId owner, TyId type, const ast::StructField* field) {
-    const TyInfo& info = types_.get(type);
+    const TyInfo& info = model_.typeContext().get(type);
     if (const auto* stru = std::get_if<StructTy>(&info)) {
         edges_[owner].push_back(LayoutEdge {
             owner,
@@ -157,7 +157,7 @@ void DeriveChecker::checkDerive(SymbolId sub, DeriveSet derives) {
     }
     for (const auto& subs: sub_info.fields) {
         const auto& type_id = subs.type;
-        const auto& type = types_.get(type_id);
+        const auto& type = model_.typeContext().get(type_id);
         if (const auto* stru = std::get_if<StructTy>(&type)) {
             checkDerive(stru->def, derives);
         }
