@@ -9,6 +9,32 @@
 
 namespace semantic {
 
+bool DeriveSet::has(DeriveKind kind) const {
+    switch (kind) {
+        case DeriveKind::Copy:
+            return has_copy;
+        case DeriveKind::Clone:
+            return has_clone;
+        case DeriveKind::PartialEq:
+            return has_partial_eq;
+        case DeriveKind::Eq:
+            return has_eq;
+    }
+}
+
+void DeriveSet::set(DeriveKind kind, bool value) {
+    switch (kind) {
+        case DeriveKind::Copy:
+            has_copy = value; break;
+        case DeriveKind::Clone:
+            has_clone = value; break;
+        case DeriveKind::PartialEq:
+            has_partial_eq = value; break;
+        case DeriveKind::Eq:
+            has_eq = value; break;
+    }
+}
+
 void StructResolver::declareAll(const CrateIndex& index, SemanticModel& model) {
     for (auto it: index.item_symbols) {
         const auto* stru = dynamic_cast<const ast::StructItem*>(it.first);
@@ -34,7 +60,7 @@ void StructResolver::resolveAll(SemanticModel& model, TypeResolver& type_resolve
         if (!derives.has_value()) {
             diag.add_entry(diagnostic::Severity::Error, decl->span.begin, "duplicated attribute entries");
         } else {
-            info.derives = *derives;
+            info.derives.requested = *derives;
         }
         for (const auto& field: decl->struct_fields) {
             const auto& type = field.type;
@@ -139,55 +165,131 @@ StructInfo* SemanticModel::findStruct(SymbolId id) {
     return structs_.count(id) ? &structs_[id] : nullptr;
 }
 
-void DeriveChecker::checkDerive(SymbolId sub, DeriveSet derives) {
-    const auto& sub_info = model_.structs_.at(sub);
-    const auto& sub_derives = sub_info.derives;
-    if (derives.has_copy && !sub_derives.has_copy) {
-        check_passed_ = false;
-        return;
+std::string DeriveChecker::kindName(DeriveKind trait) {
+    switch (trait) {
+        case DeriveKind::Copy: return "Copy";
+        case DeriveKind::Clone: return "Clone";
+        case DeriveKind::PartialEq: return "PartialEq";
+        case DeriveKind::Eq: return "Eq";
     }
-    if (derives.has_clone && !sub_derives.has_clone) {
-        check_passed_ = false;
-        return;
+}
+
+bool DeriveChecker::supportWith(TyId type, DeriveKind trait) const {
+    const auto& info = model_.types_.get(type);
+    if (std::holds_alternative<ErrorTy>(info)) {
+        return true;
     }
-    if (derives.has_partial_eq && !sub_derives.has_partial_eq) {
-        check_passed_ = false;
-        return;
+    if (std::holds_alternative<UnitTy>(info)) {
+        return true;
     }
-    if (derives.has_eq && !sub_derives.has_eq) {
-        check_passed_ = false;
-        return;
+    if (std::holds_alternative<PrimaryTy>(info)) {
+        return true;
     }
-    for (const auto& subs: sub_info.fields) {
-        const auto& type_id = subs.type;
-        const auto& type = model_.typeContext().get(type_id);
-        if (const auto* stru = std::get_if<StructTy>(&type)) {
-            checkDerive(stru->def, derives);
+    if (std::holds_alternative<NeverTy>(info)) {
+        return true;
+    }
+    if (const auto* ref = std::get_if<RefTy>(&info)) {
+        if (trait == DeriveKind::Copy || trait == DeriveKind::Clone) {
+            return !ref->is_mut;
+        } else {
+            return supportWith(ref->target, trait);
         }
     }
+    if (const auto* arr = std::get_if<ArrayTy>(&info)) {
+        return supportWith(arr->elem, trait);
+    }
+    if (const auto* box = std::get_if<BoxTy>(&info)) {
+        if (trait == DeriveKind::Copy) {
+            return false;
+        } else {
+            return supportWith(box->elem, trait);
+        }
+    }
+    if (const auto* vec = std::get_if<VecTy>(&info)) {
+        if (trait == DeriveKind::Copy) {
+            return false;
+        } else {
+            return supportWith(vec->elem, trait);
+        }
+    }
+    if (const auto* stru = std::get_if<StructTy>(&info)) {
+        auto it = model_.structs_.find(stru->def);
+        return it != model_.structs_.end() && it->second.derives.valid.has(trait);
+    }
+    return false;
+}
+
+bool DeriveChecker::structRequirementsHold(const StructInfo& info, DeriveKind trait) const {
+    if (trait == DeriveKind::Copy && !info.derives.requested.has(DeriveKind::Clone)) {
+        return false;
+    }
+    if (trait == DeriveKind::Eq && !info.derives.requested.has(DeriveKind::PartialEq)) {
+        return false;
+    }
+    for (const auto& field: info.fields) {
+        if (!supportWith(field.type, trait)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+void DeriveChecker::computeValid() {
+    for (auto& [id, info]: model_.structs_) {
+        info.derives.valid = info.derives.requested;
+    }
+    bool changed = true;
+    while (changed) {
+        changed = false;
+        for (auto& [id, info]: model_.structs_) {
+            for (DeriveKind k: {DeriveKind::Copy, DeriveKind::Clone, DeriveKind::PartialEq, DeriveKind::Eq}) {
+                if (info.derives.valid.has(k) && !structRequirementsHold(info, k)) {
+                    info.derives.valid.set(k, false);
+                    changed = true;
+                }
+            }
+        }
+    }
+    computed_ = true;
+}
+
+bool DeriveChecker::reportStructErrors() {
+    bool ok = true;
+    for (auto& [id, info]: model_.structs_) {
+        for (DeriveKind k: {DeriveKind::Copy, DeriveKind::Clone, DeriveKind::PartialEq, DeriveKind::Eq}) {
+            if (info.derives.valid.has(k) || !info.derives.requested.has(k)) continue;
+            if (k == DeriveKind::Copy && !info.derives.requested.has(DeriveKind::Clone)) {
+                diag_.add_entry(diagnostic::Severity::Error, info.declaration->span.begin, "missing Clone trait for struct " + info.name);
+            } else if (k == DeriveKind::Eq && !info.derives.requested.has(DeriveKind::PartialEq)) {
+                diag_.add_entry(diagnostic::Severity::Error, info.declaration->span.begin, "missing PartialEq trait for struct " + info.name);
+            } else {
+                for (const auto& field: info.fields) {
+                    if (!supportWith(field.type, k)) {
+                        diag_.add_entry(diagnostic::Severity::Error, field.declaration->span.begin, "field " + field.name + " of struct " + info.name + " is missing trait " + kindName(k));
+                        break;
+                    }
+                }
+            }
+            ok = false;
+        }
+    }
+    reported_ = true;
+    return ok;
 }
 
 bool DeriveChecker::checkAll() {
-    check_passed_ = true;
-    for (const auto[id, stru]: model_.structs_) {
-        checkDerive(id, stru.derives);
-    }
-    return check_passed_;
+    computeValid();
+    return reportStructErrors();
 }
 
-const FieldInfo* SemanticModel::findField(SymbolId owner, const std::string name) const {
-    if (!structs_.count(owner)) {
-        return nullptr;
+bool DeriveChecker::supports(TyId type, DeriveKind trait) {
+    if (!computed_) {
+        computeValid();
     }
-    const auto& stru = structs_.at(owner);
-    if (!stru.field_name.count(name)) {
-        return nullptr;
+    if (!reported_) {
+        reportStructErrors();
     }
-    size_t field_id = stru.field_name.at(name);
-    if (field_id >= stru.fields.size()) {
-        return nullptr;
-    }
-    return &stru.fields[field_id];
+    return supportWith(type, trait);
 }
 
 std::optional<SymbolId> ImplResolver::resolveTarget(const ast::ImplItem& impl, TypeResolver& type_resolver, SemanticModel& model, diagnostic::DiagnosticCollector& diag) {

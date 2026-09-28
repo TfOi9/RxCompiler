@@ -1,7 +1,7 @@
 #pragma once
 #include "../ast/ast.hpp"
 #include "../diagnostic/diagnostic.hpp"
-#include "semantic/symbol.hpp"
+#include "symbol.hpp"
 #include "type_resolver.hpp"
 #include "const_evaluator.hpp"
 #include "types.hpp"
@@ -28,6 +28,14 @@ struct DeriveSet {
     bool has_clone = false;
     bool has_partial_eq = false;
     bool has_eq = false;
+
+    bool has(DeriveKind kind) const;
+    void set(DeriveKind kind, bool value);
+};
+
+struct DeriveInfo {
+    DeriveSet requested;
+    DeriveSet valid;
 };
 
 struct StructInfo {
@@ -35,7 +43,7 @@ struct StructInfo {
     const ast::StructItem* declaration;
     std::vector<FieldInfo> fields;
     std::unordered_map<std::string, size_t> field_name;
-    DeriveSet derives;
+    DeriveInfo derives;
 };
 
 using ConstantValue = std::variant<bool, int32_t, uint32_t, int64_t, uint64_t>;
@@ -135,17 +143,23 @@ private:
 
 class DeriveChecker {
 public:
-    DeriveChecker(const SemanticModel& model, const CrateIndex& index, diagnostic::DiagnosticCollector& diag):
-        model_(model), index_(index), diag_(diag) {}
+    DeriveChecker(SemanticModel& model, diagnostic::DiagnosticCollector& diag):
+        model_(model), diag_(diag) {}
     bool checkAll();
+    bool supports(TyId type, DeriveKind trait);
 
 private:
-    void checkDerive(SymbolId sub, DeriveSet derives);
-
-    const SemanticModel& model_;
-    const CrateIndex& index_;
+    SemanticModel& model_;
     diagnostic::DiagnosticCollector& diag_;
-    bool check_passed_;
+    bool computed_ = false;
+    bool reported_ = false;
+
+    static std::string kindName(DeriveKind trait);
+    bool supportWith(TyId type, DeriveKind trait) const;
+    bool structRequirementsHold(const StructInfo& info, DeriveKind trait) const;
+
+    void computeValid();
+    bool reportStructErrors();
 };
 
 class ImplResolver {
