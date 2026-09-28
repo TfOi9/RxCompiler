@@ -136,6 +136,42 @@ StructInfo* SemanticModel::findStruct(SymbolId id) {
     return structs_.count(id) ? &structs_[id] : nullptr;
 }
 
+void DeriveChecker::checkDerive(SymbolId sub, DeriveSet derives) {
+    const auto& sub_info = model_.structs_.at(sub);
+    const auto& sub_derives = sub_info.derives;
+    if (derives.has_copy && !sub_derives.has_copy) {
+        check_passed_ = false;
+        return;
+    }
+    if (derives.has_clone && !sub_derives.has_clone) {
+        check_passed_ = false;
+        return;
+    }
+    if (derives.has_partial_eq && !sub_derives.has_partial_eq) {
+        check_passed_ = false;
+        return;
+    }
+    if (derives.has_eq && !sub_derives.has_eq) {
+        check_passed_ = false;
+        return;
+    }
+    for (const auto& subs: sub_info.fields) {
+        const auto& type_id = subs.type;
+        const auto& type = types_.get(type_id);
+        if (const auto* stru = std::get_if<StructTy>(&type)) {
+            checkDerive(stru->def, derives);
+        }
+    }
+}
+
+bool DeriveChecker::checkAll() {
+    check_passed_ = true;
+    for (const auto[id, stru]: model_.structs_) {
+        checkDerive(id, stru.derives);
+    }
+    return check_passed_;
+}
+
 const FieldInfo* SemanticModel::findField(SymbolId owner, const std::string name) const {
     if (!structs_.count(owner)) {
         return nullptr;

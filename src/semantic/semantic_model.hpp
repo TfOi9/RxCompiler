@@ -40,6 +40,7 @@ struct StructInfo {
 class SemanticModel {
     friend class StructResolver;
     friend class LayoutChecker;
+    friend class DeriveChecker;
 public:
     StructInfo* findStruct(SymbolId id);
     const FieldInfo* findField(SymbolId owner, const std::string name) const;
@@ -87,6 +88,22 @@ private:
 
     std::unordered_map<SymbolId, VisitState> state_;
     std::unordered_map<SymbolId, std::vector<LayoutEdge>> edges_;
+};
+
+class DeriveChecker {
+public:
+    DeriveChecker(const TypeContext& types, const SemanticModel& model, const CrateIndex& index, diagnostic::DiagnosticCollector& diag):
+        types_(types), model_(model), index_(index), diag_(diag) {}
+    bool checkAll();
+
+private:
+    void checkDerive(SymbolId sub, DeriveSet derives);
+
+    const TypeContext& types_;
+    const SemanticModel& model_;
+    const CrateIndex& index_;
+    diagnostic::DiagnosticCollector& diag_;
+    bool check_passed_;
 };
 
 } // namespace semantic
