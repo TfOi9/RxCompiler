@@ -19,6 +19,13 @@ class SemanticModel;
 class TypeResolver;
 class ResolveContext;
 
+struct ConstantInfo {
+    std::string name;
+    const ast::ConstantItem* declaration;
+    TyId type;
+    ConstantValue value;
+};
+
 struct ConstDef {
     const ast::ConstantItem* declaration;
     std::optional<SymbolId> owner;
