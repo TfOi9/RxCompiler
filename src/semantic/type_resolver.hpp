@@ -7,20 +7,22 @@
 
 namespace semantic {
 
+class ConstEvaluator;
+
 struct ResolveContext {
     std::optional<SymbolId> self_type;
 };
 
 class TypeResolver {
 public:
-    TypeResolver(TypeContext& types, const CrateIndex& index, diagnostic::DiagnosticCollector& diag):types_(types), index_(index), diag_(diag) {}
+    TypeResolver(TypeContext& types, const CrateIndex& index, ConstEvaluator& eval, diagnostic::DiagnosticCollector& diag):types_(types), index_(index), eval_(eval), diag_(diag) {}
     TyId resolve(const ast::TypeRef& ty, ResolveContext ctx);
 
 private:
     TypeContext& types_;
     const CrateIndex& index_;
     diagnostic::DiagnosticCollector& diag_;
-    // ConstEvaluator eval_;
+    ConstEvaluator& eval_;
 
     TyId resolveTypePath(const ast::TypePath& path, ResolveContext ctx);
     TyId resolveStructType(const Symbol& symbol, SymbolId symbol_id, const ast::GenericArgs* args, const ast::SourceSpan& span);

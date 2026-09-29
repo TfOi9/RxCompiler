@@ -3,7 +3,9 @@
 #include "diagnostic/diagnostic.hpp"
 #include "semantic/symbol.hpp"
 #include "semantic/types.hpp"
+#include "semantic/const_evaluator.hpp"
 #include <cstdint>
+#include <limits>
 
 namespace semantic {
 
@@ -22,7 +24,20 @@ TyId TypeResolver::resolve(const ast::TypeRef& ty, ResolveContext ctx) {
     } else if (const auto* arr = dynamic_cast<const ast::ArrayType*>(&ty)) {
         TyId inner = resolve(*arr->type, ctx);
         if (inner == types_.error()) return inner;
-        uint32_t len = 1; /* eval_.evaluate(arr->length) */
+        if (!arr->length) {
+            diag_.add_entry(diagnostic::Severity::Error, arr->span.begin, "array type has no length");
+            return types_.error();
+        }
+        const TyId usize_type = types_.insert(PrimaryTy {PrimaryTyKind::USize});
+        const auto evaluated_len = eval_.evaluate<uint64_t>(arr->length.get(), usize_type, ctx);
+        if (!evaluated_len.has_value()) {
+            return types_.error();
+        }
+        if (*evaluated_len > std::numeric_limits<uint32_t>::max()) {
+            diag_.add_entry(diagnostic::Severity::Error, arr->length->span.begin, "array length exceeds usize range");
+            return types_.error();
+        }
+        const uint32_t len = static_cast<uint32_t>(*evaluated_len);
         return types_.insert(ArrayTy {
             inner,
             len

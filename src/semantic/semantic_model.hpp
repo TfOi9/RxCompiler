@@ -3,7 +3,6 @@
 #include "../diagnostic/diagnostic.hpp"
 #include "symbol.hpp"
 #include "type_resolver.hpp"
-#include "const_evaluator.hpp"
 #include "types.hpp"
 #include <string>
 #include <vector>
@@ -11,6 +10,8 @@
 #include <variant>
 
 namespace semantic {
+
+class ConstEvaluator;
 
 struct FieldInfo {
     std::string name;
@@ -83,6 +84,7 @@ class SemanticModel {
     friend class LayoutChecker;
     friend class DeriveChecker;
     friend class ImplResolver;
+    friend class ConstEvaluator;
 public:
     TypeContext& typeContext() { return types_; }
     const TypeContext& typeContext() const { return types_; }
@@ -96,7 +98,7 @@ private:
     std::vector<ImplInfo> impls_;
     std::vector<AssocInfo> assocs_;
     std::unordered_map<SymbolId, std::vector<ImplId>> impl_by_struct_;
-    std::unordered_map<SymbolId, std::unordered_map<std::string, AssocId>> assoc_by_struct;
+    std::unordered_map<SymbolId, std::unordered_map<std::string, AssocId>> assoc_by_struct_;
     std::unordered_map<const ast::ImplItem*, ImplId> impl_ids_;
     std::unordered_map<const ast::Item*, AssocId> assoc_ids_;
 };

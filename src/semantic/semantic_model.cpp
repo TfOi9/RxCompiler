@@ -311,7 +311,7 @@ std::optional<SymbolId> ImplResolver::resolveTarget(const ast::ImplItem& impl, T
 }
 
 bool ImplResolver::registerAssoc(AssocInfo info, SemanticModel& model, diagnostic::DiagnosticCollector& diag) {
-    auto& members = model.assoc_by_struct[info.owner];
+    auto& members = model.assoc_by_struct_[info.owner];
     if (members.count(info.name)) {
         const auto* decl = info.const_decl ? static_cast<const ast::Item*>(info.const_decl) : static_cast<const ast::Item*>(info.func_decl);
         diag.add_entry(diagnostic::Severity::Error, decl->span.begin, "duplicated associated item " + info.name);
@@ -320,7 +320,7 @@ bool ImplResolver::registerAssoc(AssocInfo info, SemanticModel& model, diagnosti
     AssocId id = model.assocs_.size();
     info.id = id;
     model.assocs_.push_back(info);
-    model.assoc_by_struct[info.owner][info.name] = id;
+    model.assoc_by_struct_[info.owner][info.name] = id;
     if (info.const_decl) model.assoc_ids_[info.const_decl] = id;
     else model.assoc_ids_[info.func_decl] = id;
     return true;
