@@ -4,6 +4,7 @@
 #include "types.hpp"
 #include "struct_resolver.hpp"
 #include "impl_resolver.hpp"
+#include "function_resolver.hpp"
 #include <string>
 #include <vector>
 #include <unordered_map>
@@ -15,6 +16,7 @@ class ConstEvaluator;
 using ConstantValue = std::variant<bool, int32_t, uint32_t, int64_t, uint64_t>;
 
 class SemanticModel {
+    friend class FunctionResolver;
     friend class StructResolver;
     friend class LayoutChecker;
     friend class DeriveChecker;
@@ -29,9 +31,13 @@ public:
 
 private:
     TypeContext types_;
+    std::vector<FunctionInfo> functions_;
     std::unordered_map<SymbolId, StructInfo> structs_;
     std::vector<ImplInfo> impls_;
     std::vector<AssocInfo> assocs_;
+    std::unordered_map<const ast::FunctionItem*, FunctionId> function_ids_;
+    std::unordered_map<SymbolId, FunctionId> top_level_function_ids_;
+    std::unordered_map<AssocId, FunctionId> associated_function_ids_;
     std::unordered_map<SymbolId, std::vector<ImplId>> impl_by_struct_;
     std::unordered_map<SymbolId, std::unordered_map<std::string, AssocId>> assoc_by_struct_;
     std::unordered_map<const ast::ImplItem*, ImplId> impl_ids_;

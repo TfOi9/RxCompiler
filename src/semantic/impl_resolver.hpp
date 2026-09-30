@@ -34,8 +34,7 @@ struct AssocInfo {
 class ImplResolver {
 public:
     bool collectHeaders(const CrateIndex& index, TypeResolver& type_resolver, SemanticModel& model, diagnostic::DiagnosticCollector& diag);
-    bool resolveSignatures(SemanticModel& model, TypeResolver& type_resolver, diagnostic::DiagnosticCollector& diag);
-
+    
 private:
     std::optional<SymbolId> resolveTarget(const ast::ImplItem& impl, TypeResolver& type_resolver, SemanticModel& model, diagnostic::DiagnosticCollector& diag);
     bool registerAssoc(AssocInfo info, SemanticModel& model, diagnostic::DiagnosticCollector& diag);
