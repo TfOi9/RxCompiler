@@ -45,6 +45,9 @@ SemanticResult analyze(const ast::Crate& crate) {
     if (!function_resolver.collectTopLevel(crate, index, model, collector)) {
         return finish();
     }
+    if (!function_resolver.checkEntryPoint(crate, index, model, collector)) {
+        return finish();
+    }
 
     const_evaluator.resolveTypes(type_resolver);
     if (!const_evaluator.evaluateAll()) {
@@ -52,6 +55,11 @@ SemanticResult analyze(const ast::Crate& crate) {
     }
 
     struct_resolver.resolveAll(model, type_resolver, const_evaluator, collector);
+    if (collector.has_error()) {
+        return finish();
+    }
+
+    function_resolver.resolveSignatures(crate, index, model, type_resolver, collector);
     if (collector.has_error()) {
         return finish();
     }

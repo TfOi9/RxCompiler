@@ -10,6 +10,7 @@ namespace semantic {
 
 bool FunctionResolver::collectTopLevel(const ast::Crate& crate, const CrateIndex& index, SemanticModel& model, diagnostic::DiagnosticCollector& diag) {
     bool ok = true;
+    addBuiltinFunctions(index, model);
     for (const auto [name, id]: index.value_names) {
         const auto& item = index.symbols[id];
         if (item.kind != SymbolKind::Function) {
@@ -70,6 +71,9 @@ bool FunctionResolver::collectTopLevel(const ast::Crate& crate, const CrateIndex
 bool FunctionResolver::resolveSignatures(const ast::Crate& crate, const CrateIndex& index, SemanticModel& model, TypeResolver& type_resolver, diagnostic::DiagnosticCollector& diag) {
     bool ok = true;
     for (auto& func: model.functions_) {
+        if (func.kind == FunctionKind::Builtin) {
+            continue;
+        }
         const auto* decl = func.declaration;
         std::vector<ParameterInfo> params;
         std::unordered_set<std::string> param_names;
@@ -149,8 +153,80 @@ bool FunctionResolver::resolveSignatures(const ast::Crate& crate, const CrateInd
             }
         }
         func.signature_valid = true;
+        if (func.name == "main" && func.kind == FunctionKind::TopLevel) {
+            if (func.signature.return_type != model.typeContext().insert(TyInfo {UnitTy {}})) {
+                diag.add_entry(diagnostic::Severity::Error, func.declaration->span.begin, "function main must return unit type");
+                ok = false;
+            }
+        }
     }
     return ok;
+}
+
+bool FunctionResolver::checkEntryPoint(const ast::Crate& crate, const CrateIndex& index, SemanticModel& model, diagnostic::DiagnosticCollector& diag) {
+    if (!index.value_names.count("main")) {
+        diag.add_entry(diagnostic::Severity::Error, crate.span.begin, "missing main function");
+        return false;
+    }
+    auto id = index.value_names.at("main");
+    const auto& sym = index.symbols[id];
+    if (!sym.declaration) {
+        diag.add_entry(diagnostic::Severity::Error, crate.span.begin, "unexpected empty main function");
+        return false;
+    }
+    const auto* decl = sym.declaration;
+    const auto* func = dynamic_cast<const ast::FunctionItem*>(decl);
+    if (!func) {
+        diag.add_entry(diagnostic::Severity::Error, decl->span.begin, "main item not a function");
+        return false;
+    }
+    if (func->generic_params.size()) {
+        diag.add_entry(diagnostic::Severity::Error, func->generic_params.front().span.begin, "main function cannot have generic params");
+        return false;
+    }
+    if (func->self_param.has_value()) {
+        diag.add_entry(diagnostic::Severity::Error, func->self_param->span.begin, "main function cannot have self param");
+        return false;
+    }
+    if (func->function_params.size()) {
+        diag.add_entry(diagnostic::Severity::Error, func->function_params.front().span.begin, "main function cannot have params");
+        return false;
+    }
+    return true;
+}
+
+void FunctionResolver::addBuiltinFunctions(const CrateIndex& index, SemanticModel& model) {
+    std::vector<FunctionInfo> funcs = builtin_functions;
+    funcs[0].signature = FunctionSignature {
+        std::vector<ParameterInfo>(),
+        model.typeContext().insert(TyInfo {PrimaryTy {PrimaryTyKind::I32}})
+    };
+    funcs[0].signature_valid = true;
+    funcs[1].signature = FunctionSignature {
+        std::vector<ParameterInfo> {
+            ParameterInfo {
+                "x",
+                model.typeContext().insert(TyInfo {PrimaryTy {PrimaryTyKind::I32}})
+            }
+        },
+        model.typeContext().insert(TyInfo {UnitTy {}})
+    };
+    funcs[1].signature_valid = true;
+    funcs[2].signature = FunctionSignature {
+        std::vector<ParameterInfo> {
+            ParameterInfo {
+                "x",
+                model.typeContext().insert(TyInfo {PrimaryTy {PrimaryTyKind::I32}})
+            }
+        },
+        model.typeContext().insert(TyInfo {UnitTy {}})
+    };
+    funcs[2].signature_valid = true;
+    for (auto& func: funcs) {
+        func.top_level_symbol = index.value_names.at(func.name);
+        model.functions_.push_back(func);
+        model.top_level_function_ids_[*func.top_level_symbol] = func.id;
+    }
 }
 
 } // namespace semantic

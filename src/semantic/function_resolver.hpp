@@ -55,10 +55,44 @@ struct FunctionInfo {
     bool signature_valid = false;
 };
 
+const std::vector<FunctionInfo> builtin_functions = {
+    FunctionInfo {
+        0,
+        "get_i32",
+        FunctionKind::Builtin,
+        nullptr,
+        11,
+        std::nullopt,
+        std::nullopt,
+    },
+    FunctionInfo {
+        1,
+        "print_i32",
+        FunctionKind::Builtin,
+        nullptr,
+        12,
+        std::nullopt,
+        std::nullopt
+    },
+    FunctionInfo {
+        2,
+        "println_i32",
+        FunctionKind::Builtin,
+        nullptr,
+        13,
+        std::nullopt,
+        std::nullopt
+    }
+};
+
 class FunctionResolver {
 public:
     bool collectTopLevel(const ast::Crate& crate, const CrateIndex& index, SemanticModel& model, diagnostic::DiagnosticCollector& diag);
     bool resolveSignatures(const ast::Crate& crate, const CrateIndex& index, SemanticModel& model, TypeResolver& type_resolver, diagnostic::DiagnosticCollector& diag);
+    bool checkEntryPoint(const ast::Crate& crate, const CrateIndex& index, SemanticModel& model, diagnostic::DiagnosticCollector& diag);
+
+private:
+    void addBuiltinFunctions(const CrateIndex& index, SemanticModel& model);
 };
 
 } // namespace semantic
