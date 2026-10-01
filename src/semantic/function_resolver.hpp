@@ -4,8 +4,7 @@
 #include "semantic/type_resolver.hpp"
 #include "symbol.hpp"
 #include "impl_resolver.hpp"
-#include "types.hpp"
-#include <cstdint>
+#include "semantic_ids.hpp"
 #include <string>
 #include <vector>
 #include <optional>
@@ -13,8 +12,6 @@
 namespace semantic {
 
 class SemanticModel;
-
-using FunctionId = uint32_t;
 
 enum class FunctionKind {
     TopLevel,

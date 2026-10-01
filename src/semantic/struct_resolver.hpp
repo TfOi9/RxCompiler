@@ -1,7 +1,11 @@
 #pragma once
-#include "types.hpp"
+#include "ast/ast.hpp"
+#include "semantic_ids.hpp"
+#include "diagnostic/diagnostic.hpp"
+#include "symbol.hpp"
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 namespace semantic {
 

@@ -5,7 +5,7 @@
 #include "type_resolver.hpp"
 #include "symbol.hpp"
 #include "symbol.hpp"
-#include "types.hpp"
+#include "semantic_ids.hpp"
 #include <optional>
 #include <cstdint>
 #include <unordered_map>
@@ -13,7 +13,8 @@
 
 namespace semantic {
 
-using ConstId = uint32_t;
+
+using ConstantValue = std::variant<bool, int32_t, uint32_t, int64_t, uint64_t>;
 
 class SemanticModel;
 class TypeResolver;

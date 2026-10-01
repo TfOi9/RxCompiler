@@ -5,6 +5,7 @@
 #include "struct_resolver.hpp"
 #include "impl_resolver.hpp"
 #include "function_resolver.hpp"
+#include "body_checker.hpp"
 #include <string>
 #include <vector>
 #include <unordered_map>
@@ -13,7 +14,6 @@
 namespace semantic {
 
 class ConstEvaluator;
-using ConstantValue = std::variant<bool, int32_t, uint32_t, int64_t, uint64_t>;
 
 class SemanticModel {
     friend class FunctionResolver;
@@ -42,6 +42,7 @@ private:
     std::unordered_map<SymbolId, std::unordered_map<std::string, AssocId>> assoc_by_struct_;
     std::unordered_map<const ast::ImplItem*, ImplId> impl_ids_;
     std::unordered_map<const ast::Item*, AssocId> assoc_ids_;
+    std::unordered_map<FunctionId, FunctionBodyInfo> function_bodies_;
 };
 
 } // namespace semantic

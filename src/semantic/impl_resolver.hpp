@@ -1,15 +1,12 @@
 #pragma once
 #include "semantic/type_resolver.hpp"
 #include "symbol.hpp"
-#include <cstdint>
+#include "semantic_ids.hpp"
 
 namespace semantic {
 
 class SemanticModel;
 class TypeResolver;
-
-using ImplId = uint32_t;
-using AssocId = uint32_t;
 
 enum class AssocKind {
     Function,

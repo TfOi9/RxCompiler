@@ -1,13 +1,11 @@
 #pragma once
-#include "symbol.hpp"
+#include "semantic_ids.hpp"
 #include <cstdint>
 #include <variant>
 #include <vector>
 #include <map>
 
 namespace semantic {
-
-using TyId = uint32_t;
 
 enum class PrimaryTyKind {
     Bool, I32, U32, ISize, USize

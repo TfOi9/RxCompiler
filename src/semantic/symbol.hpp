@@ -1,15 +1,13 @@
 #pragma once
 #include "../ast/ast.hpp"
 #include "../diagnostic/diagnostic.hpp"
-#include <cstdint>
+#include "semantic_ids.hpp"
 #include <string>
 #include <vector>
 #include <unordered_map>
 #include <iostream>
 
 namespace semantic {
-
-using SymbolId = uint32_t;
 
 enum class SymbolKind {
     Struct,

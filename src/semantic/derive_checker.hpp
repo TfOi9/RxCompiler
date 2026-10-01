@@ -1,6 +1,6 @@
 #pragma once
 #include "diagnostic/diagnostic.hpp"
-#include "types.hpp"
+#include "semantic_ids.hpp"
 
 namespace semantic {
 

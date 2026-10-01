@@ -1,6 +1,5 @@
 #include "semantic_model.hpp"
 #include "struct_resolver.hpp"
-#include "semantic/symbol.hpp"
 
 namespace semantic {
 

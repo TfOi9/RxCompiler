@@ -6,7 +6,6 @@ namespace semantic {
 
 class SemanticModel;
 
-
 class LayoutChecker {
 public:
     LayoutChecker(const SemanticModel& model, const CrateIndex& index, diagnostic::DiagnosticCollector& diag):
