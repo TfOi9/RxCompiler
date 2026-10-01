@@ -1,6 +1,6 @@
 #pragma once
 #include "../ast/ast.hpp"
-#include "symbol.hpp"
+#include "semantic/semantic_ids.hpp"
 #include "types.hpp"
 #include "struct_resolver.hpp"
 #include "impl_resolver.hpp"
@@ -9,7 +9,6 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
-#include <variant>
 
 namespace semantic {
 
@@ -26,8 +25,15 @@ public:
     TypeContext& typeContext() { return types_; }
     const TypeContext& typeContext() const { return types_; }
 
-    StructInfo* findStruct(SymbolId id);
-    const FieldInfo* findField(SymbolId owner, const std::string name) const;
+    const FunctionInfo* findFunction(FunctionId id) const;
+    std::optional<FunctionId> findFunctionId(const ast::FunctionItem* declaration) const;
+    std::optional<FunctionId> findTopLevelFunction(SymbolId symbol) const;
+    std::optional<FunctionId> findAssociatedFunction(AssocId associated) const;
+    const AssocInfo* findAssociated(SymbolId owner, const std::string& name) const;
+    const StructInfo* findStruct(SymbolId id) const;
+    const FieldInfo* findField(SymbolId owner, const std::string& name) const;
+    void setFunctionBody(FunctionId id, FunctionBodyInfo body);
+    const FunctionBodyInfo* findFunctionBody(FunctionId id) const;
 
 private:
     TypeContext types_;

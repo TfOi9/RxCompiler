@@ -1,6 +1,4 @@
 #pragma once
-#include "semantic/body_checker.hpp"
-#include "ast/ast.hpp"
 #include <unordered_map>
 #include <string>
 #include <vector>
