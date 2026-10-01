@@ -306,6 +306,7 @@ struct LetStatement: Statement {
 
 struct ExpressionStatement: Statement {
     AstPtr<Expression> expr;
+    bool has_semicolon = false;
 
     explicit ExpressionStatement(SourceSpan span): Statement(span, NodeType::ExprStmt) {}
 };

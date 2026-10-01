@@ -1,5 +1,6 @@
 #include "builder.hpp"
 #include "ast.hpp"
+#include <cstddef>
 #include <memory>
 #include <optional>
 #include <stdexcept>
@@ -520,10 +521,12 @@ AstPtr<Statement> AstBuilder::buildStatement(RxParser::StatementContext* ctx) {
     } else if (ctx->expressionWithBlock()) {
         auto node = std::make_unique<ExpressionStatement>(ExpressionStatement(makeSpan(ctx)));
         node->expr = buildExpressionWithBlock(ctx->expressionWithBlock());
+        node->has_semicolon = ctx->SEMI() != nullptr;
         return node;
     } else if (ctx->statementExpression()) {
         auto node = std::make_unique<ExpressionStatement>(ExpressionStatement(makeSpan(ctx)));
         node->expr = buildStatementExpression(ctx->statementExpression());
+        node->has_semicolon = true;
         return node;
     } else {
         return std::make_unique<EmptyStatement>(EmptyStatement(makeSpan(ctx)));
@@ -556,7 +559,16 @@ AstPtr<BlockExpression> AstBuilder::buildBlockExpression(RxParser::BlockExpressi
     for (auto* stmt: ctx->statement()) {
         node->statements.push_back(buildStatement(stmt));
     }
-    node->tail_expression = ctx->statementExpression() ? buildStatementExpression(ctx->statementExpression()) : nullptr;
+    if (ctx->statementExpression()) {
+        node->tail_expression = buildStatementExpression(ctx->statementExpression());
+    }
+    if (!node->tail_expression && !node->statements.empty()) {
+        auto* last = dynamic_cast<ExpressionStatement*>(node->statements.back().get());
+        if (last && !last->has_semicolon) {
+            node->tail_expression = std::move(last->expr);
+            node->statements.pop_back();
+        }
+    }
     return node;
 }
 
