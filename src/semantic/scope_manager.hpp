@@ -1,11 +1,10 @@
 #pragma once
+#include "semantic_ids.hpp"
 #include <unordered_map>
 #include <string>
 #include <vector>
 #include <optional>
 namespace semantic {
-
-using LocalId = uint32_t;
 
 class BodyChecker;
 

@@ -51,10 +51,12 @@ struct ExprSemantics {
 
 struct FunctionBodyInfo {
     std::vector<LocalInfo> locals;
+    std::vector<LocalId> parameter_locals;
     std::unordered_map<const ast::Expression*, ExprSemantics> expressions;
     std::unordered_map<const ast::LetStatement*, LocalId> let_statements;
     std::unordered_map<const ast::BreakExpression*, LoopId> break_targets;
     std::unordered_map<const ast::ContinueExpression*, LoopId> continue_targets;
+    std::unordered_map<const ast::Expression*, LoopId> loop_ids;
 };
 
 } // namespace semantic

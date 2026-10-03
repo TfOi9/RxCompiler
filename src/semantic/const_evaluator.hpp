@@ -62,6 +62,7 @@ public:
     std::optional<T> evaluate(const ast::ConstValue* constant);
     template <typename T>
     std::optional<T> evaluate(const ast::ConstValue* constant, std::optional<TyId> expected_type, ResolveContext ctx);
+    const EvaluatedConst* findEvaluated(ConstId id) const;
 
 private:
     const CrateIndex& index_;

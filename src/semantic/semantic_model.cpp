@@ -76,7 +76,7 @@ void SemanticModel::setFunctionBody(FunctionId id, FunctionBodyInfo body) {
     if (id >= functions_.size()) {
         return;
     }
-    function_bodies_[id] = body;
+    function_bodies_.insert_or_assign(id, std::move(body));
 }
 
 const FunctionBodyInfo* SemanticModel::findFunctionBody(FunctionId id) const {

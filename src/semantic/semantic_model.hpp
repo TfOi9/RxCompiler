@@ -5,7 +5,7 @@
 #include "struct_resolver.hpp"
 #include "impl_resolver.hpp"
 #include "function_resolver.hpp"
-#include "body_checker.hpp"
+#include "body_semantics.hpp"
 #include <string>
 #include <vector>
 #include <unordered_map>

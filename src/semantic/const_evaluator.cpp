@@ -748,6 +748,13 @@ std::optional<T> ConstEvaluator::evaluate(
     return *result;
 }
 
+const EvaluatedConst* ConstEvaluator::findEvaluated(ConstId id) const {
+    if (id >= cache_.size()) {
+        return nullptr;
+    }
+    return &cache_[id];
+}
+
 template std::optional<bool> ConstEvaluator::evaluate<bool>(const ast::ConstantItem* constant);
 template std::optional<int32_t> ConstEvaluator::evaluate<int32_t>(const ast::ConstantItem* constant);
 template std::optional<uint32_t> ConstEvaluator::evaluate<uint32_t>(const ast::ConstantItem* constant);
