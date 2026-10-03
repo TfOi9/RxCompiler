@@ -6,6 +6,8 @@
 
 namespace semantic {
 
+class SemanticModel;
+
 enum class ValueCategory {
     Value,
     Place
@@ -38,15 +40,25 @@ struct LocalInfo {
     ast::SourceSpan declaration;
 };
 
+struct PlaceInfo {
+    bool writable_here = false;
+    bool crossed_shared_reference = false;
+    bool blocked_by_vec_access = false;
+};
+
 struct ExprSemantics {
     TyId type;
+    std::optional<TyId> coerced_type;
     ValueCategory category;
     PlaceAccess access;
+    std::optional<PlaceInfo> place;
     std::optional<LocalId> local;
     std::optional<SymbolId> symbol;
     std::optional<FunctionId> function;
     std::optional<size_t> field_ordinal;
     std::vector<Adjustment> adjustments;
+
+    TyId effectiveType() const;
 };
 
 struct FunctionBodyInfo {
@@ -58,5 +70,13 @@ struct FunctionBodyInfo {
     std::unordered_map<const ast::ContinueExpression*, LoopId> continue_targets;
     std::unordered_map<const ast::Expression*, LoopId> loop_ids;
 };
+
+TyId effectiveType(const ExprSemantics& info);
+
+bool isInteger(TyId type, SemanticModel& model);
+bool isSignedInteger(TyId type, SemanticModel& model);
+bool isBool(TyId type, SemanticModel& model);
+bool isNever(TyId type, SemanticModel& model);
+bool isError(TyId type, SemanticModel& model);
 
 } // namespace semantic

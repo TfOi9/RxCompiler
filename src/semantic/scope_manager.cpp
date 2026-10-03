@@ -13,7 +13,7 @@ void ScopeManager::indent() {
 }
 
 void ScopeManager::dedent() noexcept {
-    assert(scopes_.empty() > 1);
+    assert(scopes_.size() > 1);
     scopes_.pop_back();
 }
 
@@ -26,7 +26,7 @@ std::optional<LocalId> ScopeManager::lookup(const std::string& name) const {
     if (scopes_.empty()) {
         return std::nullopt;
     }
-    for (size_t i = scopes_.size() - 1; i >= 0; i--) {
+    for (int i = scopes_.size() - 1; i >= 0; i--) {
         if (scopes_.at(i).names.count(name)) {
             return scopes_.at(i).names.at(name);
         }
