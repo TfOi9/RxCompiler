@@ -74,6 +74,7 @@ private:
     std::vector<ConstState> state_;
     std::vector<EvaluatedConst> cache_;
 
+    std::optional<ConstId> findConstantId(const ast::ConstantItem* declaration) const;
     std::optional<ConstId> resolveTopLevelConstant(const ast::PathExprSegment& seg);
     std::optional<SymbolId> resolveStructPrefix(const ast::PathExprSegment& seg, ResolveContext ctx);
     std::optional<ConstId> resolveAssociatedConstant(SymbolId id, const ast::PathExprSegment& seg);

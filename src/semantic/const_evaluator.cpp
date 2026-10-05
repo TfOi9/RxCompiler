@@ -659,6 +659,14 @@ const EvaluatedConst* ConstEvaluator::findEvaluated(ConstId id) const {
     return &cache_[id];
 }
 
+std::optional<ConstId> ConstEvaluator::findConstantId(const ast::ConstantItem* declaration) const {
+    auto it = id_decl_.find(declaration);
+    if (it == id_decl_.end()) {
+        return std::nullopt;
+    }
+    return it->second;
+}
+
 template std::optional<bool> ConstEvaluator::evaluate<bool>(const ast::ConstantItem* constant);
 template std::optional<int32_t> ConstEvaluator::evaluate<int32_t>(const ast::ConstantItem* constant);
 template std::optional<uint32_t> ConstEvaluator::evaluate<uint32_t>(const ast::ConstantItem* constant);
