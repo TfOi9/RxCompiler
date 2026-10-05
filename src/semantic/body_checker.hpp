@@ -81,6 +81,7 @@ private:
     ExprCheckResult checkExpr(const ast::Expression& expression, std::optional<TyId> expected, FunctionCheckContext& ctx);
     BlockCheckResult checkBlock(const ast::BlockExpression& expression, std::optional<TyId> expected, FunctionCheckContext& ctx);
     void report(FunctionCheckContext& ctx, ast::SourceSpan span, const std::string& message);
+    bool applyCoercion(const ast::Expression& expr, const ExprSemantics& original, const CoercionPlan& plan, FunctionCheckContext& ctx);
 };
 
 } // namespace semantic

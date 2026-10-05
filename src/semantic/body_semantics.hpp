@@ -46,6 +46,39 @@ struct PlaceInfo {
     bool blocked_by_vec_access = false;
 };
 
+enum class PlaceStepKind {
+    Materialize,
+    DerefShared,
+    DerefMutable,
+    DerefBox,
+    Field,
+    ArrayIndex,
+    VecIndex
+};
+
+struct PlaceStep {
+    PlaceStepKind kind;
+    TyId result_type;
+    std::optional<size_t> field_ordinal;
+    const ast::Expression* index_expression = nullptr;
+};
+
+enum class CoercionKind {
+    Identity,
+    NeverToAny,
+    BorrowShared,
+    BorrowMutable,
+    Recovery
+};
+
+struct CoercionPlan {
+    TyId source_kind;
+    TyId target_type;
+    CoercionKind kind;
+    std::vector<PlaceStep> place_steps;
+    std::optional<PlaceInfo> reference_access;
+};
+
 struct ExprSemantics {
     TyId type;
     std::optional<TyId> coerced_type;
@@ -69,6 +102,7 @@ struct FunctionBodyInfo {
     std::unordered_map<const ast::BreakExpression*, LoopId> break_targets;
     std::unordered_map<const ast::ContinueExpression*, LoopId> continue_targets;
     std::unordered_map<const ast::Expression*, LoopId> loop_ids;
+    std::unordered_map<const ast::Expression*, CoercionPlan> coercions;
 };
 
 TyId effectiveType(const ExprSemantics& info);

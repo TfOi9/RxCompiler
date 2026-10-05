@@ -7,23 +7,6 @@
 
 namespace semantic {
 
-enum class PlaceStepKind {
-    Materialize,
-    DerefShared,
-    DerefMutable,
-    DerefBox,
-    Field,
-    ArrayIndex,
-    VecIndex
-};
-
-struct PlaceStep {
-    PlaceStepKind kind;
-    TyId result_type;
-    std::optional<size_t> field_ordinal;
-    const ast::Expression* index_expression = nullptr;
-};
-
 struct PlaceResult {
     const ast::Expression* root = nullptr;
     TyId type;

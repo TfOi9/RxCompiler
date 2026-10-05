@@ -1,7 +1,9 @@
 #include "body_checker.hpp"
 #include "ast/ast.hpp"
 #include "diagnostic/diagnostic.hpp"
+#include "semantic/body_semantics.hpp"
 #include "semantic/function_resolver.hpp"
+#include "semantic/place_checker.hpp"
 #include "semantic/semantic_ids.hpp"
 #include "semantic/type_resolver.hpp"
 #include "semantic/types.hpp"
@@ -139,6 +141,36 @@ StatementCheckResult BodyChecker::checkStatement(const ast::Statement& statement
     }
     report(ctx, statement.span, "unexpected statement type");
     return {true};
+}
+
+bool BodyChecker::applyCoercion(const ast::Expression& expr, const ExprSemantics& original, const CoercionPlan& plan, FunctionCheckContext& ctx) {
+    auto fail = [&](const std::string& message) {
+        report(ctx, expr.span, message);
+        ExprSemantics failed = original;
+        failed.coerced_type = error_type_;
+        ctx.body.coercions.erase(&expr);
+        ctx.body.expressions.insert_or_assign(&expr, std::move(failed));
+        return false;
+    };
+    if (plan.kind == CoercionKind::Recovery) {
+        ctx.has_error = true;
+        ExprSemantics recovered = original;
+        recovered.coerced_type = error_type_;
+        ctx.body.coercions.erase(&expr);
+        ctx.body.expressions.insert_or_assign(&expr, std::move(recovered));
+        return false;
+    }
+    if (plan.kind == CoercionKind::BorrowMutable) {
+        assert(plan.reference_access.has_value());
+        if (!canWrite(*plan.reference_access)) {
+            return fail("coercion requires mutable access");
+        }
+    }
+    ExprSemantics adjusted = original;
+    adjusted.coerced_type = plan.target_type;
+    ctx.body.coercions.insert_or_assign(&expr, plan);
+    ctx.body.expressions.insert_or_assign(&expr, std::move(adjusted));
+    return true;
 }
 
 } // namespace semantic
