@@ -6,6 +6,7 @@
 #include "semantic/coercion_checker.hpp"
 #include "semantic/derive_checker.hpp"
 #include "semantic/function_resolver.hpp"
+#include "semantic/integer_literal.hpp"
 #include "semantic/place_checker.hpp"
 #include "semantic/scope_manager.hpp"
 #include "semantic/semantic_ids.hpp"
@@ -332,6 +333,23 @@ ExprCheckResult BodyChecker::checkGrouped(const ast::GroupedExpression& expressi
 ExprCheckResult BodyChecker::checkUnimplemented(const ast::Expression& expression, const std::string& kind, FunctionCheckContext& ctx) {
     report(ctx, expression.span, kind + " expression check is unimplemented");
     return makeError();
+}
+
+ExprCheckResult BodyChecker::checkInteger(const ast::IntegerExpression& expression, std::optional<TyId> expected, FunctionCheckContext& ctx) {
+    const auto& literal = expression.value;
+    const PrimaryTyKind kind = selectIntegerKind(literal.suffix, expectedIntegerKind(model_.typeContext(), expected));
+    uint64_t magnitude = 0;
+    std::string error;
+    if (!parseIntegerMagnitude(literal, magnitude, error)) {
+        report(ctx, expression.span, error);
+        return makeError();
+    }
+    if (!checkPositiveIntegerMagnitude(kind, magnitude)) {
+        report(ctx, literal.span, "integer literal is out of range");
+        return makeError();
+    }
+    const TyId type = model_.typeContext().insert(PrimaryTy{kind});
+    return makeValue(type);
 }
 
 } // namespace semantic

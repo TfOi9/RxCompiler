@@ -1,4 +1,7 @@
 #include "integer_literal.hpp"
+#include "semantic/types.hpp"
+#include <limits>
+#include <optional>
 
 namespace semantic {
 
@@ -92,6 +95,53 @@ bool parseIntegerMagnitude(const ast::IntegerLiteralValue& literal, uint64_t& re
     }
     result = value;
     return true;
+}
+
+PrimaryTyKind selectIntegerKind(ast::IntegerSuffix suffix, std::optional<PrimaryTyKind> expected) {
+    if (auto fixed = suffixKind(suffix)) {
+        return *fixed;
+    } else {
+        return expected.value_or(PrimaryTyKind::I32);
+    }
+}
+
+std::optional<PrimaryTyKind> expectedIntegerKind(const TypeContext& types, std::optional<TyId> expected) {
+    if (!expected) {
+        return std::nullopt;
+    }
+    const auto* primary = std::get_if<PrimaryTy>(&types.get(*expected));
+    if (!primary) {
+        return std::nullopt;
+    }
+    switch (primary->ty) {
+        case PrimaryTyKind::I32:
+        case PrimaryTyKind::U32:
+        case PrimaryTyKind::ISize:
+        case PrimaryTyKind::USize:
+            return primary->ty;
+        default:
+            return std::nullopt;
+    }
+}
+
+bool checkPositiveIntegerMagnitude(PrimaryTyKind kind, uint64_t magnitude) noexcept {
+    switch (kind) {
+        case PrimaryTyKind::I32:
+        case PrimaryTyKind::ISize:
+            return magnitude <= static_cast<uint64_t>(std::numeric_limits<int32_t>::max());
+        case PrimaryTyKind::U32:
+        case PrimaryTyKind::USize:
+            return magnitude <= static_cast<uint64_t>(std::numeric_limits<uint32_t>::max());
+        case PrimaryTyKind::Bool:
+            return false;
+    }
+}
+
+bool checkNegatedIntegerMagnitude(PrimaryTyKind kind, uint64_t magnitude) noexcept {
+    if (!isSignedKind(kind)) {
+        return false;
+    }
+    return magnitude <= static_cast<uint64_t>(std::numeric_limits<int32_t>::max()) + 1ull;
 }
 
 } // namespace semantic
