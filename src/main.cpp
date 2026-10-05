@@ -14,9 +14,9 @@ int main() {
     if (!ast.success) {
         return 1;
     }
-    auto index = semantic::index(*ast.crate.get());
-    semantic::dump(index, std::cout);
-    if (!index.success) {
+    auto result = semantic::analyze(*ast.crate);
+    semantic::dump(result, std::cout);
+    if (!result.success) {
         return 1;
     }
     return 0;

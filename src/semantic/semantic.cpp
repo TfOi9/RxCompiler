@@ -1,6 +1,7 @@
 #include "semantic.hpp"
 #include "ast/ast.hpp"
 #include "diagnostic/diagnostic.hpp"
+#include "semantic/body_checker.hpp"
 #include "semantic/const_evaluator.hpp"
 #include "semantic/function_resolver.hpp"
 #include "semantic/semantic_model.hpp"
@@ -74,9 +75,13 @@ SemanticResult analyze(const ast::Crate& crate) {
         return finish();
     }
 
-    // TODO unimplemented
+    BodyChecker body_checker(index, model, const_evaluator, type_resolver, derive_checker, collector);
 
-    return finish();
+    const bool body_ok = body_checker.checkAll(crate);
+
+    SemanticResult result = finish();
+    result.success = result.success && body_ok;
+    return result;
 }
 
 IndexResult index(const ast::Crate& crate) {
@@ -87,6 +92,17 @@ IndexResult index(const ast::Crate& crate) {
         std::move(index),
         collector.diagnostics()
     };
+}
+
+void dump(const SemanticResult &result, std::ostream& os) {
+    if (result.success) {
+        os << "Semantic analysis successed.\n";
+    } else {
+        os << "Semantic analysis failed.\n";
+    }
+    for (const auto& diag: result.diagnostics) {
+        diagnostic::dumpDiagnostic(diag, os);
+    }
 }
 
 void dump(const IndexResult &result, std::ostream& os) {

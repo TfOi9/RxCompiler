@@ -4,6 +4,7 @@
 #include "semantic/scope_manager.hpp"
 #include "semantic/type_resolver.hpp"
 #include "semantic/body_semantics.hpp"
+#include "semantic/coercion_checker.hpp"
 #include "symbol.hpp"
 #include "function_resolver.hpp"
 #include "semantic_ids.hpp"
@@ -12,6 +13,7 @@
 namespace semantic {
 
 class SemanticModel;
+class DeriveChecker;
 
 enum class LoopKind {
     Infinite,
@@ -43,6 +45,7 @@ struct BlockCheckResult {
 
 struct StatementCheckResult {
     bool can_complete;
+    bool has_error = false;
 };
 
 struct FunctionCheckContext {
@@ -60,7 +63,7 @@ struct FunctionCheckContext {
 
 class BodyChecker {
 public:
-    BodyChecker(const CrateIndex& index, SemanticModel& model, ConstEvaluator& constants, TypeResolver& type_resolver, diagnostic::DiagnosticCollector& diag);
+    BodyChecker(const CrateIndex& index, SemanticModel& model, ConstEvaluator& constants, TypeResolver& type_resolver, DeriveChecker& derive_checker, diagnostic::DiagnosticCollector& diag);
     bool checkAll(const ast::Crate& crate);
 
 private:
@@ -68,11 +71,14 @@ private:
     SemanticModel& model_;
     ConstEvaluator& constants_;
     TypeResolver& type_resolver_;
+    DeriveChecker& derive_checker_;
+    CoercionChecker coercions_;
     diagnostic::DiagnosticCollector& diag_;
 
     TyId error_type_;
     TyId unit_type_;
     TyId never_type_;
+    TyId bool_type_;
 
     bool checkFunction(const FunctionInfo& function);
     LocalId addLocal(const std::string& name, TyId type, bool mutable_binding, bool is_parameter, ast::SourceSpan declaration, FunctionCheckContext& ctx);
@@ -82,6 +88,13 @@ private:
     BlockCheckResult checkBlock(const ast::BlockExpression& expression, std::optional<TyId> expected, FunctionCheckContext& ctx);
     void report(FunctionCheckContext& ctx, ast::SourceSpan span, const std::string& message);
     bool applyCoercion(const ast::Expression& expr, const ExprSemantics& original, const CoercionPlan& plan, FunctionCheckContext& ctx);
+
+    ExprCheckResult makeValue(TyId type, bool can_complete = true) const;
+    ExprCheckResult makeError() const;
+    ExprCheckResult checkExprRaw(const ast::Expression& expression, std::optional<TyId> expected, FunctionCheckContext& ctx);
+    ExprCheckResult checkBlockRaw(const ast::BlockExpression& expression, std::optional<TyId> expected, FunctionCheckContext& ctx);
+    ExprCheckResult checkGrouped(const ast::GroupedExpression& expression, std::optional<TyId> expected, FunctionCheckContext& ctx);
+    ExprCheckResult checkUnimplemented(const ast::Expression& expression, const std::string& kind, FunctionCheckContext& ctx);
 };
 
 } // namespace semantic

@@ -22,6 +22,7 @@ struct IndexResult {
 
 SemanticResult analyze(const ast::Crate& crate);
 IndexResult index(const ast::Crate& crate);
+void dump(const SemanticResult &result, std::ostream& os);
 void dump(const IndexResult &result, std::ostream& os);
 
 } // namespace semantic
