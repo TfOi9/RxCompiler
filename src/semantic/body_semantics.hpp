@@ -1,4 +1,5 @@
 #pragma once
+#include "semantic/const_value.hpp"
 #include "semantic_ids.hpp"
 #include "ast/ast.hpp"
 #include <string>
@@ -103,6 +104,7 @@ struct FunctionBodyInfo {
     std::unordered_map<const ast::ContinueExpression*, LoopId> continue_targets;
     std::unordered_map<const ast::Expression*, LoopId> loop_ids;
     std::unordered_map<const ast::Expression*, CoercionPlan> coercions;
+    std::unordered_map<const ast::Expression*, EvaluatedConst> constant_values;
 };
 
 TyId effectiveType(const ExprSemantics& info);

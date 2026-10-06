@@ -1,6 +1,8 @@
 #include "type_resolver.hpp"
 #include "ast/ast.hpp"
 #include "diagnostic/diagnostic.hpp"
+#include "semantic/generic_arguments.hpp"
+#include "semantic/semantic_ids.hpp"
 #include "semantic/symbol.hpp"
 #include "semantic/types.hpp"
 #include "semantic/const_evaluator.hpp"
@@ -120,32 +122,18 @@ TyId TypeResolver::resolveStructType(const Symbol& symbol, SymbolId symbol_id, c
         diag_.add_entry(diagnostic::Severity::Error, span.begin, "struct symbol has no declaration");
         return types_.error();
     }
-    if (args != nullptr) {
-        if (args->args.size() != decl->generic_params.size()) {
-            diag_.add_entry(diagnostic::Severity::Error, span.begin, "wrong number of lifetime arguments");
-            return types_.error();
-        }
-        for (const auto& arg: args->args) {
-            if (!arg.lifetime.has_value() || arg.type.has_value()) {
-                diag_.add_entry(diagnostic::Severity::Error, span.begin, "struct accept lifetime arguments here");
-                return types_.error();
-            }
-        }
+    if (!checkLifetimeOnlyArguments(args, symbol.name, diag_)) {
+        return types_.error();
     }
     return types_.insert(StructTy {symbol_id});
 }
 
 TyId TypeResolver::resolveContainerType(const std::string& name, const ast::GenericArgs* args, const ast::SourceSpan& span, ResolveContext ctx) {
-    if (args == nullptr || args->args.size() != 1) {
-        diag_.add_entry(diagnostic::Severity::Error, span.begin, "'Box' or 'Vec' must have exactly one type argument");
+    const ast::TypeRef* element_ast = requireSingleTypeArgument(args, span, name, diag_);
+    if (!element_ast) {
         return types_.error();
     }
-    const auto& arg = args->args.front();
-    if (!arg.type.has_value() || !*arg.type || arg.lifetime.has_value()) {
-        diag_.add_entry(diagnostic::Severity::Error, span.begin, "container argument must be a concrete type");
-        return types_.error();
-    }
-    TyId elem = resolve(**arg.type, ctx);
+    TyId elem = resolve(*element_ast, ctx);
     if (elem == types_.error()) return elem;
     if (name == "Box") {
         return types_.insert(BoxTy {elem});
@@ -167,6 +155,53 @@ std::optional<PrimaryTyKind> TypeResolver::resolvePrimitive(const std::string& n
         return PrimaryTyKind::USize;
     }
     return std::nullopt;
+}
+
+TyId TypeResolver::resolveNamedType(const ast::PathIdentSegment& ident, const ast::GenericArgs* args, ast::SourceSpan span, ResolveContext ctx) {
+    auto fail = [&](const std::string& message) -> TyId {
+        diag_.add_entry(diagnostic::Severity::Error, span.begin, message);
+        return types_.error();
+    };
+    SymbolId id = 0;
+    if (ident.is_Self) {
+        if (!ctx.self_type) {
+            return fail("'Self' is unavailable in this context");
+        }
+        id = *ctx.self_type;
+        if (id >= index_.symbols.size() || index_.symbols[id].kind != SymbolKind::Struct) {
+            return fail("'Self' does not refer to a struct");
+        }
+    } else if (ident.is_self) {
+        return fail("'self' is a value, not a type");
+    } else if (ident.name) {
+        auto found = index_.type_names.find(*ident.name);
+        if (found == index_.type_names.end()) {
+            return fail("unresolved type name " + *ident.name);
+        }
+        id = found->second;
+        if (id >= index_.symbols.size()) {
+            return fail("invalid type symbol");
+        }
+    } else {
+        return fail("expected a type name");
+    }
+    const Symbol& symbol = index_.symbols[id];
+    if (symbol.kind == SymbolKind::Struct) {
+        return resolveStructType(symbol, id, args, span);
+    }
+    if (symbol.kind != SymbolKind::BuiltinType) {
+        return fail("name does not refer to a type");
+    }
+    if (symbol.name == "Box" || symbol.name == "Vec") {
+        return resolveContainerType(symbol.name, args, span, ctx);
+    }
+    if (auto primitive = resolvePrimitive(symbol.name)) {
+        if (!checkNoGenericArguments(args, symbol.name, diag_)) {
+            return fail("primitive types take no generic arguments");
+        }
+        return types_.insert(PrimaryTy{*primitive});
+    }
+    return fail("builtin name is not a concrete type");
 }
 
 } // namespace semantic

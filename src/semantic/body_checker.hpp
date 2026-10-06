@@ -1,6 +1,7 @@
 #pragma once
 #include "ast/ast.hpp"
 #include "diagnostic/diagnostic.hpp"
+#include "semantic/path_resolution.hpp"
 #include "semantic/scope_manager.hpp"
 #include "semantic/type_resolver.hpp"
 #include "semantic/body_semantics.hpp"
@@ -95,8 +96,13 @@ private:
     ExprCheckResult checkBlockRaw(const ast::BlockExpression& expression, std::optional<TyId> expected, FunctionCheckContext& ctx);
     ExprCheckResult checkGrouped(const ast::GroupedExpression& expression, std::optional<TyId> expected, FunctionCheckContext& ctx);
     ExprCheckResult checkUnimplemented(const ast::Expression& expression, const std::string& kind, FunctionCheckContext& ctx);
-
     ExprCheckResult checkInteger(const ast::IntegerExpression& expression, std::optional<TyId> expected, FunctionCheckContext& ctx);
+
+    std::optional<ResolvedValue> resolveValuePath(const ast::PathInExpression& path, FunctionCheckContext& ctx);
+    std::optional<ResolvedValue> resolveUnqualifiedValue(const ast::PathExprSegment& segment, FunctionCheckContext& ctx);
+    std::optional<ResolvedValue> resolveAssociatedValue(const ast::PathExprSegment& owner, const ast::PathExprSegment& member, FunctionCheckContext& ctx);
+    std::optional<ResolvedValue> resolveTopLevelValue(const Symbol& symbol, const ast::PathExprSegment& segment, FunctionCheckContext& ctx);
+    ExprCheckResult checkPath(const ast::PathExpression& expression, FunctionCheckContext& ctx);
 };
 
 } // namespace semantic

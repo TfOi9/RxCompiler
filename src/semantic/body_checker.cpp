@@ -6,15 +6,22 @@
 #include "semantic/coercion_checker.hpp"
 #include "semantic/derive_checker.hpp"
 #include "semantic/function_resolver.hpp"
+#include "semantic/generic_arguments.hpp"
+#include "semantic/impl_resolver.hpp"
 #include "semantic/integer_literal.hpp"
+#include "semantic/path_resolution.hpp"
 #include "semantic/place_checker.hpp"
 #include "semantic/scope_manager.hpp"
 #include "semantic/semantic_ids.hpp"
+#include "semantic/struct_resolver.hpp"
+#include "semantic/symbol.hpp"
 #include "semantic/type_resolver.hpp"
 #include "semantic/types.hpp"
+#include "semantic/const_evaluator.hpp"
 #include "semantic_model.hpp"
 #include <cassert>
 #include <optional>
+#include <variant>
 
 namespace semantic {
 
@@ -115,7 +122,7 @@ StatementCheckResult BodyChecker::checkLet(const ast::LetStatement& statement, F
     if (initializer.semantics.effectiveType() == error_type_) {
         ctx.has_error = true;
     }
-    const TyId binding_type = annotation.has_value() ? *annotation : initializer.semantics.type;
+    const TyId binding_type = annotation.has_value() ? *annotation : initializer.semantics.effectiveType();
     const auto& binding = statement.identifier_binding;
     const LocalId id = addLocal(
         binding.name,
@@ -234,9 +241,9 @@ ExprCheckResult BodyChecker::checkExprRaw(const ast::Expression& expression, std
         case ast::NodeType::BlockExpr:
             return checkBlockRaw(static_cast<const ast::BlockExpression&>(expression), expected, ctx);
         case ast::NodeType::IntegerExpr:
-        return checkUnimplemented(expression, "integer", ctx);
+            return checkInteger(static_cast<const ast::IntegerExpression&>(expression), expected, ctx);
         case ast::NodeType::PathExpr:
-            return checkUnimplemented(expression, "path", ctx);
+            return checkPath(static_cast<const ast::PathExpression&>(expression), ctx);
         case ast::NodeType::UnaryExpr:
             return checkUnimplemented(expression, "unary", ctx);
         case ast::NodeType::BinaryExpr:
@@ -350,6 +357,220 @@ ExprCheckResult BodyChecker::checkInteger(const ast::IntegerExpression& expressi
     }
     const TyId type = model_.typeContext().insert(PrimaryTy{kind});
     return makeValue(type);
+}
+
+std::optional<ResolvedValue> BodyChecker::resolveUnqualifiedValue(const ast::PathExprSegment& segment, FunctionCheckContext& ctx) {
+    const auto& ident = segment.ident_segment;
+    const auto* args = segment.generic_args ? &*segment.generic_args : nullptr;
+    if (ident.is_Self) {
+        report(ctx, segment.span, "'Self' is a type, not a value");
+        return std::nullopt;
+    }
+    std::string name;
+    if (ident.is_self) {
+        if (ctx.function.signature.receiver_mode == ReceiverMode::None) {
+            report(ctx, segment.span, "'self' is unavailable here");
+            return std::nullopt;
+        }
+        name = "self";
+    } else if (ident.name) {
+        name = *ident.name;
+    } else {
+        report(ctx, segment.span, "expected a value name");
+        return std::nullopt;
+    }
+    if (auto local = ctx.scopes.lookup(name)) {
+        if (!checkNoGenericArguments(args, name, diag_)) {
+            ctx.has_error = true;
+            return std::nullopt;
+        }
+        return LocalTarget{*local};
+    }
+    auto found = index_.value_names.find(name);
+    if (found == index_.value_names.end()) {
+        report(ctx, segment.span, "unresolved value name " + name);
+        return std::nullopt;
+    }
+    const Symbol& symbol = index_.symbols.at(found->second);
+    return resolveTopLevelValue(symbol, segment, ctx);
+}
+
+std::optional<ResolvedValue> BodyChecker::resolveTopLevelValue(const Symbol& symbol, const ast::PathExprSegment& segment, FunctionCheckContext& ctx) {
+    const auto* args = segment.generic_args ? &*segment.generic_args : nullptr;
+    auto fail = [&](const std::string& message) -> std::optional<ResolvedValue> {
+        report(ctx, segment.span, message);
+        return std::nullopt;
+    };
+    switch (symbol.kind) {
+        case SymbolKind::Constant: {
+            if (!checkNoGenericArguments(args, symbol.name, diag_)) {
+                ctx.has_error = true;
+                return std::nullopt;
+            }
+            const auto* decl = dynamic_cast<const ast::ConstantItem*>(symbol.declaration);
+            if (!decl) {
+                return fail("constant symbol has no declaration");
+            }
+            auto id = constants_.findConstantId(decl);
+            if (!id) {
+                return fail("constant is not registered");
+            }
+            return ConstantTarget{*id};
+        }
+        case SymbolKind::Function:
+        case SymbolKind::BuiltinValue: {
+            const bool valid = symbol.kind == SymbolKind::Function ? checkLifetimeOnlyArguments(args, symbol.name, diag_) : checkNoGenericArguments(args, symbol.name, diag_);
+            if (!valid) {
+                ctx.has_error = true;
+                return std::nullopt;
+            }
+            auto id = model_.findTopLevelFunction(symbol.id);
+            if (!id) {
+                return fail("function is not registered");
+            }
+            return FunctionTarget{*id};
+        }
+        default:
+            return fail("name does not refer to a value");
+    }
+}
+
+std::optional<ResolvedValue> BodyChecker::resolveAssociatedValue(const ast::PathExprSegment& owner, const ast::PathExprSegment& member, FunctionCheckContext& ctx) {
+    auto fail = [&](const std::string& message) -> std::optional<ResolvedValue> {
+        report(ctx, member.span, message);
+        return std::nullopt;
+    };
+    const auto& member_ident = member.ident_segment;
+    if (member_ident.is_self || member_ident.is_Self || !member_ident.name) {
+        return fail("expected an associated item name");
+    }
+    const std::string& name = *member_ident.name;
+    const auto* owner_args = owner.generic_args ? &*owner.generic_args : nullptr;
+    const auto* member_args = member.generic_args ? &*member.generic_args : nullptr;
+    const TyId owner_type = type_resolver_.resolveNamedType(owner.ident_segment, owner_args, owner.span, ResolveContext{ctx.function.owner_struct});
+    if (owner_type == error_type_) {
+        ctx.has_error = true;
+        return std::nullopt;
+    }
+    const TyInfo owner_info = model_.typeContext().get(owner_type);
+    if (const auto* structure = std::get_if<StructTy>(&owner_info)) {
+        const AssocInfo* assoc = model_.findAssociated(structure->def, name);
+        if (assoc != nullptr) {
+            switch (assoc->kind) {
+                case AssocKind::Constant: {
+                    if (!checkNoGenericArguments(member_args, name, diag_)) {
+                        ctx.has_error = true;
+                        return std::nullopt;
+                    }
+                    if (assoc->const_decl == nullptr) {
+                        return fail("associated constant has no declaration");
+                    }
+                    const auto id = constants_.findConstantId(assoc->const_decl);
+                    if (!id) {
+                        return fail("associated constant is not registered");
+                    }
+                    return ConstantTarget{*id};
+                }
+                case AssocKind::Function: {
+                    if (!checkLifetimeOnlyArguments(member_args, name, diag_)) {
+                        ctx.has_error = true;
+                        return std::nullopt;
+                    }
+                    const auto id = model_.findAssociatedFunction(assoc->id);
+                    if (!id) {
+                        return fail("associated function is not registered");
+                    }
+                    return FunctionTarget{*id};
+                }
+            }
+            return fail("unsupported associated item kind");
+        }
+    }
+    std::optional<BuiltinOp> builtin;
+    if (std::holds_alternative<BoxTy>(owner_info)) {
+        if (name == "new") {
+            builtin = BuiltinOp::BoxNew;
+        }
+    } else if (std::holds_alternative<VecTy>(owner_info)) {
+        if (name == "new") {
+            builtin = BuiltinOp::VecNew;
+        } else if (name == "len") {
+            builtin = BuiltinOp::VecLen;
+        } else if (name == "is_empty") {
+            builtin = BuiltinOp::VecIsEmpty;
+        } else if (name == "push") {
+            builtin = BuiltinOp::VecPush;
+        } else if (name == "remove") {
+            builtin = BuiltinOp::VecRemove;
+        }
+    }
+    if (!builtin && name == "clone") {
+        if (!derive_checker_.supports(owner_type, DeriveKind::Clone)) {
+            return fail("type does not support builtin clone");
+        }
+        builtin = BuiltinOp::Clone;
+    }
+    if (!builtin) {
+        return fail("type has no associated item named " + name);
+    }
+    if (!checkNoGenericArguments(member_args, name, diag_)) {
+        ctx.has_error = true;
+        return std::nullopt;
+    }
+    return BuiltinTarget{*builtin, owner_type};
+}
+
+std::optional<ResolvedValue> BodyChecker::resolveValuePath(const ast::PathInExpression& path, FunctionCheckContext& ctx) {
+    if (path.segments.size() == 1) {
+        return resolveUnqualifiedValue(path.segments.front(), ctx);
+    } else if (path.segments.size() == 2) {
+        return resolveAssociatedValue(path.segments[0], path.segments[1], ctx);
+    }
+    report(ctx, path.span, "unsupported value path");
+    return std::nullopt;
+}
+
+ExprCheckResult BodyChecker::checkPath(const ast::PathExpression& expression, FunctionCheckContext& ctx) {
+    auto resolved = resolveValuePath(expression.path, ctx);
+    if (!resolved) {
+        return makeError();
+    }
+    if (const auto* target = std::get_if<LocalTarget>(&*resolved)) {
+        const LocalInfo& local = ctx.body.locals.at(target->id);
+        ExprSemantics info;
+        info.type = local.type;
+        info.category = ValueCategory::Place;
+        info.access = local.mutable_binding ? PlaceAccess::Writable : PlaceAccess::ReadOnly;
+        info.place = PlaceInfo{
+            local.mutable_binding,
+            false,
+            false,
+        };
+        info.local = target->id;
+        return {
+            std::move(info),
+            true
+        };
+    }
+    if (const auto* target = std::get_if<ConstantTarget>(&*resolved)) {
+        const EvaluatedConst* value = constants_.findEvaluated(target->id);
+        if (!value) {
+            report(ctx, expression.span, "constant value is unavailable");
+            return makeError();
+        }
+        ctx.body.constant_values.insert_or_assign(&expression, *value);
+        return makeValue(value->type);
+    }
+    if (const auto* target = std::get_if<FunctionTarget>(&*resolved)) {
+        report(ctx, expression.span, "function values are unsupported");
+        return makeError();
+    }
+    if (const auto* target = std::get_if<BuiltinTarget>(&*resolved)) {
+        report(ctx, expression.span, "builtin function values are unsupported");
+        return makeError();
+    }
+    report(ctx, expression.span, "invalid resolved value target");
+    return makeError();
 }
 
 } // namespace semantic

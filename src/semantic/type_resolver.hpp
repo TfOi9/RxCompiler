@@ -17,6 +17,7 @@ class TypeResolver {
 public:
     TypeResolver(TypeContext& types, const CrateIndex& index, ConstEvaluator& eval, diagnostic::DiagnosticCollector& diag):types_(types), index_(index), eval_(eval), diag_(diag) {}
     TyId resolve(const ast::TypeRef& ty, ResolveContext ctx);
+    TyId resolveNamedType(const ast::PathIdentSegment& ident, const ast::GenericArgs* args, ast::SourceSpan span, ResolveContext ctx);
 
 private:
     TypeContext& types_;

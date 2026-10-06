@@ -6,15 +6,12 @@
 #include "symbol.hpp"
 #include "symbol.hpp"
 #include "semantic_ids.hpp"
+#include "const_value.hpp"
 #include <optional>
-#include <cstdint>
 #include <unordered_map>
 #include <vector>
 
 namespace semantic {
-
-
-using ConstantValue = std::variant<bool, int32_t, uint32_t, int64_t, uint64_t>;
 
 class SemanticModel;
 class TypeResolver;
@@ -42,11 +39,6 @@ enum class ConstState {
     Failed
 };
 
-struct EvaluatedConst {
-    TyId type;
-    ConstantValue value;
-};
-
 class ConstEvaluator {
 public:
     ConstEvaluator(const CrateIndex& index, SemanticModel& model, diagnostic::DiagnosticCollector& diag):
@@ -63,6 +55,7 @@ public:
     template <typename T>
     std::optional<T> evaluate(const ast::ConstValue* constant, std::optional<TyId> expected_type, ResolveContext ctx);
     const EvaluatedConst* findEvaluated(ConstId id) const;
+    std::optional<ConstId> findConstantId(const ast::ConstantItem* declaration) const;
 
 private:
     const CrateIndex& index_;
@@ -74,7 +67,6 @@ private:
     std::vector<ConstState> state_;
     std::vector<EvaluatedConst> cache_;
 
-    std::optional<ConstId> findConstantId(const ast::ConstantItem* declaration) const;
     std::optional<ConstId> resolveTopLevelConstant(const ast::PathExprSegment& seg);
     std::optional<SymbolId> resolveStructPrefix(const ast::PathExprSegment& seg, ResolveContext ctx);
     std::optional<ConstId> resolveAssociatedConstant(SymbolId id, const ast::PathExprSegment& seg);
