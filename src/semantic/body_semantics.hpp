@@ -80,6 +80,37 @@ struct CoercionPlan {
     std::optional<PlaceInfo> reference_access;
 };
 
+enum class OperandReadKind {
+    Value,
+    SharedReferent,
+    EqualityBorrow,
+    OrderedReferent
+};
+
+struct OperandPlan {
+    TyId source_type;
+    TyId operation_type;
+    OperandReadKind read_kind;
+    bool outer_mutable_to_shared = false;
+    size_t reference_depth = 0;
+};
+
+struct UnaryPlan {
+    OperandPlan operand;
+    TyId result_type;
+};
+
+struct BinaryPlan {
+    OperandPlan left;
+    OperandPlan right;
+    TyId result_type;
+};
+
+struct PlacePlan {
+    const ast::Expression* base;
+    std::vector<PlaceStep> steps;
+};
+
 struct ExprSemantics {
     TyId type;
     std::optional<TyId> coerced_type;
@@ -105,6 +136,9 @@ struct FunctionBodyInfo {
     std::unordered_map<const ast::Expression*, LoopId> loop_ids;
     std::unordered_map<const ast::Expression*, CoercionPlan> coercions;
     std::unordered_map<const ast::Expression*, EvaluatedConst> constant_values;
+    std::unordered_map<const ast::Expression*, UnaryPlan> unary_operations;
+    std::unordered_map<const ast::Expression*, BinaryPlan> binary_operations;
+    std::unordered_map<const ast::Expression*, PlacePlan> place_operations;
 };
 
 TyId effectiveType(const ExprSemantics& info);
