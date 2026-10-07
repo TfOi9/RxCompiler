@@ -21,6 +21,7 @@
 #include "semantic/const_evaluator.hpp"
 #include "semantic_model.hpp"
 #include <cassert>
+#include <limits>
 #include <optional>
 #include <variant>
 
@@ -258,13 +259,13 @@ ExprCheckResult BodyChecker::checkExprRaw(const ast::Expression& expression, std
         case ast::NodeType::MethodCallExpr:
             return checkUnimplemented(expression, "method call", ctx);
         case ast::NodeType::FieldExpr:
-            return checkUnimplemented(expression, "field", ctx);
+            return checkField(static_cast<const ast::FieldExpression&>(expression), ctx);
         case ast::NodeType::IndexExpr:
-            return checkUnimplemented(expression, "index", ctx);
+            return checkIndex(static_cast<const ast::IndexExpression&>(expression), ctx);
         case ast::NodeType::ArrayExpr:
-            return checkUnimplemented(expression, "array", ctx);
+            return checkArray(static_cast<const ast::ArrayExpression&>(expression), expected, ctx);
         case ast::NodeType::StructExpr:
-            return checkUnimplemented(expression, "struct", ctx);
+            return checkStruct(static_cast<const ast::StructExpression&>(expression), ctx);
         case ast::NodeType::IfExpr:
             return checkIf(static_cast<const ast::IfExpression&>(expression), expected, ctx);
         case ast::NodeType::LoopExpr:
@@ -1105,6 +1106,214 @@ ExprCheckResult BodyChecker::checkWhile(const ast::WhileExpression& expression, 
     }
     const bool failed = condition.semantics.effectiveType() == error_type_ || body.type == error_type_;
     return makeValue(failed ? error_type_ : unit_type_, condition.can_complete);
+}
+
+ExprCheckResult BodyChecker::checkArray(const ast::ArrayExpression& expression, std::optional<TyId> expected, FunctionCheckContext& ctx) {
+    std::optional<ArrayTy> target;
+    if (expected) {
+        const TyInfo info = model_.typeContext().get(*expected);
+        if (const auto* array = std::get_if<ArrayTy>(&info)) {
+            target = *array;
+        }
+    }
+    const bool repeated = expression.repeated_length != nullptr;
+    bool failed = false;
+    uint64_t length = expression.elements.size();
+    if (repeated) {
+        assert(expression.elements.size() == 1);
+        const TyId usize_type = model_.typeContext().insert(PrimaryTy{PrimaryTyKind::USize});
+        const auto count = constants_.evaluate<uint64_t>(expression.repeated_length.get(), usize_type, ResolveContext{ctx.function.owner_struct});
+        if (count) {
+            length = *count;
+        } else {
+            failed = true;
+        }
+    }
+    if (length > std::numeric_limits<uint32_t>::max()) {
+        report(ctx, expression.span, "array length exceeds usize range");
+        failed = true;
+    }
+    if (target && length != target->len) {
+        report(ctx, expression.span, "array length mismatch");
+        failed = true;
+    }
+    const std::optional<TyId> element_expected = target ? std::optional<TyId>(target->elem) : std::nullopt;
+    std::vector<ResultSite> sites;
+    bool can_complete = true;
+    for (const auto& elem: expression.elements) {
+        ExprCheckResult result;
+        {
+            ReachabilityGuard guard(ctx, can_complete);
+            result = checkExpr(*elem, element_expected, ctx);
+        }
+        failed = failed || result.semantics.effectiveType() == error_type_;
+        can_complete = can_complete && result.can_complete;
+        if (!target) {
+            sites.push_back({elem.get(), result.semantics});
+        }
+    }
+    if (failed) {
+        return makeValue(error_type_, can_complete);
+    }
+    TyId element_type;
+    if (target) {
+        element_type = target->elem;
+    } else if (sites.empty()) {
+        element_type = model_.typeContext().insert(PrimaryTy{PrimaryTyKind::I32});
+    } else {
+        auto lub = coercions_.tryFindCommonType(sites, never_type_);
+        if (!lub) {
+            report(ctx, expression.span, "array elements have no common type");
+            return makeValue(error_type_, can_complete);
+        }
+        element_type = lub->target_type;
+        bool ok = true;
+        for (size_t i = 0; i < sites.size(); i++) {
+            const bool applied = applyCoercion(*sites[i].expression, sites[i].original, lub->coversions[i], ctx);
+            ok = ok && applied;
+        }
+        if (!ok) {
+            return makeValue(error_type_, can_complete);
+        }
+    }
+    if (repeated && length > 1 && !derive_checker_.supports(element_type, DeriveKind::Copy)) {
+        report(ctx, expression.span, "array repetition requires Copy trait");
+        return makeValue(error_type_, can_complete);
+    }
+    return makeValue(model_.typeContext().insert(ArrayTy{element_type, static_cast<uint32_t>(length)}), can_complete);
+}
+
+ExprCheckResult BodyChecker::checkStruct(const ast::StructExpression& expression, FunctionCheckContext& ctx) {
+    TyId struct_type = error_type_;
+    const StructInfo* info = nullptr;
+    bool failed = false;
+    if (expression.path.segments.size() != 1) {
+        report(ctx, expression.path.span, "unsupported struct construction path");
+        failed = true;
+    } else {
+        const auto& segment = expression.path.segments.front();
+        const auto* args = segment.generic_args ? &*segment.generic_args : nullptr;
+        struct_type = type_resolver_.resolveNamedType(segment.ident_segment, args, segment.span, ResolveContext{ctx.function.owner_struct});
+        if (struct_type == error_type_) {
+            failed = true;
+        } else {
+            const TyInfo type = model_.typeContext().get(struct_type);
+            if (const auto* structure = std::get_if<StructTy>(&type)) {
+                info = model_.findStruct(structure->def);
+            }
+            if (!info) {
+                report(ctx, expression.path.span, "construction requires a name-field struct");
+                failed = true;
+            }
+        }
+    }
+    std::vector<bool> seen(info ? info->fields.size() : 0, false);
+    bool can_complete = true;
+    for (const auto& initializer: expression.fields) {
+        std::optional<TyId> field_expected;
+        if (info) {
+            const auto found = info->field_name.find(initializer.name);
+            if (found == info->field_name.end()) {
+                report(ctx, initializer.span, "unknown initializer field");
+                failed = true;
+            } else {
+                const size_t ordinal = found->second;
+                if (seen[ordinal]) {
+                    report(ctx, initializer.span, "duplicated initializer field");
+                    failed = true;
+                }
+                seen[ordinal] = true;
+                field_expected = info->fields[ordinal].type;
+            }
+        }
+        ExprCheckResult value;
+        {
+            ReachabilityGuard guard(ctx, can_complete);
+            value = checkExpr(*initializer.value, field_expected, ctx);
+        }
+        failed = failed || value.semantics.effectiveType() == error_type_;
+        can_complete = can_complete && value.can_complete;
+    }
+    if (info) {
+        for (const auto& field: info->fields) {
+            if (!seen[field.ordinal]) {
+                report(ctx, expression.span, "missing initializer field " + field.name);
+                failed = true;
+            }
+        }
+    }
+    return makeValue(failed ? error_type_ : struct_type, can_complete);
+}
+
+ExprCheckResult BodyChecker::checkIndex(const ast::IndexExpression& expression, FunctionCheckContext& ctx) {
+    const auto base = checkExpr(*expression.base, std::nullopt, ctx);
+    const TyId usize_type = model_.typeContext().insert(PrimaryTy{PrimaryTyKind::USize});
+    ExprCheckResult index;
+    {
+        ReachabilityGuard guard(ctx, base.can_complete);
+        index = checkExpr(*expression.index, usize_type, ctx);
+    }
+    const bool can_complete = base.can_complete && index.can_complete;
+    if (base.semantics.effectiveType() == error_type_ || index.semantics.effectiveType() == error_type_) {
+        return makeValue(error_type_, can_complete);
+    }
+    PlaceChecker places(model_.typeContext());
+    auto cursor = places.fromExpression(*expression.base, base.semantics);
+    while (true) {
+        const TyInfo type = model_.typeContext().get(cursor.type);
+        if (std::holds_alternative<ArrayTy>(type) || std::holds_alternative<VecTy>(type)) {
+            break;
+        }
+        auto next = places.dereferenceOne(std::move(cursor));
+        if (!next) {
+            report(ctx, expression.base->span, "index base is not an array or Vec");
+            return makeValue(error_type_, can_complete);
+        }
+        cursor = std::move(*next);
+    }
+    auto element = places.projectIndex(std::move(cursor), *expression.index);
+    assert(element.has_value());
+    ExprSemantics info;
+    info.type = element->type;
+    info.category = ValueCategory::Place;
+    info.place = element->access;
+    info.access = canWrite(element->access) ? PlaceAccess::Writable : PlaceAccess::ReadOnly;
+    ctx.body.place_operations.insert_or_assign(&expression, PlacePlan{element->root, std::move(element->steps)});
+    return {std::move(info), can_complete};
+}
+
+ExprCheckResult BodyChecker::checkField(const ast::FieldExpression& expression, FunctionCheckContext& ctx) {
+    const auto base = checkExpr(*expression.base, std::nullopt, ctx);
+    if (base.semantics.effectiveType() == error_type_) {
+        return makeValue(error_type_, base.can_complete);
+    }
+    PlaceChecker places(model_.typeContext());
+    auto cursor = places.fromExpression(*expression.base, base.semantics);
+    while (true) {
+        const TyInfo type = model_.typeContext().get(cursor.type);
+        if (const auto* structure = std::get_if<StructTy>(&type)) {
+            const FieldInfo* field = model_.findField(structure->def, expression.field_name);
+            if (!field) {
+                report(ctx, expression.span, "unknown accessed field");
+                return makeValue(error_type_, base.can_complete);
+            }
+            auto projected = places.projectField(std::move(cursor), field->type, field->ordinal);
+            ExprSemantics info;
+            info.type = projected.type;
+            info.category = ValueCategory::Place;
+            info.place = projected.access;
+            info.access = canWrite(projected.access) ? PlaceAccess::Writable : PlaceAccess::ReadOnly;
+            info.field_ordinal = field->ordinal;
+            ctx.body.place_operations.insert_or_assign(&expression, PlacePlan{projected.root, std::move(projected.steps)});
+            return {std::move(info), base.can_complete};
+        }
+        auto next = places.dereferenceOne(std::move(cursor));
+        if (!next) {
+            report(ctx, expression.span, "field base is not a struct");
+            return makeValue(error_type_, base.can_complete);
+            cursor = std::move(*next);
+        }
+    }
 }
 
 } // namespace semantic

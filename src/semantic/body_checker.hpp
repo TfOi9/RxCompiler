@@ -123,6 +123,11 @@ private:
     ExprCheckResult checkContinue(const ast::ContinueExpression& expression, FunctionCheckContext& ctx);
     ExprCheckResult checkLoop(const ast::LoopExpression& expression, std::optional<TyId> expected, FunctionCheckContext& ctx);
     ExprCheckResult checkWhile(const ast::WhileExpression& expression, FunctionCheckContext& ctx);
+
+    ExprCheckResult checkArray(const ast::ArrayExpression& expression, std::optional<TyId> expected, FunctionCheckContext& ctx);
+    ExprCheckResult checkStruct(const ast::StructExpression& expression, FunctionCheckContext& ctx);
+    ExprCheckResult checkIndex(const ast::IndexExpression& expression, FunctionCheckContext& ctx);
+    ExprCheckResult checkField(const ast::FieldExpression& expression, FunctionCheckContext& ctx);
 };
 
 } // namespace semantic
