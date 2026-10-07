@@ -1,6 +1,7 @@
 #pragma once
 #include "ast/ast.hpp"
 #include "diagnostic/diagnostic.hpp"
+#include "semantic/operator_checker.hpp"
 #include "semantic/path_resolution.hpp"
 #include "semantic/scope_manager.hpp"
 #include "semantic/type_resolver.hpp"
@@ -74,6 +75,7 @@ private:
     TypeResolver& type_resolver_;
     DeriveChecker& derive_checker_;
     CoercionChecker coercions_;
+    OperatorChecker operators_;
     diagnostic::DiagnosticCollector& diag_;
 
     TyId error_type_;
@@ -103,6 +105,16 @@ private:
     std::optional<ResolvedValue> resolveAssociatedValue(const ast::PathExprSegment& owner, const ast::PathExprSegment& member, FunctionCheckContext& ctx);
     std::optional<ResolvedValue> resolveTopLevelValue(const Symbol& symbol, const ast::PathExprSegment& segment, FunctionCheckContext& ctx);
     ExprCheckResult checkPath(const ast::PathExpression& expression, FunctionCheckContext& ctx);
+
+    ExprCheckResult checkUnary(const ast::UnaryExpression& expression, FunctionCheckContext& ctx);
+    ExprCheckResult checkBinary(const ast::BinaryExpression& expression, FunctionCheckContext& ctx);
+    ExprCheckResult checkCast(const ast::CastExpression& expression, FunctionCheckContext& ctx);
+    ExprCheckResult checkAssignment(const ast::AssignmentExpression& expression, FunctionCheckContext& ctx);
+
+    std::optional<ExprCheckResult> checkNegatedLiteralOperand(const ast::Expression& expression, FunctionCheckContext& ctx);
+    std::optional<bool> knownBooleanLiteral(const ast::Expression& expression);
+    bool checkAssignmentDestination(const ast::Expression& expression, const ExprSemantics& semantics, FunctionCheckContext& ctx);
+    std::optional<BinaryPlan> checkCompoundAssignmentOperands(ast::AssignmentOperator op, TyId destination_type, TyId right_type);
 };
 
 } // namespace semantic

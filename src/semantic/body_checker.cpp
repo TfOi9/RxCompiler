@@ -9,6 +9,7 @@
 #include "semantic/generic_arguments.hpp"
 #include "semantic/impl_resolver.hpp"
 #include "semantic/integer_literal.hpp"
+#include "semantic/operator_checker.hpp"
 #include "semantic/path_resolution.hpp"
 #include "semantic/place_checker.hpp"
 #include "semantic/scope_manager.hpp"
@@ -26,7 +27,7 @@
 namespace semantic {
 
 BodyChecker::BodyChecker(const CrateIndex& index, SemanticModel& model, ConstEvaluator& constants, TypeResolver& type_resolver, DeriveChecker& derive_checker, diagnostic::DiagnosticCollector& diag):
-    index_(index), model_(model), constants_(constants), type_resolver_(type_resolver), derive_checker_(derive_checker), coercions_(model.typeContext()), diag_(diag), error_type_(model.typeContext().error()), unit_type_(model.typeContext().insert(UnitTy{})), never_type_(model.typeContext().insert(NeverTy{})), bool_type_(model.typeContext().insert(PrimaryTy{PrimaryTyKind::Bool})) {}
+    index_(index), model_(model), constants_(constants), type_resolver_(type_resolver), derive_checker_(derive_checker), coercions_(model.typeContext()), operators_(model_.typeContext(), derive_checker), diag_(diag), error_type_(model.typeContext().error()), unit_type_(model.typeContext().insert(UnitTy{})), never_type_(model.typeContext().insert(NeverTy{})), bool_type_(model.typeContext().insert(PrimaryTy{PrimaryTyKind::Bool})) {}
 
 LocalId BodyChecker::addLocal(const std::string& name, TyId type, bool mutable_binding, bool is_parameter, ast::SourceSpan declaration, FunctionCheckContext& ctx) {
     LocalInfo local = {
@@ -245,13 +246,13 @@ ExprCheckResult BodyChecker::checkExprRaw(const ast::Expression& expression, std
         case ast::NodeType::PathExpr:
             return checkPath(static_cast<const ast::PathExpression&>(expression), ctx);
         case ast::NodeType::UnaryExpr:
-            return checkUnimplemented(expression, "unary", ctx);
+            return checkUnary(static_cast<const ast::UnaryExpression&>(expression), ctx);
         case ast::NodeType::BinaryExpr:
-            return checkUnimplemented(expression, "binary", ctx);
+            return checkBinary(static_cast<const ast::BinaryExpression&>(expression), ctx);
         case ast::NodeType::AssignExpr:
-            return checkUnimplemented(expression, "assignment", ctx);
+            return checkAssignment(static_cast<const ast::AssignmentExpression&>(expression), ctx);
         case ast::NodeType::CastExpr:
-            return checkUnimplemented(expression, "cast", ctx);
+            return checkCast(static_cast<const ast::CastExpression&>(expression), ctx);
         case ast::NodeType::CallExpr:
             return checkUnimplemented(expression, "call", ctx);
         case ast::NodeType::MethodCallExpr:
@@ -571,6 +572,346 @@ ExprCheckResult BodyChecker::checkPath(const ast::PathExpression& expression, Fu
     }
     report(ctx, expression.span, "invalid resolved value target");
     return makeError();
+}
+
+std::optional<ExprCheckResult> BodyChecker::checkNegatedLiteralOperand(const ast::Expression& expression, FunctionCheckContext& ctx) {
+    auto rem = [&](ExprCheckResult result) -> std::optional<ExprCheckResult> {
+        ctx.body.coercions.erase(&expression);
+        ctx.body.expressions.insert_or_assign(&expression, result.semantics);
+        return result;
+    };
+    if (expression.type == ast::NodeType::GroupedExpr) {
+        const auto& grouped = static_cast<const ast::GroupedExpression&>(expression);
+        assert(grouped.expr != nullptr);
+        auto inner = checkNegatedLiteralOperand(*grouped.expr, ctx);
+        if (!inner) {
+            return std::nullopt;
+        }
+        return rem(std::move(*inner));
+    }
+    if (expression.type != ast::NodeType::IntegerExpr) {
+        return std::nullopt;
+    }
+    const auto& integer = static_cast<const ast::IntegerExpression&>(expression);
+    const auto& literal = integer.value;
+    const PrimaryTyKind kind = selectIntegerKind(literal.suffix, std::nullopt);
+    if (!isSignedKind(kind)) {
+        report(ctx, expression.span, "unary negation requires a signed integer");
+        return rem(makeValue(error_type_));
+    }
+    uint64_t magnitude = 0;
+    std::string error;
+    if (!parseIntegerMagnitude(literal, magnitude, error)) {
+        report(ctx, expression.span, error);
+        return rem(makeValue(error_type_));
+    }
+    if (!checkNegatedIntegerMagnitude(kind, magnitude)) {
+        report(ctx, expression.span, "negative integer literal out of range");
+        return rem(makeValue(error_type_));
+    }
+    const TyId type = model_.typeContext().insert(PrimaryTy{kind});
+    return rem(makeValue(type));
+}
+
+ExprCheckResult BodyChecker::checkUnary(const ast::UnaryExpression& expression, FunctionCheckContext& ctx) {
+    assert(expression.operand != nullptr);
+    ctx.body.unary_operations.erase(&expression);
+    ctx.body.place_operations.erase(&expression);
+    ExprCheckResult operand;
+    if (expression.op == ast::UnaryOperator::Negation) {
+        auto literal = checkNegatedLiteralOperand(*expression.operand, ctx);
+        if (literal) {
+            operand = std::move(*literal);
+        } else {
+            operand = checkExpr(*expression.operand, std::nullopt, ctx);
+        }
+    } else {
+        operand = checkExpr(*expression.operand, std::nullopt, ctx);
+    }
+    const TyId operand_type = operand.semantics.effectiveType();
+    if (operand_type == error_type_) {
+        return makeValue(error_type_, operand.can_complete);
+    }
+    switch (expression.op) {
+        case ast::UnaryOperator::Negation:
+        case ast::UnaryOperator::Not: {
+            auto plan = operators_.checkScalarUnary(expression.op, operand_type);
+            if (!plan) {
+                report(ctx, expression.span, "unsupported unary operand type");
+                return makeValue(error_type_, operand.can_complete);
+            }
+            ctx.body.unary_operations.insert_or_assign(&expression, *plan);
+            return makeValue(plan->result_type, operand.can_complete);
+        }
+        case ast::UnaryOperator::Dereference: {
+            PlaceChecker places(model_.typeContext());
+            auto base = places.fromExpression(*expression.operand, operand.semantics);
+            auto target = places.dereferenceOne(std::move(base));
+            if (!target) {
+                report(ctx, expression.span, "dereference requires a reference or Box");
+                return makeValue(error_type_, operand.can_complete);
+            }
+            ExprSemantics info{};
+            info.type = target->type;
+            info.category = ValueCategory::Place;
+            info.place = target->access;
+            info.access = canWrite(target->access) ? PlaceAccess::Writable : PlaceAccess::ReadOnly;
+            ctx.body.place_operations.insert_or_assign(&expression, PlacePlan{target->root, std::move(target->steps)});
+            return ExprCheckResult{std::move(info), operand.can_complete};
+        }
+        case ast::UnaryOperator::Borrow:
+        case ast::UnaryOperator::BorrowMut: {
+            PlaceChecker places(model_.typeContext());
+            auto place = places.fromExpression(*expression.operand, operand.semantics);
+            place = places.materializeIfNeeded(std::move(place));
+            const bool is_mut = expression.op == ast::UnaryOperator::BorrowMut;
+            if (is_mut) {
+                auto error = mutableAccessError(place);
+                if (error) {
+                    std::string message = "mutable borrow requires a writable place";
+                    switch (*error) {
+                        case MutableAccessError::NotPlace:
+                            message = "mutable borrow requires a place";
+                            break;
+                        case MutableAccessError::SharedRef:
+                            message = "cannot borrow through a shared reference";
+                            break;
+                        case MutableAccessError::VecAccess:
+                            message = "mutable borrow is blocked by Vec access";
+                            break;
+                        case MutableAccessError::ImmutableStorage:
+                            message = "cannot mutably borrow immutable storage";
+                            break;
+                    }
+                    report(ctx, expression.span, message);
+                    return makeValue(error_type_, operand.can_complete);
+                }
+            }
+            const TyId reference_type = model_.typeContext().insert(RefTy{place.type, is_mut});
+            ctx.body.place_operations.insert_or_assign(&expression, PlacePlan{place.root, std::move(place.steps)});
+            return makeValue(reference_type, operand.can_complete);
+        }
+    }
+    report(ctx, expression.span, "invalid unary operator");
+    return makeValue(error_type_, operand.can_complete);
+}
+
+std::optional<bool> BodyChecker::knownBooleanLiteral(const ast::Expression& expression) {
+    if (expression.type == ast::NodeType::BoolExpr) {
+        return static_cast<const ast::BoolExpression&>(expression).value;
+    }
+    if (expression.type == ast::NodeType::GroupedExpr) {
+        const auto& grouped = static_cast<const ast::GroupedExpression&>(expression);
+        assert(grouped.expr != nullptr);
+        return knownBooleanLiteral(*grouped.expr);
+    }
+    return std::nullopt;
+}
+
+ExprCheckResult BodyChecker::checkBinary(const ast::BinaryExpression& expression, FunctionCheckContext& ctx) {
+    assert(expression.lhs_operand != nullptr);
+    assert(expression.rhs_operand != nullptr);
+    ctx.body.binary_operations.erase(&expression);
+    const bool lazy = expression.op == ast::BinaryOperator::LogicalAnd || expression.op == ast::BinaryOperator::LogicalOr;
+    const ExprCheckResult left = checkExpr(*expression.lhs_operand, std::nullopt, ctx);
+    bool right_may_run = true;
+    bool right_may_skip = false;
+    if (lazy) {
+        const auto known = knownBooleanLiteral(*expression.lhs_operand);
+        if (known.has_value()) {
+            const bool must_run_right = expression.op == ast::BinaryOperator::LogicalAnd ? *known : !*known;
+            right_may_run = must_run_right;
+            right_may_skip = !must_run_right;
+        } else {
+            right_may_run = true;
+            right_may_skip = true;
+        }
+    }
+    ExprCheckResult right;
+    {
+        ReachabilityGuard reachable(ctx, left.can_complete && right_may_run);
+        right = checkExpr(*expression.rhs_operand, std::nullopt, ctx);
+    }
+    const bool can_complete = lazy ? left.can_complete && (right_may_skip || right.can_complete) : left.can_complete && right.can_complete;
+    const TyId left_type = left.semantics.effectiveType();
+    const TyId right_type = right.semantics.effectiveType();
+    if (lazy) {
+        bool failed = left_type == error_type_ || right_type == error_type_;
+        if (left_type != error_type_ && left_type != bool_type_) {
+            report(ctx, expression.lhs_operand->span, "left logical operand must be bool");
+            failed = true;
+        }
+        if (right_type != error_type_ && right_type != bool_type_) {
+            report(ctx, expression.rhs_operand->span, "right logical operand must be bool");
+            failed = true;
+        }
+        if (failed) {
+            return makeValue(error_type_, can_complete);
+        }
+        const BinaryPlan plan{
+            OperandPlan{
+                left_type,
+                bool_type_,
+                OperandReadKind::Value
+            },
+            OperandPlan{
+                right_type,
+                bool_type_,
+                OperandReadKind::Value
+            },
+            bool_type_
+        };
+        ctx.body.binary_operations.insert_or_assign(&expression, plan);
+        return makeValue(bool_type_, can_complete);
+    }
+    if (left_type == error_type_ || right_type == error_type_) {
+        return makeValue(error_type_, can_complete);
+    }
+    std::optional<BinaryPlan> plan;
+    switch (expression.op) {
+        case ast::BinaryOperator::Add:
+        case ast::BinaryOperator::Subtract:
+        case ast::BinaryOperator::Multiply:
+        case ast::BinaryOperator::Divide:
+        case ast::BinaryOperator::Remainder:
+            plan = operators_.checkArithmeticOperands(left_type, right_type);
+            break;
+        case ast::BinaryOperator::BitwiseAnd:
+        case ast::BinaryOperator::BitwiseOr:
+        case ast::BinaryOperator::BitwiseXor:
+            plan = operators_.checkBitwiseOperands(left_type, right_type);
+            break;
+        case ast::BinaryOperator::ShiftLeft:
+        case ast::BinaryOperator::ShiftRight:
+            plan = operators_.checkShiftOperands(left_type, right_type);
+            break;
+        case ast::BinaryOperator::Less:
+        case ast::BinaryOperator::LessEqual:
+        case ast::BinaryOperator::Greater:
+        case ast::BinaryOperator::GreaterEqual:
+            plan = operators_.checkOrderingOperands(left_type, right_type);
+            break;
+        case ast::BinaryOperator::Equal:
+        case ast::BinaryOperator::NotEqual:
+            plan = operators_.checkEqualityOperands(left_type, right_type);
+            break;
+        default:
+            report(ctx, expression.span, "invalid binary operator");
+            return makeValue(error_type_, can_complete);
+    }
+    if (!plan.has_value()) {
+        report(ctx, expression.span, "unsupported binary operand types");
+        return makeValue(error_type_, can_complete);
+    }
+    ctx.body.binary_operations.insert_or_assign(&expression, *plan);
+    return makeValue(plan->result_type, can_complete);
+}
+
+ExprCheckResult BodyChecker::checkCast(const ast::CastExpression& expression, FunctionCheckContext& ctx) {
+    assert(expression.operand != nullptr);
+    assert(expression.target_type != nullptr);
+    const TyId target = type_resolver_.resolve(*expression.target_type, ResolveContext{ctx.function.owner_struct});
+    const ExprCheckResult operand = checkExpr(*expression.operand, std::nullopt, ctx);
+    const TyId source = operand.semantics.effectiveType();
+    if (target == error_type_ || source == error_type_) {
+        ctx.has_error = true;
+        return makeValue(error_type_, operand.can_complete);
+    }
+    if (!isInteger(target, model_)) {
+        report(ctx, expression.target_type->span, "cast target must be an integer type");
+        return makeValue(error_type_, operand.can_complete);
+    }
+    if (!isInteger(source, model_) && source != bool_type_) {
+        report(ctx, expression.operand->span, "cast operand must have integer or bool type");
+        return makeValue(error_type_, operand.can_complete);
+    }
+    return makeValue(target, operand.can_complete);
+}
+
+bool BodyChecker::checkAssignmentDestination(const ast::Expression& expression, const ExprSemantics& semantics, FunctionCheckContext& ctx) {
+    if (semantics.effectiveType() == error_type_) {
+        return false;
+    }
+    PlaceChecker places(model_.typeContext());
+    const PlaceResult destination = places.fromExpression(expression, semantics);
+    const auto error = mutableAccessError(destination);
+    if (!error) {
+        return true;
+    }
+    std::string message;
+    switch (*error) {
+        case MutableAccessError::NotPlace:
+            message = "assignment destination must be a place";
+            break;
+        case MutableAccessError::SharedRef:
+            message = "cannot assign through a shared reference";
+            break;
+        case MutableAccessError::VecAccess:
+            message = "assignment is blocked by Vec access";
+            break;
+        case MutableAccessError::ImmutableStorage:
+            message = "cannot assign to immutable storage";
+            break;
+    }
+    report(ctx, expression.span, message);
+    return false;
+}
+
+std::optional<BinaryPlan> BodyChecker::checkCompoundAssignmentOperands(ast::AssignmentOperator op, TyId destination_type, TyId right_type) {
+    switch (op) {
+        case ast::AssignmentOperator::AssignAdd:
+        case ast::AssignmentOperator::AssignSubtract:
+        case ast::AssignmentOperator::AssignMultiply:
+        case ast::AssignmentOperator::AssignDivide:
+        case ast::AssignmentOperator::AssignRemainder:
+            return operators_.checkArithmeticOperands(destination_type, right_type);
+        case ast::AssignmentOperator::AssignBitwiseAnd:
+        case ast::AssignmentOperator::AssignBitwiseOr:
+        case ast::AssignmentOperator::AssignBitwiseXor:
+            return operators_.checkBitwiseOperands(destination_type, right_type);
+        case ast::AssignmentOperator::AssignShiftLeft:
+        case ast::AssignmentOperator::AssignShiftRight:
+            return operators_.checkShiftOperands(destination_type, right_type);
+        case ast::AssignmentOperator::Assign:
+            return std::nullopt;
+    }
+    return std::nullopt;
+}
+
+ExprCheckResult BodyChecker::checkAssignment(const ast::AssignmentExpression& expression, FunctionCheckContext& ctx) {
+    assert(expression.lhs_operand != nullptr);
+    assert(expression.rhs_operand != nullptr);
+    const bool simple = expression.op == ast::AssignmentOperator::Assign;
+    ctx.body.binary_operations.erase(&expression);
+    const ExprCheckResult left = checkExpr(*expression.lhs_operand, std::nullopt, ctx);
+    const TyId destination_type = left.semantics.effectiveType();
+    bool destination_ok = checkAssignmentDestination(*expression.lhs_operand, left.semantics, ctx);
+    if (!simple && destination_type != error_type_ && !std::holds_alternative<PrimaryTy>(model_.typeContext().get(destination_type))) {
+        report(ctx, expression.lhs_operand->span, "compound assignment destination must have primitive type");
+        destination_ok = false;
+    }
+    std::optional<TyId> right_expected;
+    if (simple && destination_type != error_type_) {
+        right_expected = destination_type;
+    }
+    const ExprCheckResult right = checkExpr(*expression.rhs_operand, right_expected, ctx);
+    const TyId right_type = right.semantics.effectiveType();
+    const bool can_complete = left.can_complete && right.can_complete;
+    if (!destination_ok || right_type == error_type_) {
+        ctx.has_error = true;
+        return makeValue(error_type_, can_complete);
+    }
+    if (simple) {
+        return makeValue(unit_type_, can_complete);
+    }
+    const auto plan = checkCompoundAssignmentOperands(expression.op, destination_type, right_type);
+    if (!plan) {
+        report(ctx, expression.span, "unsupported compound assignment operand types");
+        return makeValue(error_type_, can_complete);
+    }
+    assert(plan->result_type == destination_type);
+    ctx.body.binary_operations.insert_or_assign(&expression, *plan);
+    return makeValue(unit_type_, can_complete);
 }
 
 } // namespace semantic
