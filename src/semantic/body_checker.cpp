@@ -266,17 +266,17 @@ ExprCheckResult BodyChecker::checkExprRaw(const ast::Expression& expression, std
         case ast::NodeType::StructExpr:
             return checkUnimplemented(expression, "struct", ctx);
         case ast::NodeType::IfExpr:
-            return checkUnimplemented(expression, "if", ctx);
+            return checkIf(static_cast<const ast::IfExpression&>(expression), expected, ctx);
         case ast::NodeType::LoopExpr:
-            return checkUnimplemented(expression, "loop", ctx);
+            return checkLoop(static_cast<const ast::LoopExpression&>(expression), expected, ctx);
         case ast::NodeType::WhileExpr:
-            return checkUnimplemented(expression, "while", ctx);
+            return checkWhile(static_cast<const ast::WhileExpression&>(expression), ctx);
         case ast:: NodeType::ReturnExpr:
-            return checkUnimplemented(expression, "return", ctx);
+            return checkReturn(static_cast<const ast::ReturnExpression&>(expression), ctx);
         case ast::NodeType::BreakExpr:
-            return checkUnimplemented(expression, "break", ctx);
+            return checkBreak(static_cast<const ast::BreakExpression&>(expression), ctx);
         case ast::NodeType::ContinueExpr:
-            return checkUnimplemented(expression, "continue", ctx);
+            return checkContinue(static_cast<const ast::ContinueExpression&>(expression), ctx);
         default:
             report(ctx, expression.span, "invalid expression node");
             return makeError();
@@ -912,6 +912,199 @@ ExprCheckResult BodyChecker::checkAssignment(const ast::AssignmentExpression& ex
     assert(plan->result_type == destination_type);
     ctx.body.binary_operations.insert_or_assign(&expression, *plan);
     return makeValue(unit_type_, can_complete);
+}
+
+ExprCheckResult BodyChecker::checkReturn(const ast::ReturnExpression& expression, FunctionCheckContext& ctx) {
+    const TyId target = ctx.function.signature.return_type;
+    if (expression.expr) {
+        const ExprCheckResult value = checkExpr(*expression.expr, target, ctx);
+        if (value.semantics.effectiveType() == error_type_) {
+            return makeValue(error_type_, false);
+        }
+    } else if (target != unit_type_) {
+        report(ctx, expression.span, "bare return requires a unit return type");
+        return makeValue(error_type_, false);
+    }
+    return makeValue(never_type_, false);
+}
+
+ExprCheckResult BodyChecker::checkIf(const ast::IfExpression& expression, std::optional<TyId> expected, FunctionCheckContext& ctx) {
+    const auto condition = checkExpr(*expression.condition, bool_type_, ctx);
+    const bool has_else = expression.else_branch != nullptr;
+    const auto branch_expected = has_else ? expected : std::optional<TyId>(unit_type_);
+    ExprCheckResult then_result;
+    {
+        ReachabilityGuard guard(ctx, condition.can_complete);
+        then_result = checkExpr(*expression.then_block, branch_expected, ctx);
+    }
+    ExprCheckResult else_result = makeValue(unit_type_);
+    if (has_else) {
+        ReachabilityGuard guard(ctx, condition.can_complete);
+        else_result = checkExpr(*expression.else_branch, expected, ctx);
+    }
+    const bool can_complete = condition.can_complete && (then_result.can_complete || else_result.can_complete);
+    if (condition.semantics.effectiveType() == error_type_ || then_result.semantics.effectiveType() == error_type_ || else_result.semantics.effectiveType() == error_type_) {
+        return makeValue(error_type_, can_complete);
+    }
+    if (!has_else) {
+        return makeValue(unit_type_, can_complete);
+    }
+    if (expected) {
+        return makeValue(*expected, can_complete);
+    }
+    const std::vector<ResultSite> sites{
+        ResultSite{
+            expression.then_block.get(),
+            then_result.semantics
+        },
+        ResultSite{
+            expression.else_branch.get(),
+            else_result.semantics
+        }
+    };
+    auto lub = coercions_.tryFindCommonType(sites, never_type_);
+    if (!lub) {
+        report(ctx, expression.span, "if branches have no common result type");
+        return makeValue(error_type_, can_complete);
+    }
+    bool ok = true;
+    for (size_t i = 0; i < sites.size(); i++) {
+        const bool applied = applyCoercion(*sites[i].expression, sites[i].original, lub->coversions[i], ctx);
+        ok = ok && applied;
+    }
+    return makeValue(ok ? lub->target_type : error_type_, can_complete);
+}
+
+ExprCheckResult BodyChecker::checkBreak(const ast::BreakExpression& expression, FunctionCheckContext& ctx) {
+    if (ctx.loops.size() <= ctx.loop_target_floor) {
+        report(ctx, expression.span, "break has no permitted loop target");
+        if (expression.expr) {
+            checkExpr(*expression.expr, std::nullopt, ctx);
+        }
+        return makeValue(error_type_, false);
+    }
+    const size_t target_index = ctx.loops.size() - 1;
+    const LoopId target_id = ctx.loops[target_index].id;
+    const LoopKind target_kind = ctx.loops[target_index].kind;
+    const auto target_expected = ctx.loops[target_index].expected_result;
+    if (expression.expr && target_kind == LoopKind::While) {
+        report(ctx, expression.span, "value-bearing break requires a loop target");
+        checkExpr(*expression.expr, std::nullopt, ctx);
+        return makeValue(error_type_, false);
+    }
+    ctx.body.break_targets.insert_or_assign(&expression, target_id);
+    const size_t site_index = ctx.loops[target_index].breaks.size();
+    ctx.loops[target_index].breaks.push_back(BreakSite{
+        &expression,
+        error_type_,
+        false,
+        false
+    });
+    TyId value_type = unit_type_;
+    bool value_can_complete = true;
+    if (expression.expr) {
+        const auto value = checkExpr(*expression.expr, target_expected, ctx);
+        value_type = value.semantics.effectiveType() == error_type_ ? error_type_ : value.semantics.type;
+        value_can_complete = value.can_complete;
+    } else if (target_expected && *target_expected != unit_type_) {
+        report(ctx, expression.span, "unit break value does not match loop result");
+        value_type = error_type_;
+    }
+    auto& site = ctx.loops[target_index].breaks[site_index];
+    site.value_type = value_type;
+    site.value_can_complete = value_can_complete;
+    site.reachable = value_can_complete;
+    return makeValue(value_type == error_type_ ? error_type_ : never_type_, false);
+}
+
+ExprCheckResult BodyChecker::checkContinue(const ast::ContinueExpression& expression, FunctionCheckContext& ctx) {
+    if (ctx.loops.size() <= ctx.loop_target_floor) {
+        report(ctx, expression.span, "continue has no permitted loop target");
+        return makeValue(error_type_, false);
+    }
+    const LoopId target_id = ctx.loops.back().id;
+    ctx.body.continue_targets.insert_or_assign(&expression, target_id);
+    return makeValue(never_type_, false);
+}
+
+ExprCheckResult BodyChecker::checkLoop(const ast::LoopExpression& expression, std::optional<TyId> expected, FunctionCheckContext& ctx) {
+    LoopFrame frame;
+    BlockCheckResult body{error_type_, true};
+    {
+        LoopGuard guard(ctx, LoopKind::Infinite, expected);
+        ctx.body.loop_ids.insert_or_assign(&expression, guard.id());
+        body = checkBlock(*expression.body, unit_type_, ctx);
+        frame = guard.takeFrame();
+    }
+    if (body.type == error_type_) {
+        return makeValue(error_type_, true);
+    }
+    if (frame.breaks.empty()) {
+        return makeValue(never_type_, false);
+    }
+    bool can_complete = false;
+    bool all_never = true;
+    for (const auto& site: frame.breaks) {
+        if (site.value_type == error_type_) {
+            return makeValue(error_type_, true);
+        }
+        can_complete = can_complete || site.value_can_complete;
+        all_never = all_never && site.value_type == never_type_;
+    }
+    if (all_never) {
+        return makeValue(never_type_, false);
+    }
+    if (expected) {
+        return makeValue(*expected, can_complete);
+    }
+    std::vector<ResultSite> sites;
+    sites.reserve(frame.breaks.size());
+    for (const auto& site: frame.breaks) {
+        const auto* operand = site.expression->expr.get();
+        if (operand) {
+            sites.push_back(ResultSite{
+                operand,
+                ctx.body.expressions.at(operand)
+            });
+        } else {
+            sites.push_back(ResultSite{
+                site.expression,
+                makeValue(unit_type_).semantics
+            });
+        }
+    }
+    auto lub = coercions_.tryFindCommonType(sites, never_type_);
+    if (!lub) {
+        report(ctx, expression.span, "break values has no common result type");
+        return makeValue(error_type_, can_complete);
+    }
+    bool ok = true;
+    for (size_t i = 0; i < sites.size(); i++) {
+        if (!frame.breaks[i].expression->expr) {
+            continue;
+        }
+        const bool applied = applyCoercion(*sites[i].expression, sites[i].original, lub->coversions[i], ctx);
+        ok = ok && applied;
+    }
+    return makeValue(ok ? lub->target_type : error_type_, can_complete);
+}
+
+ExprCheckResult BodyChecker::checkWhile(const ast::WhileExpression& expression, FunctionCheckContext& ctx) {
+    LoopGuard guard(ctx, LoopKind::While, std::nullopt);
+    ctx.body.loop_ids.insert_or_assign(&expression, guard.id());
+    ExprCheckResult condition;
+    {
+        LoopTargetFloorGuard floor(ctx, ctx.loops.size());
+        condition = checkExpr(*expression.condition, bool_type_, ctx);
+    }
+    const auto known = knownBooleanLiteral(*expression.condition);
+    BlockCheckResult body;
+    {
+        ReachabilityGuard reachable(ctx, condition.can_complete && known.value_or(true));
+        body = checkBlock(*expression.body, unit_type_, ctx);
+    }
+    const bool failed = condition.semantics.effectiveType() == error_type_ || body.type == error_type_;
+    return makeValue(failed ? error_type_ : unit_type_, condition.can_complete);
 }
 
 } // namespace semantic

@@ -26,6 +26,7 @@ struct BreakSite {
     const ast::BreakExpression* expression;
     TyId value_type;
     bool reachable;
+    bool value_can_complete;
 };
 
 struct LoopFrame {
@@ -115,6 +116,13 @@ private:
     std::optional<bool> knownBooleanLiteral(const ast::Expression& expression);
     bool checkAssignmentDestination(const ast::Expression& expression, const ExprSemantics& semantics, FunctionCheckContext& ctx);
     std::optional<BinaryPlan> checkCompoundAssignmentOperands(ast::AssignmentOperator op, TyId destination_type, TyId right_type);
+
+    ExprCheckResult checkReturn(const ast::ReturnExpression& expression, FunctionCheckContext& ctx);
+    ExprCheckResult checkIf(const ast::IfExpression& expression, std::optional<TyId> expected, FunctionCheckContext& ctx);
+    ExprCheckResult checkBreak(const ast::BreakExpression& expression, FunctionCheckContext& ctx);
+    ExprCheckResult checkContinue(const ast::ContinueExpression& expression, FunctionCheckContext& ctx);
+    ExprCheckResult checkLoop(const ast::LoopExpression& expression, std::optional<TyId> expected, FunctionCheckContext& ctx);
+    ExprCheckResult checkWhile(const ast::WhileExpression& expression, FunctionCheckContext& ctx);
 };
 
 } // namespace semantic
