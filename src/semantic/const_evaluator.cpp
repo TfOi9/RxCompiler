@@ -6,6 +6,7 @@
 #include "semantic/types.hpp"
 #include "semantic/semantic_model.hpp"
 #include "semantic/integer_literal.hpp"
+#include "semantic/generic_arguments.hpp"
 #include <cstdint>
 #include <limits>
 #include <optional>
@@ -95,6 +96,10 @@ std::optional<ConstId> ConstEvaluator::resolveTopLevelConstant(const ast::PathEx
         diag_.add_entry(diagnostic::Severity::Error, seg.span.begin, "constant path has empty name");
         return std::nullopt;
     }
+    const auto* args = seg.generic_args ? &*seg.generic_args : nullptr;
+    if (!checkNoGenericArguments(args, *seg.ident_segment.name, diag_)) {
+        return std::nullopt;
+    }
     auto it = index_.value_names.find(*seg.ident_segment.name);
     if (it == index_.value_names.end()) {
         diag_.add_entry(diagnostic::Severity::Error, seg.span.begin, "unresolved constant");
@@ -116,6 +121,10 @@ std::optional<ConstId> ConstEvaluator::resolveTopLevelConstant(const ast::PathEx
 std::optional<SymbolId> ConstEvaluator::resolveStructPrefix(const ast::PathExprSegment& seg, ResolveContext ctx) {
     if (seg.ident_segment.is_self) {
         diag_.add_entry(diagnostic::Severity::Error, seg.span.begin, "'self' is value name");
+        return std::nullopt;
+    }
+    const auto* args = seg.generic_args ? &*seg.generic_args : nullptr;
+    if (!checkLifetimeOnlyArguments(args, seg.ident_segment.name.value_or("Self"), diag_)) {
         return std::nullopt;
     }
     if (seg.ident_segment.name.has_value()) {
@@ -152,6 +161,10 @@ std::optional<ConstId> ConstEvaluator::resolveAssociatedConstant(SymbolId id, co
         return std::nullopt;
     }
     const std::string& name = *seg.ident_segment.name;
+    const auto* args = seg.generic_args ? &*seg.generic_args : nullptr;
+    if (!checkNoGenericArguments(args, name, diag_)) {
+        return std::nullopt;
+    }
     auto owner_it = model_.assoc_by_struct_.find(id);
     if (owner_it == model_.assoc_by_struct_.end()) {
         diag_.add_entry(diagnostic::Severity::Error, seg.span.begin, "struct has no associated constant");
