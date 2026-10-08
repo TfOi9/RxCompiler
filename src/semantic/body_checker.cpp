@@ -23,6 +23,7 @@
 #include <cassert>
 #include <limits>
 #include <optional>
+#include <utility>
 #include <variant>
 
 namespace semantic {
@@ -255,9 +256,9 @@ ExprCheckResult BodyChecker::checkExprRaw(const ast::Expression& expression, std
         case ast::NodeType::CastExpr:
             return checkCast(static_cast<const ast::CastExpression&>(expression), ctx);
         case ast::NodeType::CallExpr:
-            return checkUnimplemented(expression, "call", ctx);
+            return checkCall(static_cast<const ast::CallExpression&>(expression), ctx);
         case ast::NodeType::MethodCallExpr:
-            return checkUnimplemented(expression, "method call", ctx);
+            return checkMethodCall(static_cast<const ast::MethodCallExpression&>(expression), ctx);
         case ast::NodeType::FieldExpr:
             return checkField(static_cast<const ast::FieldExpression&>(expression), ctx);
         case ast::NodeType::IndexExpr:
@@ -1311,9 +1312,334 @@ ExprCheckResult BodyChecker::checkField(const ast::FieldExpression& expression, 
         if (!next) {
             report(ctx, expression.span, "field base is not a struct");
             return makeValue(error_type_, base.can_complete);
-            cursor = std::move(*next);
+        }
+        cursor = std::move(*next);
+    }
+}
+
+Callable BodyChecker::describeFunction(FunctionId id) const {
+    const FunctionInfo* function = model_.findFunction(id);
+    assert(function != nullptr);
+    assert(function->signature_valid);
+    Callable result{
+        FunctionTarget{id},
+        {},
+        function->signature.return_type,
+        function->signature.receiver_mode
+    };
+    for (const auto& param: function->signature.parameters) {
+        result.parameters.push_back(param.type);
+    }
+    return result;
+}
+
+ArgumentCheckResult BodyChecker::checkArguments(const std::vector<ast::AstPtr<ast::Expression>>& arguments, const std::vector<TyId>* expected_types, bool prefix_can_complete, ast::SourceSpan span, FunctionCheckContext& ctx) {
+    bool failed = false;
+    bool can_complete = prefix_can_complete;
+    if (expected_types && arguments.size() != expected_types->size()) {
+        report(ctx, span, "argument count mismatch");
+        failed = true;
+    }
+    for (size_t i = 0; i < arguments.size(); i++) {
+        std::optional<TyId> expected;
+        if (expected_types && i < expected_types->size()) {
+            expected = (*expected_types)[i];
+        }
+        ExprCheckResult argument;
+        {
+            ReachabilityGuard guard(ctx, can_complete);
+            argument = checkExpr(*arguments[i], expected, ctx);
+        }
+        failed = failed || argument.semantics.effectiveType() == error_type_;
+        can_complete = can_complete && argument.can_complete;
+    }
+    return {can_complete, failed};
+}
+
+ExprCheckResult BodyChecker::checkCall(const ast::CallExpression& expression, FunctionCheckContext& ctx) {
+    const ast::Expression* callee = expression.callee.get();
+    while (callee->type == ast::NodeType::GroupedExpr) {
+        callee = static_cast<const ast::GroupedExpression*>(callee)->expr.get();
+    }
+    std::optional<Callable> callable;
+    bool prefix_can_complete = true;
+    if (callee->type == ast::NodeType::PathExpr) {
+        const auto& path = static_cast<const ast::PathExpression&>(*callee);
+        const auto resolved = resolveValuePath(path.path, ctx);
+        if (resolved) {
+            if (const auto* function = std::get_if<FunctionTarget>(&*resolved)) {
+                callable = describeFunction(function->id);
+            } else if (const auto* builtin = std::get_if<BuiltinTarget>(&*resolved)) {
+                callable = describeBuiltin(*builtin, expression.span, ctx);
+            } else {
+                report(ctx, callee->span, "call target is not a function");
+            }
+        }
+    } else {
+        const auto checked = checkExpr(*callee, std::nullopt, ctx);
+        prefix_can_complete = checked.can_complete;
+        if (checked.semantics.effectiveType() != error_type_) {
+            report(ctx, callee->span, "unsupported call target expression");
+        }
+    }
+    const auto arguments = checkArguments(expression.args, callable ? &callable->parameters : nullptr, prefix_can_complete, expression.span, ctx);
+    if (!callable || arguments.has_error) {
+        return makeValue(error_type_, arguments.can_complete);
+    }
+    ctx.body.calls.insert_or_assign(&expression, CallPlan{callable->target, std::nullopt});
+    return makeValue(callable->return_type, arguments.can_complete);
+}
+
+std::optional<ReceiverPlan> BodyChecker::adjustReceiver(const ast::Expression& expression, TyId original_type, const ReceiverCandidate& candidate, FunctionCheckContext& ctx) {
+    PlaceChecker places(model_.typeContext());
+    PlaceResult place = candidate.source;
+    ReceiverAction action = candidate.action;
+    if (action == ReceiverAction::Value) {
+        const TyInfo info = model_.typeContext().get(place.type);
+        if (const auto* ref = std::get_if<RefTy>(&info); ref && ref->is_mut) {
+            auto referent = places.dereferenceOne(std::move(place));
+            assert(referent.has_value());
+            place = std::move(*referent);
+            action = ReceiverAction::BorrowMutable;
+        }
+    } else {
+        place = places.materializeIfNeeded(std::move(place));
+    }
+    if (action == ReceiverAction::BorrowMutable && !canWrite(place.access)) {
+        report(ctx, expression.span, "method receiver requires mutable access");
+        return std::nullopt;
+    }
+    return ReceiverPlan{
+        &expression,
+        original_type,
+        candidate.type,
+        std::move(place.steps),
+        action
+    };
+}
+
+std::optional<Callable> BodyChecker::describeBuiltin(const BuiltinTarget& target, ast::SourceSpan span, FunctionCheckContext& ctx) {
+    auto& types = model_.typeContext();
+    const TyId owner = target.owner_type;
+    const TyInfo owner_info = types.get(owner);
+    if (std::holds_alternative<ErrorTy>(owner_info)) {
+        ctx.has_error = true;
+        return std::nullopt;
+    }
+    auto fail = [&](const std::string& message) -> std::optional<Callable> {
+        report(ctx, span, message);
+        return std::nullopt;
+    };
+    auto make = [&](std::vector<TyId> parameters, TyId return_type, ReceiverMode receiver_mode) -> std::optional<Callable> {
+        return Callable{
+            CallTarget{target},
+            std::move(parameters),
+            return_type,
+            receiver_mode
+        };
+    };
+    auto reference = [&](bool is_mut) -> TyId {
+        return types.insert(TyInfo{RefTy{owner, is_mut}});
+    };
+    auto usizeType = [&]() -> TyId {
+        return types.insert(TyInfo{PrimaryTy{PrimaryTyKind::USize}});
+    };
+    switch (target.operation) {
+        case BuiltinOp::BoxNew: {
+            const auto* box = std::get_if<BoxTy>(&owner_info);
+            if (!box) {
+                return fail("builtin Box::new requires a box type");
+            }
+            return make({box->elem}, owner, ReceiverMode::None);
+        }
+        case BuiltinOp::VecNew: {
+            if (!std::holds_alternative<VecTy>(owner_info)) {
+                return fail("builtin Vec::new requires a Vec type");
+            }
+            return make({}, owner, ReceiverMode::None);
+        }
+        case BuiltinOp::VecLen: {
+            if (!std::holds_alternative<VecTy>(owner_info)) {
+                return fail("builtin Vec::len requires a Vec type");
+            }
+            return make({reference(false)}, usizeType(), ReceiverMode::Ref);
+        }
+        case BuiltinOp::VecIsEmpty: {
+            if (!std::holds_alternative<VecTy>(owner_info)) {
+                return fail("builtin Vec::is_empty requires a Vec type");
+            }
+            return make({reference(false)}, bool_type_, ReceiverMode::Ref);
+        }
+        case BuiltinOp::VecPush: {
+            const auto* vec = std::get_if<VecTy>(&owner_info);
+            if (!vec) {
+                return fail("builtin Vec::push requires a Vec type");
+            }
+            return make({reference(true), vec->elem}, unit_type_, ReceiverMode::MutableRef);
+        }
+        case BuiltinOp::VecRemove: {
+            const auto* vec = std::get_if<VecTy>(&owner_info);
+            if (!vec) {
+                return fail("builtin Vec::remove requires a Vec type");
+            }
+            return make({reference(true), usizeType()}, vec->elem, ReceiverMode::MutableRef);
+        }
+        case BuiltinOp::Clone: {
+            if (!derive_checker_.supports(owner, DeriveKind::Clone)) {
+                return fail("type does not support builtin Clone");
+            }
+            return make({reference(false)}, owner, ReceiverMode::Ref);
         }
     }
 }
 
+std::optional<BuiltinOp> BodyChecker::findBuiltinOperation(TyId owner, const std::string& name) {
+    const TyInfo info = model_.typeContext().get(owner);
+    if (std::holds_alternative<BoxTy>(info)) {
+        if (name == "new") {
+            return BuiltinOp::BoxNew;
+        }
+    } else if (std::holds_alternative<VecTy>(info)) {
+        if (name == "new") {
+            return BuiltinOp::VecNew;
+        }
+        if (name == "len") {
+            return BuiltinOp::VecLen;
+        }
+        if (name == "is_empty") {
+            return BuiltinOp::VecIsEmpty;
+        }
+        if (name == "push") {
+            return BuiltinOp::VecPush;
+        }
+        if (name == "remove") {
+            return BuiltinOp::VecRemove;
+        }
+    }
+    if (name == "clone" &&
+        derive_checker_.supports(owner, DeriveKind::Clone)) {
+        return BuiltinOp::Clone;
+    }
+    return std::nullopt;
+}
+
+std::vector<Callable> BodyChecker::collectBuiltinMethods(TyId candidate_type, const std::string& name, ast::SourceSpan span, FunctionCheckContext& ctx) {
+    std::vector<Callable> result;
+    const TyInfo candidate_info = model_.typeContext().get(candidate_type);
+    const auto* reference = std::get_if<RefTy>(&candidate_info);
+    if (!reference) {
+        return result;
+    }
+    const TyId owner = reference->target;
+    const auto operation = findBuiltinOperation(owner, name);
+    if (!operation) {
+        return result;
+    }
+    auto callable = describeBuiltin(
+        BuiltinTarget{*operation, owner},
+        span,
+        ctx
+    );
+    if (!callable ||
+        callable->receiver_mode == ReceiverMode::None ||
+        callable->parameters.empty()) {
+        return result;
+    }
+    if (callable->parameters.front() != candidate_type) {
+        return result;
+    }
+    result.push_back(std::move(*callable));
+    return result;
+}
+
+std::vector<Callable> BodyChecker::lookupMethods(TyId candidate_type, const std::string& name, ast::SourceSpan span, FunctionCheckContext& ctx) {
+    std::vector<Callable> result;
+    const TyInfo candidate_info = model_.typeContext().get(candidate_type);
+    TyId owner = candidate_type;
+    if (const auto* reference = std::get_if<RefTy>(&candidate_info)) {
+        owner = reference->target;
+    }
+    const TyInfo owner_info = model_.typeContext().get(owner);
+    if (const auto* structure = std::get_if<StructTy>(&owner_info)) {
+        const AssocInfo* assoc = model_.findAssociated(structure->def, name);
+        if (assoc && assoc->kind == AssocKind::Function) {
+            const auto id = model_.findAssociatedFunction(assoc->id);
+            assert(id.has_value());
+            auto callable = describeFunction(*id);
+            if (callable.receiver_mode != ReceiverMode::None &&
+                !callable.parameters.empty() &&
+                callable.parameters.front() == candidate_type) {
+                result.push_back(std::move(callable));
+            }
+        }
+    }
+    auto builtins = collectBuiltinMethods(candidate_type, name, span, ctx);
+    for (auto& callable: builtins) {
+        result.push_back(std::move(callable));
+    }
+    return result;
+}
+
+std::optional<MethodSelection> BodyChecker::findMethod(const ast::Expression& expression, const ExprSemantics& semantics, const std::string& name, ast::SourceSpan span, FunctionCheckContext& ctx) {
+    PlaceChecker places(model_.typeContext());
+    auto cursor = places.fromExpression(expression, semantics);
+    while (true) {
+        const TyId direct = cursor.type;
+        const TyId shared = model_.typeContext().insert(RefTy{direct, false});
+        const TyId mutable_ref = model_.typeContext().insert(RefTy{direct, true});
+        const ReceiverCandidate candidates[] = {
+            {direct, cursor, ReceiverAction::Value},
+            {shared, cursor, ReceiverAction::BorrowShared},
+            {mutable_ref, cursor, ReceiverAction::BorrowMutable}
+        };
+        for (const auto& cand: candidates) {
+            auto matches = lookupMethods(cand.type, name, span, ctx);
+            if (matches.size() > 1) {
+                report(ctx, span, "competing method candidates");
+                return std::nullopt;
+            }
+            if (matches.size() == 1) {
+                return MethodSelection{std::move(matches.front()), cand};
+            }
+        }
+        auto next = places.dereferenceOne(std::move(cursor));
+        if (!next) break;
+        cursor = std::move(*next);
+    }
+    report(ctx, span, "no matching method");
+    return std::nullopt;
+}
+
+ExprCheckResult BodyChecker::checkMethodCall(const ast::MethodCallExpression& expression, FunctionCheckContext& ctx) {
+    const auto receiver = checkExpr(*expression.receiver, std::nullopt, ctx);
+    const auto& ident = expression.method.ident_segment;
+    const auto* generic_args = expression.method.generic_args ? &*expression.method.generic_args : nullptr;
+    bool valid_name = ident.name.has_value() && !ident.is_Self && !ident.is_self;
+    if (!valid_name) {
+        report(ctx, expression.method.span, "expected a method name");
+    } else if (!checkLifetimeOnlyArguments(generic_args, *ident.name, diag_)) {
+        ctx.has_error = true;
+        valid_name = false;
+    }
+    std::optional<MethodSelection> selected;
+    if (valid_name && receiver.semantics.effectiveType() != error_type_) {
+        selected = findMethod(*expression.receiver, receiver.semantics, *ident.name, expression.method.span, ctx);
+    }
+    std::optional<ReceiverPlan> receiver_plan;
+    std::vector<TyId> ordinary_parameters;
+    if (selected) {
+        assert(selected->callable.receiver_mode != ReceiverMode::None);
+        assert(!selected->callable.parameters.empty());
+        receiver_plan = adjustReceiver(*expression.receiver, receiver.semantics.effectiveType(), selected->receiver, ctx);
+        ordinary_parameters.assign(selected->callable.parameters.begin() + 1, selected->callable.parameters.end());
+    }
+    const auto arguments = checkArguments(expression.args, selected ? &ordinary_parameters : nullptr, receiver.can_complete, expression.span, ctx);
+    if (!selected || !receiver_plan || arguments.has_error) {
+        return makeValue(error_type_, arguments.can_complete);
+    }
+    ctx.body.calls.insert_or_assign(&expression, CallPlan{selected->callable.target, std::move(receiver_plan)});
+    return makeValue(selected->callable.return_type, arguments.can_complete);
+}
+
 } // namespace semantic
+

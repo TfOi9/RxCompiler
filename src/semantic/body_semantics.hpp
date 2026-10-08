@@ -1,6 +1,7 @@
 #pragma once
 #include "semantic/const_value.hpp"
 #include "semantic_ids.hpp"
+#include "path_resolution.hpp"
 #include "ast/ast.hpp"
 #include <string>
 #include <unordered_map>
@@ -111,6 +112,27 @@ struct PlacePlan {
     std::vector<PlaceStep> steps;
 };
 
+using CallTarget = std::variant<FunctionTarget, BuiltinTarget>;
+
+enum class ReceiverAction {
+    Value,
+    BorrowShared,
+    BorrowMutable
+};
+
+struct ReceiverPlan {
+    const ast::Expression* expression;
+    TyId source_type;
+    TyId parameter_type;
+    std::vector<PlaceStep> steps;
+    ReceiverAction action;
+};
+
+struct CallPlan {
+    CallTarget target;
+    std::optional<ReceiverPlan> receiver;
+};
+
 struct ExprSemantics {
     TyId type;
     std::optional<TyId> coerced_type;
@@ -139,6 +161,7 @@ struct FunctionBodyInfo {
     std::unordered_map<const ast::Expression*, UnaryPlan> unary_operations;
     std::unordered_map<const ast::Expression*, BinaryPlan> binary_operations;
     std::unordered_map<const ast::Expression*, PlacePlan> place_operations;
+    std::unordered_map<const ast::Expression*, CallPlan> calls;
 };
 
 TyId effectiveType(const ExprSemantics& info);

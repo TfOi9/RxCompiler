@@ -3,6 +3,7 @@
 #include "diagnostic/diagnostic.hpp"
 #include "semantic/operator_checker.hpp"
 #include "semantic/path_resolution.hpp"
+#include "semantic/place_checker.hpp"
 #include "semantic/scope_manager.hpp"
 #include "semantic/type_resolver.hpp"
 #include "semantic/body_semantics.hpp"
@@ -49,6 +50,29 @@ struct BlockCheckResult {
 struct StatementCheckResult {
     bool can_complete;
     bool has_error = false;
+};
+
+struct Callable {
+    CallTarget target;
+    std::vector<TyId> parameters;
+    TyId return_type;
+    ReceiverMode receiver_mode;
+};
+
+struct ArgumentCheckResult {
+    bool can_complete;
+    bool has_error;
+};
+
+struct ReceiverCandidate {
+    TyId type;
+    PlaceResult source;
+    ReceiverAction action;
+};
+
+struct MethodSelection {
+    Callable callable;
+    ReceiverCandidate receiver;
 };
 
 struct FunctionCheckContext {
@@ -128,6 +152,18 @@ private:
     ExprCheckResult checkStruct(const ast::StructExpression& expression, FunctionCheckContext& ctx);
     ExprCheckResult checkIndex(const ast::IndexExpression& expression, FunctionCheckContext& ctx);
     ExprCheckResult checkField(const ast::FieldExpression& expression, FunctionCheckContext& ctx);
+
+    Callable describeFunction(FunctionId id) const;
+    std::optional<Callable> describeBuiltin(const BuiltinTarget& target, ast::SourceSpan span, FunctionCheckContext& ctx);
+    ArgumentCheckResult checkArguments(const std::vector<ast::AstPtr<ast::Expression>>& arguments, const std::vector<TyId>* expected_types, bool prefix_can_complete, ast::SourceSpan span, FunctionCheckContext& ctx);
+    std::optional<ReceiverPlan> adjustReceiver(const ast::Expression& expression, TyId original_type, const ReceiverCandidate& candidate, FunctionCheckContext& ctx);
+    std::optional<BuiltinOp> findBuiltinOperation(TyId owner, const std::string& name);
+    std::vector<Callable> collectBuiltinMethods(TyId candidate_type, const std::string& name, ast::SourceSpan span, FunctionCheckContext& ctx);
+    std::optional<MethodSelection> findMethod(const ast::Expression& expression, const ExprSemantics& semantics, const std::string& name, ast::SourceSpan span, FunctionCheckContext& ctx);
+    std::vector<Callable> lookupMethods(TyId candidate_type, const std::string& name, ast::SourceSpan span, FunctionCheckContext& ctx);
+    
+    ExprCheckResult checkCall(const ast::CallExpression& expression, FunctionCheckContext& ctx);
+    ExprCheckResult checkMethodCall(const ast::MethodCallExpression& expression, FunctionCheckContext& ctx);
 };
 
 } // namespace semantic
