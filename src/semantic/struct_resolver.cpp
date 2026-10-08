@@ -46,7 +46,7 @@ void StructResolver::declareAll(const CrateIndex& index, SemanticModel& model) {
 }
 
 void StructResolver::resolveAll(SemanticModel& model, TypeResolver& type_resolver, ConstEvaluator& const_evaluator, diagnostic::DiagnosticCollector& diag) {
-    for (auto it: model.structs_) {
+    for (auto& it: model.structs_) {
         SymbolId id = it.first;
         StructInfo& info = it.second;
         const auto* decl = info.declaration;
