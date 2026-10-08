@@ -1490,6 +1490,12 @@ std::optional<Callable> BodyChecker::describeBuiltin(const BuiltinTarget& target
             }
             return make({reference(false)}, owner, ReceiverMode::Ref);
         }
+        case semantic::BuiltinOp::ArrayLen: {
+            if (!std::holds_alternative<ArrayTy>(owner_info)) {
+                return fail("builtin Array::len requires an Array type");
+            }
+            return make({reference(false)}, usizeType(), ReceiverMode::Ref);
+        }
     }
 }
 
@@ -1514,6 +1520,10 @@ std::optional<BuiltinOp> BodyChecker::findBuiltinOperation(TyId owner, const std
         }
         if (name == "remove") {
             return BuiltinOp::VecRemove;
+        }
+    } else if (std::holds_alternative<ArrayTy>(info)) {
+        if (name == "len") {
+            return BuiltinOp::ArrayLen;
         }
     }
     if (name == "clone" &&

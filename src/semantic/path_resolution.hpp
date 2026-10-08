@@ -24,7 +24,8 @@ enum class BuiltinOp {
     VecIsEmpty,
     VecPush,
     VecRemove,
-    Clone
+    Clone,
+    ArrayLen
 };
 
 struct BuiltinTarget {
