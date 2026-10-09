@@ -2,6 +2,7 @@
 #include "ir/ir_ids.hpp"
 #include <variant>
 #include <vector>
+#include <string>
 #include <optional>
 #include <map>
 
@@ -30,6 +31,11 @@ struct NamedStructType {
     bool operator<(const NamedStructType& other) const {
         return id < other.id;
     }
+};
+
+struct StructDef {
+    std::string name;
+    std::optional<std::vector<TypeId>> fields;
 };
 
 using Type = std::variant<VoidType, IntegerType, PointerType, ArrayType, NamedStructType>;
