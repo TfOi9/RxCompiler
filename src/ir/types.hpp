@@ -8,14 +8,22 @@
 
 namespace ir {
 
-struct VoidType {};
+struct VoidType {
+    bool operator<(const VoidType& other) const {
+        return false;
+    }
+};
 struct IntegerType {
     uint8_t bits;
     bool operator<(const IntegerType& other) const {
         return bits < other.bits;
     }
 };
-struct PointerType {};
+struct PointerType {
+    bool operator<(const PointerType& other) const {
+        return false;
+    }
+};
 struct ArrayType {
     TypeId element;
     uint32_t length;
