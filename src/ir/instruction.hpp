@@ -10,6 +10,7 @@ struct Immediate {
 };
 struct LocalValue {
     ValueId id;
+    FunctionId func;
 };
 struct NullPointer {};
 

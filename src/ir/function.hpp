@@ -22,11 +22,17 @@ enum class Linkage {
     Internal
 };
 
+enum class FunctionForm {
+    Declaration,
+    Definition
+};
+
 struct Function {
     FunctionId id;
     std::string symbol_name;
     Linkage linkage;
     FunctionSignature signature;
+    FunctionForm form;
     std::vector<Parameter> parameters;
     std::vector<TypeId> value_types;
     std::vector<BasicBlock> blocks;
