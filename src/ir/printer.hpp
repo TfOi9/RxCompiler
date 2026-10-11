@@ -17,7 +17,6 @@ private:
 
     void printStructDefinition(StructId id);
     void printFunction(const Function& func);
-    void printParameters(const Function& func);
     void printBlock(const BasicBlock& block);
 
     void printType(TypeId type);
