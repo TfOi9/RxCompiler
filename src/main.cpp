@@ -10,8 +10,8 @@ int main() {
     }
     std::cerr << code << std::endl;
     auto ast = frontend::parseToAst(code);
-    frontend::dump(ast, std::cout);
     if (!ast.success) {
+        frontend::dump(ast, std::cout);
         return 1;
     }
     auto result = semantic::analyze(*ast.crate);
