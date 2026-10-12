@@ -5,7 +5,7 @@
 FILTER ?= official:semantic
 
 # Optional: build your compiler once before testing. Leave empty if prebuilt.
-BUILD = cmake -S . -B build/cpp && cmake --build build/cpp --parallel
+BUILD = cmake -S . -B build/cpp && cmake --build build/cpp --parallel 1
 
 # Required for semantic tests: exit 0 to accept {source}, 1 to reject it.
 SEMANTIC = ./build/cpp/rx_compiler < {source}
