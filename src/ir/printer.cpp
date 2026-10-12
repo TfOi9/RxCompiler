@@ -15,13 +15,19 @@ void IrPrinter::print() {
     for (size_t i = 0; i < module_.structs.size(); i++) {
         printStructDefinition(i);
     }
-    os_ << '\n';
+    if (module_.structs.size()) {
+        os_ << '\n';
+    }
+    bool printed = false;
     for (size_t i = 0; i < module_.functions.size(); i++) {
         if (module_.functions[i].form == FunctionForm::Declaration) {
             printFunction(module_.functions[i]);
+            printed = true;
         }
     }
-    os_ << '\n';
+    if (printed) {
+        os_ << '\n';
+    }
     for (size_t i = 0; i < module_.functions.size(); i++) {
         if (module_.functions[i].form == FunctionForm::Definition) {
             printFunction(module_.functions[i]);
@@ -99,9 +105,13 @@ void IrPrinter::printBlock(const BasicBlock& block) {
     printBlockName(block.id);
     os_ << ":\n";
     for (const auto& inst: block.instructions) {
+        os_ << '\t';
         printInstruction(inst);
     }
-    printTerminator(*block.terminator);
+    os_ << '\t';
+    if (block.terminator.has_value()) {
+        printTerminator(*block.terminator);
+    }
 }
 
 void IrPrinter::printType(TypeId type) {
@@ -117,8 +127,7 @@ void IrPrinter::printType(TypeId type) {
         printType(arr->element);
         os_ << ']';
     } else if (const auto* named = std::get_if<NamedStructType>(&ty)) {
-        const auto& stru = module_.structs[named->id];
-        os_ << "%\"" << stru.name << '\"';
+        printStructureRef(named->id);
     }
 }
 
@@ -140,12 +149,14 @@ void IrPrinter::printTypedOperand(const Operand& op) {
 
 void IrPrinter::printFunctionRef(FunctionId id) {
     const Function& func = module_.functions[id];
-    os_ << "@\"" << func.symbol_name << '\"';
+    os_ << "@";
+    printQuotedString(func.symbol_name);
 }
 
 void IrPrinter::printStructureRef(StructId id) {
     const StructDef& def = module_.structs[id];
-    os_ << "%\"" << def.name << '\"';   
+    os_ << "%";
+    printQuotedString(def.name);
 }
 
 void IrPrinter::printValueRef(ValueId id) {
@@ -161,7 +172,18 @@ void IrPrinter::printBlockRef(BlockId id) {
 }
 
 void IrPrinter::printQuotedString(const std::string& text) {
-    os_ << '\"' << text << '\"';
+    static constexpr char hex[] = "0123456789ABCDEF";
+    os_.put('\"');
+    for (unsigned char ch: text) {
+        if (ch == '\"' || ch == '\\' || ch < 0x20 || ch == 0x7F) {
+            os_.put('\\');
+            os_.put(hex[ch >> 4]);
+            os_.put(hex[ch & 0xF]);
+        } else {
+            os_.put(static_cast<char>(ch));
+        }
+    }
+    os_.put('\"');
 }
 
 void IrPrinter::printUnsigned(uint32_t value) {
