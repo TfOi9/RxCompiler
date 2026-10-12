@@ -2,6 +2,7 @@
 #include "ir/ir_ids.hpp"
 #include <vector>
 #include <optional>
+#include <variant>
 
 namespace ir {
 

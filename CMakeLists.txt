@@ -13,4 +13,5 @@ file(GLOB_RECURSE RX_COMPILER_SOURCES CONFIGURE_DEPENDS
 
 add_executable(rx_compiler ${RX_COMPILER_SOURCES})
 target_include_directories(rx_compiler PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/src")
+target_include_directories(rx_compiler SYSTEM PRIVATE "${ANTLR4_INCLUDE_DIR}")
 target_link_libraries(rx_compiler PRIVATE antlr4_shared)
