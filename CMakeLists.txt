@@ -11,22 +11,14 @@ if(antlr4-runtime_FOUND)
     set(RX_ANTLR4_TARGET antlr4_shared)
     message(STATUS "ANTLR C++ runtime: 4.13.2 (system)")
 else()
-    # Keep OJ builds independent of the installed runtime version and network.
-    include(FetchContent)
-    if(POLICY CMP0135)
-        cmake_policy(SET CMP0135 NEW)
-    endif()
+    # Build the matching vendored runtime without archive extraction or downloads.
     set(ANTLR_BUILD_CPP_TESTS OFF CACHE BOOL "Build ANTLR tests" FORCE)
     set(ANTLR_BUILD_SHARED OFF CACHE BOOL "Build shared ANTLR runtime" FORCE)
     set(ANTLR_BUILD_STATIC ON CACHE BOOL "Build static ANTLR runtime" FORCE)
     set(ANTLR4_INSTALL OFF CACHE BOOL "Install ANTLR runtime" FORCE)
     set(WITH_DEMO OFF CACHE BOOL "Build ANTLR demo" FORCE)
-    FetchContent_Declare(rx_antlr4_runtime
-        URL "${CMAKE_CURRENT_SOURCE_DIR}/vendor/antlr4/antlr4-cpp-runtime-4.13.2-source.zip"
-        URL_HASH SHA256=0ed13668906e86dbc0dcddf30fdee68c10203dea4e83852b4edb810821bee3c4
-    )
-    FetchContent_MakeAvailable(rx_antlr4_runtime)
-    set(ANTLR4_INCLUDE_DIR "${rx_antlr4_runtime_SOURCE_DIR}/runtime/src")
+    add_subdirectory(vendor/antlr4/runtime-4.13.2)
+    set(ANTLR4_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/vendor/antlr4/runtime-4.13.2/runtime/src")
     set(RX_ANTLR4_TARGET antlr4_static)
     message(STATUS "ANTLR C++ runtime: 4.13.2 (bundled source)")
 endif()
