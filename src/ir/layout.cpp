@@ -61,6 +61,7 @@ uint64_t TargetLayout::checkedMul(uint64_t lhs, uint64_t rhs) {
 
 TypeLayout TargetLayout::compute(TypeId id) {
     Type type = module_.types.get(id);
+    active_.insert(id);
     if (std::holds_alternative<VoidType>(type)) {
         throw std::logic_error("void has no object layout");
     } else if (const auto* integer = std::get_if<IntegerType>(&type)) {

@@ -2,7 +2,6 @@
 #include "ir/builder.hpp"
 #include "ir/function.hpp"
 #include "ir/ir_ids.hpp"
-#include "ir/types.hpp"
 #include "semantic/semantic_ids.hpp"
 #include "semantic/semantic_model.hpp"
 #include <optional>
