@@ -69,5 +69,5 @@ int main() {
         count = builder.emitBinary(ir::OpCode::Add, count, operand);
     }
     builder.emitRet(count);
-    ir::IrPrinter(module, std::cout).print();
+    return verifyAndPrint(module);
 }

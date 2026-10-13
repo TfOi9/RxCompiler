@@ -29,15 +29,20 @@ public:
     explicit IrVerifier(const Module& module): module_(module) {}
     std::vector<IrError> verify() const;
 private:
+    struct DefinitionPosition {
+        BlockId block;
+        size_t inst;
+    };
+
     const Module& module_;
 
     std::vector<IrError> checkStructLoop() const;
     std::vector<IrError> checkFunctionCompleteness() const;
     std::optional<IrError> checkBlockTerminator(FunctionId func, const BasicBlock& block) const;
     FunctionGraph buildFunctionGraph(const Function& func) const;
-    std::vector<BlockId> collectDefinitionBlocks(const Function& func) const;
+    std::vector<DefinitionPosition> collectDefinitionPositions(const Function& func) const;
     std::vector<std::vector<bool>> computeDominators(const FunctionGraph& graph) const;
-    std::optional<IrError> checkUse(const Operand& operand, BlockId block, size_t inst_index, const FunctionGraph& graph, const std::vector<BlockId>& defs, const std::vector<std::vector<bool>>& dom) const;
+    std::optional<IrError> checkUse(const Operand& operand, BlockId block, size_t inst_index, const FunctionGraph& graph, const std::vector<DefinitionPosition>& defs, const std::vector<std::vector<bool>>& dom) const;
     std::vector<IrError> checkFunction(const Function& func) const;
 };
 

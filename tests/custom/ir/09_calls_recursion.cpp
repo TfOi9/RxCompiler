@@ -144,5 +144,5 @@ int main() {
     builder.emitRet(builder.parameter(echo_array, 0));
     builder.appendBlock(echo_message);
     builder.emitRet(builder.parameter(echo_message, 0));
-    ir::IrPrinter(module, std::cout).print();
+    return verifyAndPrint(module);
 }

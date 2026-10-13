@@ -79,5 +79,5 @@ int main() {
     }
     // The raw Module names are distinct and legal. Printer must escape them,
     // including the literal backslash that would otherwise turn \41 into A.
-    ir::IrPrinter(module, std::cout).print();
+    return verifyAndPrint(module);
 }

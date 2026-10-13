@@ -63,5 +63,5 @@ int main() {
     builder.emitStore(sum, local, 4);
     const auto result = builder.emitLoad(i32, local, 4);
     builder.emitRet(result);
-    ir::IrPrinter(module, std::cout).print();
+    return verifyAndPrint(module);
 }

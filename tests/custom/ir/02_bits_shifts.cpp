@@ -44,5 +44,5 @@ int main() {
     const auto boolean_or = builder.emitBinary(ir::OpCode::Or, boolean_and, builder.constantInt(i1, 1));
     builder.emitBinary(ir::OpCode::Xor, boolean_or, builder.constantInt(i1, 1));
     builder.emitRet(result);
-    ir::IrPrinter(module, std::cout).print();
+    return verifyAndPrint(module);
 }

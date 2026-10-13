@@ -53,5 +53,5 @@ int main() {
         result = builder.emitBinary(ir::OpCode::Add, result, operand);
     }
     builder.emitRet(result);
-    ir::IrPrinter(module, std::cout).print();
+    return verifyAndPrint(module);
 }

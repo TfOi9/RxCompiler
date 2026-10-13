@@ -112,5 +112,5 @@ int main() {
     builder.positionAtEnd(function, exit);
     const auto result = builder.emitLoad(i32, sum_slot, 4);
     builder.emitRet(result);
-    ir::IrPrinter(module, std::cout).print();
+    return verifyAndPrint(module);
 }

@@ -147,5 +147,5 @@ int main() {
     builder.emitUnreachable(); // Kept separate from the ordinary returning functions.
     builder.appendBlock(unit);
     builder.emitRet(std::nullopt);
-    ir::IrPrinter(module, std::cout).print();
+    return verifyAndPrint(module);
 }

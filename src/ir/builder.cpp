@@ -149,6 +149,7 @@ void IrBuilder::defineStruct(StructId id, std::vector<TypeId> fields) {
 }
 
 FunctionId IrBuilder::addFunction(const std::string& name, Linkage linkage, FunctionForm form, FunctionSignature signature) {
+    requireIr(!name.empty(), "empty function symbol");
     requireIr(
         std::none_of(module_.functions.begin(), module_.functions.end(),
                     [&](const Function& f) { return f.symbol_name == name; }),

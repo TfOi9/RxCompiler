@@ -83,5 +83,5 @@ int main() {
     const auto sum = builder.emitBinary(ir::OpCode::Add, copied, referent);
     const auto result = builder.emitBinary(ir::OpCode::Add, sum, tag32);
     builder.emitRet(result);
-    ir::IrPrinter(module, std::cout).print();
+    return verifyAndPrint(module);
 }

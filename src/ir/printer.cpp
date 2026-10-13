@@ -4,6 +4,7 @@
 #include "ir/instruction.hpp"
 #include "ir/ir_ids.hpp"
 #include "ir/types.hpp"
+#include <charconv>
 #include <variant>
 
 namespace ir {
@@ -40,7 +41,7 @@ void IrPrinter::printStructDefinition(StructId id) {
     printStructureRef(id);
     os_ << " = type ";
     if (!def.fields.has_value()) {
-        os_ << "opaque";
+        os_ << "opaque\n";
         return;
     }
     os_ << "{ ";
@@ -119,11 +120,14 @@ void IrPrinter::printType(TypeId type) {
     if (std::holds_alternative<VoidType>(ty)) {
         os_ << "void";
     } else if (const auto* integer = std::get_if<IntegerType>(&ty)) {
-        os_ << 'i' << static_cast<int>(integer->bits);
+        os_ << 'i';
+        printUnsigned(integer->bits);
     } else if (std::holds_alternative<PointerType>(ty)) {
         os_ << "ptr";
     } else if (const auto* arr = std::get_if<ArrayType>(&ty)) {
-        os_ << '[' << arr->length << " x ";
+        os_ << '[';
+        printUnsigned(arr->length);
+        os_ << " x ";
         printType(arr->element);
         os_ << ']';
     } else if (const auto* named = std::get_if<NamedStructType>(&ty)) {
@@ -133,9 +137,9 @@ void IrPrinter::printType(TypeId type) {
 
 void IrPrinter::printOperandValue(const Operand& op) {
     if (const auto* imm = std::get_if<Immediate>(&op.data)) {
-        os_ << imm->bits;
+        printUnsigned(imm->bits);
     } else if (const auto* local = std::get_if<LocalValue>(&op.data)) {
-        os_ << "%v" << local->id;
+        printValueRef(local->id);
     } else if (std::holds_alternative<NullPointer>(op.data)) {
         os_ << "null";
     }
@@ -160,15 +164,18 @@ void IrPrinter::printStructureRef(StructId id) {
 }
 
 void IrPrinter::printValueRef(ValueId id) {
-    os_ << "%v" << id;
+    os_ << "%v";
+    printUnsigned(id);
 }
 
 void IrPrinter::printBlockName(BlockId id) {
-    os_ << "bb" << id;
+    os_ << "bb";
+    printUnsigned(id);
 }
 
 void IrPrinter::printBlockRef(BlockId id) {
-    os_ << "%bb" << id;
+    os_ << '%';
+    printBlockName(id);
 }
 
 void IrPrinter::printQuotedString(const std::string& text) {
@@ -187,7 +194,9 @@ void IrPrinter::printQuotedString(const std::string& text) {
 }
 
 void IrPrinter::printUnsigned(uint32_t value) {
-    os_ << value;
+    char buffer[10];
+    const auto result = std::to_chars(buffer, buffer + sizeof buffer, value, 10);
+    os_.write(buffer, result.ptr - buffer);
 }
 
 void IrPrinter::printInstruction(const Instruction& inst) {
@@ -220,7 +229,8 @@ void IrPrinter::printInstruction(const Instruction& inst) {
 void IrPrinter::printAlloca(const Alloca& inst) {
     os_ << "alloca ";
     printType(inst.type);
-    os_ << ", align " << static_cast<int>(inst.align);
+    os_ << ", align ";
+    printUnsigned(inst.align);
 }
 
 void IrPrinter::printLoad(const Load& inst) {
@@ -228,7 +238,8 @@ void IrPrinter::printLoad(const Load& inst) {
     printType(inst.type);
     os_ << ", ";
     printTypedOperand(inst.address);
-    os_ << ", align " << static_cast<int>(inst.align);
+    os_ << ", align ";
+    printUnsigned(inst.align);
 }
 
 void IrPrinter::printStore(const Store& inst) {
@@ -236,7 +247,8 @@ void IrPrinter::printStore(const Store& inst) {
     printTypedOperand(inst.value);
     os_ << ", ";
     printTypedOperand(inst.address);
-    os_ << ", align " << static_cast<int>(inst.align);
+    os_ << ", align ";
+    printUnsigned(inst.align);
 }
 
 void IrPrinter::printBinary(const Binary& inst) {

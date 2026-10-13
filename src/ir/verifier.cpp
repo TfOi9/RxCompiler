@@ -171,12 +171,13 @@ FunctionGraph IrVerifier::buildFunctionGraph(const Function& func) const {
     return g;
 }
 
-std::vector<BlockId> IrVerifier::collectDefinitionBlocks(const Function& func) const {
-    std::vector<BlockId> defs(func.value_types.size());
+std::vector<IrVerifier::DefinitionPosition> IrVerifier::collectDefinitionPositions(const Function& func) const {
+    std::vector<DefinitionPosition> defs(func.value_types.size());
     for (const auto& block: func.blocks) {
-        for (const auto& inst: block.instructions) {
+        for (size_t i = 0; i < block.instructions.size(); i++) {
+            const auto& inst = block.instructions[i];
             if (inst.result.has_value()) {
-                defs[*inst.result] = block.id;
+                defs[*inst.result] = {block.id, i};
             }
         }
     }
@@ -219,7 +220,7 @@ std::vector<std::vector<bool>> IrVerifier::computeDominators(const FunctionGraph
     return dom;
 }
 
-std::optional<IrError> IrVerifier::checkUse(const Operand& operand, BlockId block, size_t inst_index, const FunctionGraph& graph, const std::vector<BlockId>& defs, const std::vector<std::vector<bool>>& dom) const{
+std::optional<IrError> IrVerifier::checkUse(const Operand& operand, BlockId block, size_t inst_index, const FunctionGraph& graph, const std::vector<DefinitionPosition>& defs, const std::vector<std::vector<bool>>& dom) const{
     const auto* local = std::get_if<LocalValue>(&operand.data);
     if (!local) {
         return std::nullopt;
@@ -231,7 +232,8 @@ std::optional<IrError> IrVerifier::checkUse(const Operand& operand, BlockId bloc
     if (!graph.reachable[block]) {
         return std::nullopt;
     }
-    const auto& def_block = defs[local->id];
+    const auto& definition = defs[local->id];
+    const auto def_block = definition.block;
     if (!graph.reachable[def_block]) {
         return IrError{
             func.id,
@@ -240,6 +242,16 @@ std::optional<IrError> IrVerifier::checkUse(const Operand& operand, BlockId bloc
             local->id,
             std::nullopt,
             "local value has no reachable definition"
+        };
+    }
+    if (def_block == block && definition.inst >= inst_index) {
+        return IrError{
+            func.id,
+            block,
+            inst_index,
+            local->id,
+            std::nullopt,
+            "local value definition does not precede its use"
         };
     }
     if (!dom[block][def_block]) {
@@ -270,7 +282,7 @@ std::vector<IrError> IrVerifier::checkFunction(const Function& func) const {
             }
         };
     }
-    auto defs = collectDefinitionBlocks(func);
+    auto defs = collectDefinitionPositions(func);
     auto dom = computeDominators(graph);
     for (const auto& block: func.blocks) {
         for (size_t i = 0; i < block.instructions.size(); i++) {

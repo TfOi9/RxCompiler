@@ -80,5 +80,5 @@ int main() {
     const auto with_first = builder.emitBinary(ir::OpCode::Add, pair, first_value);
     const auto result = builder.emitBinary(ir::OpCode::Add, with_first, next_value);
     builder.emitRet(result);
-    ir::IrPrinter(module, std::cout).print();
+    return verifyAndPrint(module);
 }
