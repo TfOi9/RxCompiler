@@ -29,6 +29,10 @@ public:
     TypeId storageType(semantic::TyId type);
     TypeId valueType(semantic::TyId type);
     TypeId returnType(semantic::TyId type);
+
+    TypeId declareStruct(semantic::SymbolId definition);
+    TypeId defineStruct(semantic::SymbolId definition);
+
 private:
     enum class StructState {
         Declared,

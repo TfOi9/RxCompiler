@@ -86,4 +86,16 @@ const FunctionBodyInfo* SemanticModel::findFunctionBody(FunctionId id) const {
     return &function_bodies_.at(id);
 }
 
+const std::vector<FunctionInfo>& SemanticModel::functions() const {
+    return functions_;
+}
+
+std::vector<SymbolId> SemanticModel::structIds() const {
+    std::vector<SymbolId> sym;
+    for (const auto&[id, info]: structs_) {
+        sym.push_back(id);
+    }
+    return sym;
+}
+
 } // namespace semantic

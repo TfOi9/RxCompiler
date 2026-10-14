@@ -34,6 +34,8 @@ public:
     const FieldInfo* findField(SymbolId owner, const std::string& name) const;
     void setFunctionBody(FunctionId id, FunctionBodyInfo body);
     const FunctionBodyInfo* findFunctionBody(FunctionId id) const;
+    const std::vector<FunctionInfo>& functions() const;
+    std::vector<SymbolId> structIds() const;
 
 private:
     TypeContext types_;

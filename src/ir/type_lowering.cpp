@@ -1,9 +1,11 @@
 #include "type_lowering.hpp"
 #include "ir/builder.hpp"
 #include "ir/ir_ids.hpp"
+#include "ir/types.hpp"
 #include "semantic/semantic_ids.hpp"
 #include "semantic/types.hpp"
 #include <optional>
+#include <stdexcept>
 #include <string>
 #include <variant>
 
@@ -72,24 +74,25 @@ LoweredType TypeLowering::lowerUncached(semantic::TyId type) {
         };
     } else if (std::holds_alternative<semantic::ErrorTy>(info)) {
         throw std::logic_error("semantic error type cannot be lowered to IR type");
+    } else if (const auto* named = std::get_if<semantic::StructTy>(&info)) {
+        return lowerStruct(named->def);
+    } else if (std::holds_alternative<semantic::VecTy>(info)) {
+        return {
+            vectorType(),
+            vectorType()
+        };
     }
     throw std::logic_error("unexpected semantic type");
 }
 
 LoweredType TypeLowering::lowerStruct(semantic::SymbolId definition) {
-    auto it = struct_cache_.find(definition);
-    if (it != struct_cache_.end() && it->second.state == StructState::Defined) {
-        return {it->second.type, it->second.type};
+    TypeId type = declareStruct(definition);
+    StructEntry& entry = struct_cache_.at(definition);
+    if (entry.state == StructState::Defined) {
+        return {type, type};
     }
+    IrBuilder::requireIr(entry.state == StructState::Declared, "recursive by-value semantic struct");
     const auto* info = model_.findStruct(definition);
-    IrBuilder::requireIr(info != nullptr, "unknown semantic struct");
-    if (it == struct_cache_.end()) {
-        StructId id = builder_.declareStruct("__rx_struct_" + std::to_string(definition));
-        TypeId type = module_.types.structOf(id);
-        it = struct_cache_.emplace(definition, StructEntry{id, type, StructState::Declared}).first;
-    }
-    StructEntry& entry = it->second;
-    IrBuilder::requireIr(entry.state == StructState::Defined, "recursive by-value semantic struct");
     entry.state = StructState::Defining;
     try {
         std::vector<TypeId> fields;
@@ -115,6 +118,32 @@ TypeId TypeLowering::vectorType() {
     TypeId type = module_.types.structOf(id);
     vec_type_ = type;
     return type;
+}
+
+TypeId TypeLowering::declareStruct(semantic::SymbolId definition) {
+    if (auto it = struct_cache_.find(definition); it != struct_cache_.end()) {
+        return it->second.type;
+    }
+    const auto* info = model_.findStruct(definition);
+    IrBuilder::requireIr(info != nullptr, "unknown semantic struct");
+    StructId id = builder_.declareStruct("__rx_struct_" + std::to_string(definition));
+    TypeId type = module_.types.structOf(id);
+    struct_cache_.emplace(
+        definition,
+        StructEntry{
+            id,
+            type,
+            StructState::Declared
+        }
+    );
+    return type;
+}
+
+TypeId TypeLowering::defineStruct(semantic::SymbolId definition) {
+    auto it = struct_cache_.find(definition);
+    IrBuilder::requireIr(it != struct_cache_.end(), "struct define before declare");
+    lowerStruct(definition);
+    return it->second.type;
 }
 
 } // namespace ir
