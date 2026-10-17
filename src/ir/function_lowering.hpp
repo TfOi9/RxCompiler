@@ -1,4 +1,5 @@
 #pragma once
+#include "ast/ast.hpp"
 #include "ir/builder.hpp"
 #include "ir/function.hpp"
 #include "ir/instruction.hpp"
@@ -8,6 +9,7 @@
 #include "semantic/function_resolver.hpp"
 #include "semantic/semantic_ids.hpp"
 #include "semantic/semantic_model.hpp"
+#include "semantic/types.hpp"
 #include <vector>
 #include <optional>
 
@@ -51,6 +53,18 @@ private:
     void bindParameters();
     BodyResult lowerBody();
     void finishReturn(const BodyResult& result);
+
+    BodyResult lowerExpr(const ast::Expression& expression);
+    BodyResult lowerExprRaw(const ast::Expression& expression);
+    BodyResult lowerBlock(const ast::BlockExpression& block);
+    bool lowerStatement(const ast::Statement& statement);
+    bool lowerLet(const ast::LetStatement& statement);
+
+    BodyResult lowerUnary(const ast::UnaryExpression& expression);
+    BodyResult lowerBinary(const ast::BinaryExpression& expression);
+    BodyResult lowerCall(const ast::CallExpression& expression);
+    BodyResult lowerReturn(const ast::ReturnExpression& expression);
+    semantic::PrimaryTyKind requireScalarOperand(const semantic::OperandPlan& plan) const;
 };
 
 } // namespace ir
