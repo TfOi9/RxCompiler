@@ -242,6 +242,8 @@ BodyResult FunctionLowering::lowerExprRaw(const ast::Expression& expression) {
         }
         case ast::NodeType::CastExpr:
             return lowerCast(static_cast<const ast::CastExpression&>(expression));
+        case ast::NodeType::AssignExpr:
+            return lowerAssignment(static_cast<const ast::AssignmentExpression&>(expression));
         default:
             // TODO unimplemented
             throw std::logic_error("expression lowering unimplemented");
@@ -322,7 +324,7 @@ BodyResult FunctionLowering::lowerReturn(const ast::ReturnExpression& expression
 }
 
 semantic::PrimaryTyKind FunctionLowering::requireScalarOperand(const semantic::OperandPlan& plan) const {
-    const auto& type = model_.typeContext().get(plan.source_type);
+    const auto& type = model_.typeContext().get(plan.operation_type);
     const auto* primary = std::get_if<semantic::PrimaryTy>(&type);
     IrBuilder::requireIr(primary != nullptr, "non-primitive operand lowering is not implemented");
     switch (plan.read_kind) {
@@ -728,6 +730,64 @@ BodyResult FunctionLowering::lowerCast(const ast::CastExpression& expression) {
     }
     IrBuilder::requireIr(value.type == module_.types.i1(), "unsupported cast operand");
     return {true, builder_.emitZExt(value, target)};
+}
+
+BodyResult FunctionLowering::lowerAssignment(const ast::AssignmentExpression& expression) {
+    IrBuilder::requireIr(expression.lhs_operand != nullptr && expression.rhs_operand != nullptr, "assignment has an empty operand");
+    BodyResult right = lowerExpr(*expression.rhs_operand);
+    if (!right.reaches_end) {
+        return right;
+    }
+    IrBuilder::requireIr(right.value.has_value(), "assignment right operand has no runtime value");
+    auto destination = lowerPlace(*expression.lhs_operand);
+    if (!destination) {
+        return {false, std::nullopt};
+    }
+    if (expression.op == ast::AssignmentOperator::Assign) {
+        storePlace(*destination, *right.value);
+        return {true, std::nullopt};
+    }
+    auto plan_it = body_.binary_operations.find(&expression);
+    IrBuilder::requireIr(plan_it != body_.binary_operations.end(), "compound assignment has no semantic plan");
+    const auto& plan = plan_it->second;
+    auto left_kind = requireScalarOperand(plan.left);
+    requireScalarOperand(plan.right);
+    IrBuilder::requireIr(destination->type == plan.left.source_type, "compound assignment destination type mismatch");
+    Operand lhs = loadPlace(*destination);
+    Operand rhs = readScalarOperand(*right.value, plan.right);
+    Operand updated = emitCompoundOperation(expression.op, lhs, rhs, left_kind);
+    storePlace(*destination, updated);
+    return {true, std::nullopt};
+}
+
+Operand FunctionLowering::emitCompoundOperation(ast::AssignmentOperator op, Operand lhs, Operand rhs, semantic::PrimaryTyKind left_kind) {
+    bool signed_left = semantic::isSignedKind(left_kind);
+    switch (op) {
+        case ast::AssignmentOperator::AssignAdd:
+            return builder_.emitBinary(OpCode::Add, lhs, rhs);
+        case ast::AssignmentOperator::AssignSubtract:
+            return builder_.emitBinary(OpCode::Sub, lhs, rhs);
+        case ast::AssignmentOperator::AssignMultiply:
+            return builder_.emitBinary(OpCode::Mul, lhs, rhs);
+        case ast::AssignmentOperator::AssignDivide:
+            return builder_.emitBinary(signed_left ? OpCode::Sdiv : OpCode::Udiv, lhs, rhs);
+        case ast::AssignmentOperator::AssignRemainder:
+            return builder_.emitBinary(signed_left ? OpCode::Srem : OpCode::Urem, lhs, rhs);
+        case ast::AssignmentOperator::AssignShiftLeft:
+            rhs = builder_.emitBinary(OpCode::And, rhs, builder_.constantInt(rhs.type, 31));
+            return builder_.emitBinary(OpCode::Shl, lhs, rhs);
+        case ast::AssignmentOperator::AssignShiftRight:
+            rhs = builder_.emitBinary(OpCode::And, rhs, builder_.constantInt(rhs.type, 31));
+            return builder_.emitBinary(signed_left ? OpCode::Ashr : OpCode::Lshr, lhs, rhs);
+        case ast::AssignmentOperator::AssignBitwiseAnd:
+            return builder_.emitBinary(OpCode::And, lhs, rhs);
+        case ast::AssignmentOperator::AssignBitwiseOr:
+            return builder_.emitBinary(OpCode::Or, lhs, rhs);
+        case ast::AssignmentOperator::AssignBitwiseXor:
+            return builder_.emitBinary(OpCode::Xor, lhs, rhs);
+        default:
+            throw std::logic_error("single assign is not a compound operation");
+    }
 }
 
 } // namespace ir

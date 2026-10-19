@@ -81,6 +81,7 @@ private:
     BodyResult lowerCall(const ast::CallExpression& expression);
     BodyResult lowerReturn(const ast::ReturnExpression& expression);
     semantic::PrimaryTyKind requireScalarOperand(const semantic::OperandPlan& plan) const;
+    Operand readScalarOperand(Operand evaluated, const semantic::OperandPlan& plan);
 
     Operand loadPlace(const Place& place);
     void storePlace(const Place& place, Operand value);
@@ -90,7 +91,8 @@ private:
     std::optional<Place> applyPlaceSteps(PlaceCursor cursor, const std::vector<semantic::PlaceStep>& steps);
 
     BodyResult lowerCast(const ast::CastExpression& expression);
-    Operand readScalarOperand(Operand evaluated, const semantic::OperandPlan& plan);
+    BodyResult lowerAssignment(const ast::AssignmentExpression& expression);
+    Operand emitCompoundOperation(ast::AssignmentOperator op, Operand lhs, Operand rhs, semantic::PrimaryTyKind left_kind);
 };
 
 } // namespace ir
