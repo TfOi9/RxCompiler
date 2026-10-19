@@ -29,6 +29,22 @@ struct BodyResult {
     std::optional<Operand> value;
 };
 
+struct Place {
+    Operand address;
+    semantic::TyId type;
+    uint8_t alignment;
+};
+
+struct PlaceCursor {
+    semantic::TyId type;
+    std::variant<Operand, Place> location;
+};
+
+enum class BaseMode {
+    Effective,
+    Raw
+};
+
 class FunctionLowering {
 public:
     FunctionLowering(const semantic::SemanticModel& model, const semantic::FunctionInfo& function, const semantic::FunctionBodyInfo& body, Module& module, TypeLowering& types, TargetLayout& layout, const FunctionMap& functions):
@@ -65,6 +81,15 @@ private:
     BodyResult lowerCall(const ast::CallExpression& expression);
     BodyResult lowerReturn(const ast::ReturnExpression& expression);
     semantic::PrimaryTyKind requireScalarOperand(const semantic::OperandPlan& plan) const;
+
+    Operand loadPlace(const Place& place);
+    void storePlace(const Place& place, Operand value);
+    Place createTemporary(semantic::TyId type);
+    std::optional<Place> lowerPlace(const ast::Expression& expression);
+    std::optional<PlaceCursor> lowerPlaceBase(const ast::Expression& expression, BaseMode mode);
+    std::optional<Place> applyPlaceSteps(PlaceCursor cursor, const std::vector<semantic::PlaceStep>& steps);
+
+    BodyResult lowerCast(const ast::CastExpression& expression);
 };
 
 } // namespace ir

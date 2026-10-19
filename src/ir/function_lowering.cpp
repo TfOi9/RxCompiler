@@ -9,6 +9,7 @@
 #include "semantic/path_resolution.hpp"
 #include "semantic/semantic_ids.hpp"
 #include "semantic/types.hpp"
+#include <cstdint>
 #include <limits>
 #include <optional>
 #include <stdexcept>
@@ -124,19 +125,37 @@ BodyResult FunctionLowering::lowerExpr(const ast::Expression& expression) {
     const semantic::CoercionPlan* conversion = nullptr;
     if (auto it = body_.coercions.find(&expression); it != body_.coercions.end()) {
         conversion = &it->second;
+    }
+    BodyResult result = {false, std::nullopt};
+    if (conversion == nullptr) {
+        result = lowerExprRaw(expression);
+    } else {
         switch (conversion->kind) {
             case semantic::CoercionKind::Identity:
             case semantic::CoercionKind::NeverToAny:
+                result = lowerExprRaw(expression);
                 break;
             case semantic::CoercionKind::BorrowShared:
-            case semantic::CoercionKind::BorrowMutable:
-                // TODO unimplemented
-                throw std::logic_error("unimplemented!");
+            case semantic::CoercionKind::BorrowMutable: {
+                auto cursor = lowerPlaceBase(expression, BaseMode::Raw);
+                if (!cursor) {
+                    result = {false, std::nullopt};
+                    break;
+                }
+                auto place = applyPlaceSteps(std::move(*cursor), conversion->place_steps);
+                if (!place) {
+                    result = {false, std::nullopt};
+                    break;
+                }
+                result = {true, place->address};
+                break;
+            }
             case semantic::CoercionKind::Recovery:
                 throw std::logic_error("cannot lower a recovery coercion");
+            default:
+                throw std::logic_error("unknown coercion kind");
         }
     }
-    BodyResult result = lowerExprRaw(expression);
     if (conversion && conversion->kind == semantic::CoercionKind::NeverToAny) {
         IrBuilder::requireIr(!result.reaches_end, "never expression completed normally");
     }
@@ -212,6 +231,16 @@ BodyResult FunctionLowering::lowerExprRaw(const ast::Expression& expression) {
             return lowerCall(static_cast<const ast::CallExpression&>(expression));
         case ast::NodeType::ReturnExpr:
             return lowerReturn(static_cast<const ast::ReturnExpression&>(expression));
+        case ast::NodeType::FieldExpr:
+        case ast::NodeType::IndexExpr: {
+            auto place = lowerPlace(expression);
+            if (!place) {
+                return {false, std::nullopt};
+            }
+            return {true, loadPlace(*place)};
+        }
+        case ast::NodeType::CastExpr:
+            return lowerCast(static_cast<const ast::CastExpression&>(expression));
         default:
             // TODO unimplemented
             throw std::logic_error("expression lowering unimplemented");
@@ -306,9 +335,24 @@ semantic::PrimaryTyKind FunctionLowering::requireScalarOperand(const semantic::O
 }
 
 BodyResult FunctionLowering::lowerUnary(const ast::UnaryExpression& expression) {
-    if (expression.op != ast::UnaryOperator::Negation || expression.op != ast::UnaryOperator::Not) {
-        // TODO unimplemented
-        throw std::logic_error("borrow or dereference is not implemented");
+    if (expression.op == ast::UnaryOperator::Dereference) {
+        auto place = lowerPlace(expression);
+        if (!place) {
+            return {false, std::nullopt};
+        }
+        return {true, loadPlace(*place)};
+    }
+    if (expression.op == ast::UnaryOperator::Borrow || expression.op == ast::UnaryOperator::BorrowMut) {
+        const auto& plan = body_.place_operations.at(&expression);
+        auto cursor = lowerPlaceBase(*plan.base, BaseMode::Effective);
+        if (!cursor) {
+            return {false, std::nullopt};
+        }
+        auto place = applyPlaceSteps(std::move(*cursor), plan.steps);
+        if (!place) {
+            return {false, std::nullopt};
+        }
+        return {true, place->address};
     }
     auto plan_it = body_.unary_operations.find(&expression);
     IrBuilder::requireIr(plan_it != body_.unary_operations.end(), "unary expression has no semantic plan");
@@ -410,6 +454,242 @@ BodyResult FunctionLowering::lowerBinary(const ast::BinaryExpression& expression
         default:
             throw std::logic_error("unexpected binary operator");
     }
+}
+
+Operand FunctionLowering::loadPlace(const Place& place) {
+    TypeId storage_type = types_.storageType(place.type);
+    TypeId value_type = types_.valueType(place.type);
+    Operand value = builder_.emitLoad(storage_type, place.address, place.alignment);
+    if (storage_type == value_type) {
+        return value;
+    }
+    IrBuilder::requireIr(storage_type == module_.types.i8(), "unsupported place load conversion");
+    return builder_.emitTrunc(value, value_type);
+}
+
+void FunctionLowering::storePlace(const Place& place, Operand value) {
+    TypeId storage_type = types_.storageType(place.type);
+    TypeId value_type = types_.valueType(place.type);
+    IrBuilder::requireIr(value.type == value_type, "place store value type mismatch");
+    if (storage_type != value_type) {
+        IrBuilder::requireIr(value_type == module_.types.i1() && storage_type == module_.types.i8(), "unsupported place store conversion");
+        value = builder_.emitZExt(value, storage_type);
+    }
+    builder_.emitStore(value, place.address, place.alignment);
+}
+
+Place FunctionLowering::createTemporary(semantic::TyId type) {
+    TypeId storage_type = types_.storageType(type);
+    TypeLayout object_layout = layout_.layoutOf(storage_type);
+    IrBuilder::requireIr(object_layout.alignment <= std::numeric_limits<uint8_t>::max(), "temporary alignment exceeds IR representation");
+    auto alignment = static_cast<uint8_t>(object_layout.alignment);
+    Operand address = builder_.emitEntryAlloca(storage_type, alignment);
+    return Place{address, type, alignment};
+}
+
+std::optional<Place> FunctionLowering::lowerPlace(const ast::Expression& expression) {
+    auto info_it = body_.expressions.find(&expression);
+    IrBuilder::requireIr(info_it != body_.expressions.end(), "place expression has no semantic information");
+    const auto& info = info_it->second;
+    IrBuilder::requireIr(info.category == semantic::ValueCategory::Place, "expression is not a place");
+    if (expression.type == ast::NodeType::PathExpr) {
+        IrBuilder::requireIr(info.local.has_value(), "path has no local storage");
+        const auto id = *info.local;
+        const LocalSlot& slot = localSlot(id);
+        return Place{
+            slot.address,
+            body_.locals.at(id).type,
+            slot.alignment
+        };
+    }
+    if (expression.type == ast::NodeType::GroupedExpr) {
+        const auto& grouped = static_cast<const ast::GroupedExpression&>(expression);
+        IrBuilder::requireIr(grouped.expr != nullptr, "grouped place has no expression");
+        auto cursor = lowerPlaceBase(*grouped.expr, BaseMode::Effective);
+        if (!cursor) {
+            return std::nullopt;
+        }
+        if (const auto* place = std::get_if<Place>(&cursor->location)) {
+            return *place;
+        }
+        Place temp = createTemporary(cursor->type);
+        storePlace(temp, std::get<Operand>(cursor->location));
+        return temp;
+    }
+    auto plan_it = body_.place_operations.find(&expression);
+    IrBuilder::requireIr(plan_it != body_.place_operations.end(), "place expression has no address plan");
+    const auto& plan = plan_it->second;
+    IrBuilder::requireIr(plan.base != nullptr, "place plan has no base");
+    auto cursor = lowerPlaceBase(*plan.base, BaseMode::Effective);
+    if (!cursor) {
+        return std::nullopt;
+    }
+    auto place = applyPlaceSteps(std::move(*cursor), plan.steps);
+    if (place) {
+        IrBuilder::requireIr(place->type == info.type, "place result type mismatch");
+    }
+    return place;
+}
+
+std::optional<PlaceCursor> FunctionLowering::lowerPlaceBase(const ast::Expression& expression, BaseMode mode) {
+    IrBuilder::requireIr(builder_.hasInsertionPoint(), "place base has no insertion point");
+    auto info_it = body_.expressions.find(&expression);
+    IrBuilder::requireIr(info_it != body_.expressions.end(), "place base has no semantic information");
+    const auto& info = info_it->second;
+    bool needs_conversion = false;
+    if (mode == BaseMode::Effective) {
+        auto it = body_.coercions.find(&expression);
+        needs_conversion = it != body_.coercions.end() && it->second.kind != semantic::CoercionKind::Identity;
+    }
+    if (info.category == semantic::ValueCategory::Place && !needs_conversion) {
+        auto place = lowerPlace(expression);
+        if (!place) {
+            return std::nullopt;
+        }
+        semantic::TyId expected = mode == BaseMode::Raw ? info.type : info.effectiveType();
+        IrBuilder::requireIr(place->type == expected, "place base type mismatch");
+        return PlaceCursor{place->type, *place};
+    }
+    BodyResult result = mode == BaseMode::Raw ? lowerExprRaw(expression) : lowerExpr(expression);
+    IrBuilder::requireIr(result.reaches_end == builder_.hasInsertionPoint(), "place base control-flow state mismatch");
+    if (!result.reaches_end) {
+        IrBuilder::requireIr(!result.value.has_value(), "non-fallthrough place base has a value");
+        return std::nullopt;
+    }
+    IrBuilder::requireIr(result.value.has_value(), "place base has no runtime value");
+    semantic::TyId type = mode == BaseMode::Raw ? info.type : info.effectiveType();
+    IrBuilder::requireIr(result.value->type == types_.valueType(type), "place base value type mismatch");
+    return PlaceCursor{type, *result.value};
+}
+
+std::optional<Place> FunctionLowering::applyPlaceSteps(PlaceCursor cursor, const std::vector<semantic::PlaceStep>& steps) {
+    auto requirePlace = [&]() -> Place {
+        const auto* place = std::get_if<Place>(&cursor.location);
+        IrBuilder::requireIr(place != nullptr && place->type == cursor.type, "place step requires an address");
+        return *place;
+    };
+    auto alignmentOf = [&](semantic::TyId type) -> uint8_t {
+        auto layout = layout_.layoutOf(types_.storageType(type));
+        IrBuilder::requireIr(layout.alignment <= std::numeric_limits<uint8_t>::max(), "place alignment exceeds IR representation");
+        return static_cast<uint8_t>(layout.alignment);
+    };
+    auto setPlace = [&](Place place) {
+        cursor.type = place.type;
+        cursor.location = place;
+    };
+    for (const auto& step: steps) {
+        switch (step.kind) {
+            case semantic::PlaceStepKind::Materialize: {
+                const auto* value = std::get_if<Operand>(&cursor.location);
+                IrBuilder::requireIr(value != nullptr, "materialize requires a value");
+                IrBuilder::requireIr(cursor.type == step.result_type, "materialize type mismatch");
+                Operand saved = *value;
+                Place temp = createTemporary(cursor.type);
+                storePlace(temp, saved);
+                setPlace(temp);
+                break;
+            }
+            case semantic::PlaceStepKind::DerefShared:
+            case semantic::PlaceStepKind::DerefMutable:
+            case semantic::PlaceStepKind::DerefBox: {
+                Operand pointer;
+                if (const auto* place = std::get_if<Place>(&cursor.location)) {
+                    pointer = loadPlace(*place);
+                } else {
+                    pointer = std::get<Operand>(cursor.location);
+                }
+                IrBuilder::requireIr(pointer.type == module_.types.ptr(), "dereference requires a pointer value");
+                setPlace(Place{pointer, step.result_type, alignmentOf(step.result_type)});
+                break;
+            }
+            case semantic::PlaceStepKind::Field: {
+                Place base = requirePlace();
+                IrBuilder::requireIr(step.field_ordinal.has_value(), "field step has no ordinal");
+                IrBuilder::requireIr(*step.field_ordinal <= std::numeric_limits<uint32_t>::max(), "field ordinal exceeds IR representation");
+                Operand address = builder_.emitGep(
+                    types_.storageType(base.type),
+                    base.address,
+                    {
+                        builder_.constantInt(module_.types.i32(), 0),
+                        builder_.constantInt(module_.types.i32(), static_cast<uint32_t>(*step.field_ordinal))
+                    }
+                );
+                setPlace(Place{
+                    address,
+                    step.result_type,
+                    std::min(base.alignment, alignmentOf(step.result_type))
+                });
+                break;
+            }
+            case semantic::PlaceStepKind::ArrayIndex:
+            case semantic::PlaceStepKind::VecIndex: {
+                Place base = requirePlace();
+                IrBuilder::requireIr(step.index_expression != nullptr, "index step has no expression");
+                BodyResult index = lowerExpr(*step.index_expression);
+                if (!index.reaches_end) {
+                    return std::nullopt;
+                }
+                IrBuilder::requireIr(index.value.has_value(), "index expression has no value");
+                IrBuilder::requireIr(index.value->type == module_.types.i32(), "index must be usize type");
+                Operand address;
+                uint8_t alignment;
+                if (step.kind == semantic::PlaceStepKind::ArrayIndex) {
+                    address = builder_.emitGep(
+                        types_.storageType(base.type),
+                        base.address,
+                        {
+                            builder_.constantInt(module_.types.i32(), 0),
+                            *index.value
+                        }
+                    );
+                    alignment = std::min(base.alignment, alignmentOf(step.result_type));
+                } else {
+                    Operand data_slot = builder_.emitGep(
+                        types_.storageType(base.type),
+                        base.address,
+                        {
+                            builder_.constantInt(module_.types.i32(), 0),
+                            builder_.constantInt(module_.types.i32(), 0)
+                        }
+                    );
+                    auto pointer_layout = layout_.layoutOf(module_.types.ptr());
+                    auto data_slot_alignment = static_cast<uint8_t>(std::min<uint32_t>(base.alignment, pointer_layout.alignment));
+                    Operand data = builder_.emitLoad(module_.types.ptr(), data_slot, data_slot_alignment);
+                    address = builder_.emitGep(types_.storageType(step.result_type), data, {*index.value});
+                    alignment = alignmentOf(step.result_type);
+                }
+                setPlace(Place{
+                    address,
+                    step.result_type,
+                    alignment
+                });
+                break;
+            }
+            default:
+                throw std::logic_error("unknown place step");
+        }
+    }
+    const auto* place = std::get_if<Place>(&cursor.location);
+    IrBuilder::requireIr(place != nullptr && place->type == cursor.type, "place steps must end at an address");
+    return *place;
+}
+
+BodyResult FunctionLowering::lowerCast(const ast::CastExpression& expression) {
+    IrBuilder::requireIr(expression.operand != nullptr, "cast has no operand");
+    BodyResult result = lowerExpr(*expression.operand);
+    if (!result.reaches_end) {
+        return result;
+    }
+    IrBuilder::requireIr(result.value.has_value(), "cast operand has no runtime value");
+    const auto& info = body_.expressions.at(&expression);
+    TypeId target = types_.valueType(info.type);
+    IrBuilder::requireIr(target == module_.types.i32(), "cast target must lower to i32");
+    Operand value = *result.value;
+    if (value.type == target) {
+        return {true, value};
+    }
+    IrBuilder::requireIr(value.type == module_.types.i1(), "unsupported cast operand");
+    return {true, builder_.emitZExt(value, target)};
 }
 
 } // namespace ir

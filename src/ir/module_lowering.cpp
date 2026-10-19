@@ -2,10 +2,21 @@
 #include "ir/builder.hpp"
 #include "ir/function.hpp"
 #include "ir/ir_ids.hpp"
+#include "ir/function_lowering.hpp"
 #include "semantic/function_resolver.hpp"
 #include <stdexcept>
 
 namespace ir {
+
+void ModuleLowering::lower() {
+    initializeTarget();
+    registerStructs();
+    declareRuntime();
+    registerSourceFunctions();
+    registerMachineMain();
+    lowerFunctionBodies();
+    emitMachineMain();
+}
 
 void ModuleLowering::initializeTarget() {
     module_.target_triple = "riscv32-unknown-elf";
@@ -55,6 +66,18 @@ void ModuleLowering::registerMachineMain() {
     }
     FunctionId id = builder_.addFunction("main", Linkage::External, FunctionForm::Definition, FunctionSignature{module_.types.i32(), {}});
     machine_main_ = id;
+}
+
+void ModuleLowering::lowerFunctionBodies() {
+    for (const auto& func: model_.functions()) {
+        if (func.kind == semantic::FunctionKind::Builtin) {
+            continue;
+        }
+        const auto* body = model_.findFunctionBody(func.id);
+        IrBuilder::requireIr(body != nullptr, "source function has no semantic body");
+        FunctionLowering lowering(model_, func, *body, module_, types_, layout_, functions_);
+        lowering.lower();
+    }
 }
 
 void ModuleLowering::emitMachineMain() {
