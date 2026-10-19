@@ -9,6 +9,7 @@
 #include "semantic/path_resolution.hpp"
 #include "semantic/semantic_ids.hpp"
 #include "semantic/types.hpp"
+#include <cstddef>
 #include <cstdint>
 #include <limits>
 #include <optional>
@@ -323,15 +324,52 @@ BodyResult FunctionLowering::lowerReturn(const ast::ReturnExpression& expression
 semantic::PrimaryTyKind FunctionLowering::requireScalarOperand(const semantic::OperandPlan& plan) const {
     const auto& type = model_.typeContext().get(plan.source_type);
     const auto* primary = std::get_if<semantic::PrimaryTy>(&type);
-    IrBuilder::requireIr(
-        primary != nullptr &&
-        plan.source_type == plan.operation_type &&
-        plan.reference_depth == 0 &&
-        !plan.outer_mutable_to_shared &&
-        (plan.read_kind == semantic::OperandReadKind::Value || plan.read_kind == semantic::OperandReadKind::EqualityBorrow),
-        "non-primitive operand lowering is not implemented"
-    );
+    IrBuilder::requireIr(primary != nullptr, "non-primitive operand lowering is not implemented");
+    switch (plan.read_kind) {
+        case semantic::OperandReadKind::Value:
+        case semantic::OperandReadKind::EqualityBorrow:
+            IrBuilder::requireIr(plan.reference_depth == 0, "direct scalar operand has reference depth");
+            break;
+        case semantic::OperandReadKind::SharedReferent: {
+            const auto* reference = std::get_if<semantic::RefTy>(&model_.typeContext().get(plan.source_type));
+            IrBuilder::requireIr(plan.reference_depth == 1 && reference != nullptr && !reference->is_mut, "shared scalar read requires one shared reference");
+            break;
+        }
+        case semantic::OperandReadKind::OrderedReferent: {
+            IrBuilder::requireIr(plan.reference_depth > 0, "ordered referent read has no reference");
+            break;
+        }
+        default:
+            throw std::logic_error("unknown operand read kind");
+    }
+    if (plan.outer_mutable_to_shared) {
+        const auto* reference = std::get_if<semantic::RefTy>(&model_.typeContext().get(plan.source_type));
+        IrBuilder::requireIr(plan.read_kind == semantic::OperandReadKind::OrderedReferent && reference != nullptr && reference->is_mut, "invalide outer reference adjustment");
+    }
+    semantic::TyId current = plan.source_type;
+    for (size_t i = 0; i < plan.reference_depth; i++) {
+        const auto* reference = std::get_if<semantic::RefTy>(&model_.typeContext().get(current));
+        IrBuilder::requireIr(reference != nullptr, "operand reference depth exceeds its reference chain");
+        current = reference->target;
+    }
+    IrBuilder::requireIr(current == plan.operation_type, "operand read does not reach its operation type");
     return primary->ty;
+}
+
+Operand FunctionLowering::readScalarOperand(Operand evaluated, const semantic::OperandPlan& plan) {
+    IrBuilder::requireIr(evaluated.type == types_.valueType(plan.source_type), "evaluated type does match its plan");
+    Operand value = evaluated;
+    semantic::TyId current = plan.source_type;
+    for (size_t i = 0; i < plan.reference_depth; i++) {
+        const auto* reference = std::get_if<semantic::RefTy>(&model_.typeContext().get(current));
+        const semantic::TyId target = reference->target;
+        const auto object_layout = layout_.layoutOf(types_.storageType(target));
+        IrBuilder::requireIr(object_layout.alignment <= std::numeric_limits<uint8_t>::max(), "referent alignment exceeds IR representations");
+        value = loadPlace(Place{value, target, static_cast<uint8_t>(object_layout.alignment)});
+        current = target;
+    }
+    IrBuilder::requireIr(value.type == types_.valueType(plan.operation_type), "scalar operand result type mismatch");
+    return value;
 }
 
 BodyResult FunctionLowering::lowerUnary(const ast::UnaryExpression& expression) {
@@ -364,7 +402,7 @@ BodyResult FunctionLowering::lowerUnary(const ast::UnaryExpression& expression) 
         return result;
     }
     IrBuilder::requireIr(result.value.has_value(), "unary operand has no runtime value");
-    Operand value = *result.value;
+    Operand value = readScalarOperand(*result.value, plan.operand);
     switch (expression.op) {
         case ast::UnaryOperator::Negation:
             return {
@@ -406,8 +444,8 @@ BodyResult FunctionLowering::lowerBinary(const ast::BinaryExpression& expression
         return right;
     }
     IrBuilder::requireIr(right.value.has_value(), "right operand has no runtime value");
-    Operand lhs = *left.value;
-    Operand rhs = *right.value;
+    Operand lhs = readScalarOperand(*left.value, plan.left);
+    Operand rhs = readScalarOperand(*right.value, plan.right);
     auto binary = [&](OpCode opcode) -> BodyResult {
         return {true, builder_.emitBinary(opcode, lhs, rhs)};
     };

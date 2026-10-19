@@ -90,6 +90,7 @@ private:
     std::optional<Place> applyPlaceSteps(PlaceCursor cursor, const std::vector<semantic::PlaceStep>& steps);
 
     BodyResult lowerCast(const ast::CastExpression& expression);
+    Operand readScalarOperand(Operand evaluated, const semantic::OperandPlan& plan);
 };
 
 } // namespace ir
