@@ -7,6 +7,7 @@
 #include "ir/layout.hpp"
 #include "semantic/body_semantics.hpp"
 #include "semantic/function_resolver.hpp"
+#include "semantic/path_resolution.hpp"
 #include "semantic/semantic_ids.hpp"
 #include "semantic/semantic_model.hpp"
 #include "semantic/types.hpp"
@@ -113,6 +114,11 @@ private:
     Place arrayElementPlace(const Place& array, Operand index);
     Place structFieldPlace(const Place& object, size_t ordinal);
     void fillRepeatedArray(const Place& array, Operand element, uint32_t length);
+
+    BodyResult lowerMethodCall(const ast::MethodCallExpression& expression);
+    BodyResult lowerResolvedCall(const semantic::CallPlan& plan, const std::vector<ast::AstPtr<ast::Expression>>& arguments);
+    BodyResult lowerReceiver(const semantic::ReceiverPlan& plan);
+    BodyResult lowerBuiltin(const semantic::BuiltinTarget& target, const std::vector<Operand>& arguments);
 };
 
 } // namespace ir

@@ -259,6 +259,8 @@ BodyResult FunctionLowering::lowerExprRaw(const ast::Expression& expression) {
             return lowerArray(static_cast<const ast::ArrayExpression&>(expression));
         case ast::NodeType::StructExpr:
             return lowerStruct(static_cast<const ast::StructExpression&>(expression));
+        case ast::NodeType::MethodCallExpr:
+            return lowerMethodCall(static_cast<const ast::MethodCallExpression&>(expression));
         default:
             // TODO unimplemented
             throw std::logic_error("expression lowering unimplemented");
@@ -302,26 +304,8 @@ BodyResult FunctionLowering::lowerCall(const ast::CallExpression& expression) {
     auto plan_it = body_.calls.find(&expression);
     IrBuilder::requireIr(plan_it != body_.calls.end(), "call expression has no semantic plan");
     const auto& plan = plan_it->second;
-    IrBuilder::requireIr(!plan.receiver.has_value(), "method receiver is not implemented");
-    const auto* target = std::get_if<semantic::FunctionTarget>(&plan.target);
-    IrBuilder::requireIr(target != nullptr, "builtin operation lowering is not impleemnted");
-    auto function_it = functions_.find(target->id);
-    IrBuilder::requireIr(function_it != functions_.end(), "callee has no IR function mapping");
-    std::vector<Operand> args;
-    args.reserve(expression.args.size());
-    for (const auto& arg: expression.args) {
-        IrBuilder::requireIr(arg != nullptr, "call argument is empty");
-        BodyResult result = lowerExpr(*arg);
-        if (!result.reaches_end) {
-            return result;
-        }
-        IrBuilder::requireIr(result.value.has_value(), "call argument has no runtime value");
-        args.push_back(*result.value);
-    }
-    return {
-        true,
-        builder_.emitCall(function_it->second, args)
-    };
+    IrBuilder::requireIr(!plan.receiver.has_value(), "ordinary call unexpectedly has a receiver type");
+    return lowerResolvedCall(plan, expression.args);
 }
 
 BodyResult FunctionLowering::lowerReturn(const ast::ReturnExpression& expression) {
@@ -1082,6 +1066,85 @@ BodyResult FunctionLowering::lowerStruct(const ast::StructExpression& expression
         storePlace(structFieldPlace(object, ordinal), value);
     }
     return {true, loadPlace(object)};
+}
+
+BodyResult FunctionLowering::lowerReceiver(const semantic::ReceiverPlan& plan) {
+    IrBuilder::requireIr(plan.expression != nullptr, "method receiver has no expression");
+    auto cursor = lowerPlaceBase(*plan.expression, BaseMode::Effective);
+    if (!cursor) {
+        return {false, std::nullopt};
+    }
+    IrBuilder::requireIr(cursor->type == plan.source_type, "receiver source type mismatch");
+    auto finish = [&](Operand value) -> BodyResult {
+        IrBuilder::requireIr(value.type == types_.valueType(plan.parameter_type), "receiver IR parameter type mismatch");
+        return {true, value};
+    };
+    if (plan.action == semantic::ReceiverAction::Value && plan.steps.empty()) {
+        IrBuilder::requireIr(cursor->type == plan.parameter_type, "receiver value type mismatch");
+        if (const auto* value = std::get_if<Operand>(&cursor->location)) {
+            return finish(*value);
+        }
+        return finish(loadPlace(std::get<Place>(cursor->location)));
+    }
+    auto place = applyPlaceSteps(std::move(*cursor), plan.steps);
+    if (!place) {
+        return {false, std::nullopt};
+    }
+    switch (plan.action) {
+        case semantic::ReceiverAction::Value:
+            IrBuilder::requireIr(place->type == plan.parameter_type, "adjusted receiver value type mismatch");
+            return finish(loadPlace(*place));
+        case semantic::ReceiverAction::BorrowShared:
+        case semantic::ReceiverAction::BorrowMutable: {
+            const auto& parameter_info = model_.typeContext().get(plan.parameter_type);
+            const auto* reference = std::get_if<semantic::RefTy>(&parameter_info);
+            IrBuilder::requireIr(reference != nullptr, "borrowed receiver parameter is not a reference");
+            const bool mutable_borrow = plan.action == semantic::ReceiverAction::BorrowMutable;
+            IrBuilder::requireIr(reference->is_mut == mutable_borrow, "receiver borrow kind mismatch");
+            IrBuilder::requireIr(reference->target == place->type, "receiver referent type mismatch");
+            return finish(place->address);
+        }
+        default:
+            throw std::logic_error("unknown receiver action");
+    }
+}
+
+BodyResult FunctionLowering::lowerResolvedCall(const semantic::CallPlan& plan, const std::vector<ast::AstPtr<ast::Expression>>& arguments) {
+    std::vector<Operand> args;
+    args.reserve(arguments.size() + (plan.receiver.has_value() ? 1u : 0u));
+    if (plan.receiver) {
+        BodyResult receiver = lowerReceiver(*plan.receiver);
+        if (!receiver.reaches_end) {
+            return receiver;
+        }
+        IrBuilder::requireIr(receiver.value.has_value(), "method receiver has no runtime value");
+        args.push_back(*receiver.value);
+    }
+    for (const auto& argument: arguments) {
+        IrBuilder::requireIr(argument != nullptr, "call argument is empty");
+        BodyResult result = lowerExpr(*argument);
+        if (!result.reaches_end) {
+            return result;
+        }
+        IrBuilder::requireIr(result.value.has_value(), "call argument has no runtime value");
+        args.push_back(*result.value);
+    }
+    if (const auto* target = std::get_if<semantic::FunctionTarget>(&plan.target)) {
+        auto function_it = functions_.find(target->id);
+        IrBuilder::requireIr(function_it != functions_.end(), "callee has no IR function mapping");
+        return {true, builder_.emitCall(function_it->second, args)};
+    }
+    const auto& target = std::get<semantic::BuiltinTarget>(plan.target);
+    return lowerBuiltin(target, args);
+}
+
+BodyResult FunctionLowering::lowerMethodCall(const ast::MethodCallExpression& expression) {
+    auto plan_it = body_.calls.find(&expression);
+    IrBuilder::requireIr(plan_it != body_.calls.end(), "method call has no semantic plan");
+    const auto& plan = plan_it->second;
+    IrBuilder::requireIr(plan.receiver.has_value(), "method call has no receiver plan");
+    IrBuilder::requireIr(expression.receiver != nullptr && plan.receiver->expression == expression.receiver.get(), "method receiver expression mismatch");
+    return lowerResolvedCall(plan, expression.args);
 }
 
 } // namespace ir
