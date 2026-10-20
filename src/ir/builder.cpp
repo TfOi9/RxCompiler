@@ -523,4 +523,13 @@ void IrBuilder::emitUnreachable() {
     block.terminator = Unreachable{};
 }
 
+BlockId IrBuilder::createBlock(FunctionId function) {
+    IrBuilder::requireIr(function < module_.functions.size(), "function ID out of range");
+    auto& func = module_.functions[function];
+    IrBuilder::requireIr(func.form == FunctionForm::Definition, "creating a block in a declaration");
+    BlockId id = func.blocks.size();
+    func.blocks.push_back(BasicBlock{id, {}, std::nullopt});
+    return id;
+}
+
 } // namespace ir

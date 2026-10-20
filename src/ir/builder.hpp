@@ -24,6 +24,7 @@ public:
     FunctionId addFunction(const std::string& name, Linkage linkage, FunctionForm form, FunctionSignature signature);
 
     BlockId appendBlock(FunctionId function);
+    BlockId createBlock(FunctionId function);
     void positionAtEnd(FunctionId function, BlockId block);
     void clearInsertionPoint();
     bool hasInsertionPoint() const;

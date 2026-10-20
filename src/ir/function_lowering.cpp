@@ -2,6 +2,7 @@
 #include "ast/ast.hpp"
 #include "ir/builder.hpp"
 #include "ir/instruction.hpp"
+#include "ir/ir_ids.hpp"
 #include "ir/layout.hpp"
 #include "ir/module_lowering.hpp"
 #include "semantic/body_semantics.hpp"
@@ -244,6 +245,8 @@ BodyResult FunctionLowering::lowerExprRaw(const ast::Expression& expression) {
             return lowerCast(static_cast<const ast::CastExpression&>(expression));
         case ast::NodeType::AssignExpr:
             return lowerAssignment(static_cast<const ast::AssignmentExpression&>(expression));
+        case ast::NodeType::IfExpr:
+            return lowerIf(static_cast<const ast::IfExpression&>(expression));
         default:
             // TODO unimplemented
             throw std::logic_error("expression lowering unimplemented");
@@ -426,8 +429,7 @@ BodyResult FunctionLowering::lowerUnary(const ast::UnaryExpression& expression) 
 
 BodyResult FunctionLowering::lowerBinary(const ast::BinaryExpression& expression) {
     if (expression.op == ast::BinaryOperator::LogicalAnd || expression.op == ast::BinaryOperator::LogicalOr) {
-        // TODO unimplemented
-        throw std::logic_error("short-circuit lowering is not implemented");
+        return lowerShortCircuit(expression);
     }
     auto plan_it = body_.binary_operations.find(&expression);
     IrBuilder::requireIr(plan_it != body_.binary_operations.end(), "binary expression has no semantic plan");
@@ -788,6 +790,87 @@ Operand FunctionLowering::emitCompoundOperation(ast::AssignmentOperator op, Oper
         default:
             throw std::logic_error("single assign is not a compound operation");
     }
+}
+
+BodyResult FunctionLowering::lowerIf(const ast::IfExpression& expression) {
+    BodyResult condition = lowerExpr(*expression.condition);
+    if (!condition.reaches_end) {
+        return condition;
+    }
+    IrBuilder::requireIr(condition.value.has_value() && condition.value->type == module_.types.i1(), "if condition must produce i1");
+    semantic::TyId result_type = body_.expressions.at(&expression).type;
+    const auto& type = model_.typeContext().get(result_type);
+    std::optional<Place> result_slot;
+    if (!std::holds_alternative<semantic::UnitTy>(type) && !std::holds_alternative<semantic::NeverTy>(type)) {
+        result_slot = createTemporary(result_type);
+    }
+    BlockId then_block = builder_.createBlock(ir_function_);
+    BlockId else_block = builder_.createBlock(ir_function_);
+    builder_.emitCondBr(*condition.value, then_block, else_block);
+    builder_.clearInsertionPoint();
+    std::optional<BlockId> merge;
+    auto finishArm = [&](const BodyResult& result) {
+        if (!result.reaches_end) {
+            return;
+        }
+        if (result_slot) {
+            IrBuilder::requireIr(result.value.has_value(), "if branch has no result value");
+            storePlace(*result_slot, *result.value);
+        } else {
+            IrBuilder::requireIr(!result.value.has_value(), "unit brnach has unexpected runtime value");
+        }
+        if (!merge) {
+            merge = builder_.createBlock(ir_function_);
+        }
+        builder_.emitBr(*merge);
+        builder_.clearInsertionPoint();
+    };
+    builder_.positionAtEnd(ir_function_, then_block);
+    finishArm(lowerExpr(*expression.then_block));
+    builder_.positionAtEnd(ir_function_, else_block);
+    if (expression.else_branch) {
+        finishArm(lowerExpr(*expression.else_branch));
+    } else {
+        finishArm(BodyResult{true, std::nullopt});
+    }
+    if (!merge) {
+        builder_.clearInsertionPoint();
+        return {true, std::nullopt};
+    }
+    builder_.positionAtEnd(ir_function_, *merge);
+    if (result_slot) {
+        return {true, loadPlace(*result_slot)};
+    }
+    return {true, std::nullopt};
+}
+
+BodyResult FunctionLowering::lowerShortCircuit(const ast::BinaryExpression& expression) {
+    BodyResult left = lowerExpr(*expression.lhs_operand);
+    if (!left.reaches_end) {
+        return left;
+    }
+    IrBuilder::requireIr(left.value.has_value() && left.value->type == module_.types.i1(), "logical left operand must produce i1");
+    semantic::TyId result_type = body_.expressions.at(&expression).type;
+    Place result_slot = createTemporary(result_type);
+    storePlace(result_slot, *left.value);
+    BlockId rhs_block = builder_.createBlock(ir_function_);
+    BlockId merge_block = builder_.createBlock(ir_function_);
+    if (expression.op == ast::BinaryOperator::LogicalAnd) {
+        builder_.emitCondBr(*left.value, rhs_block, merge_block);
+    } else {
+        builder_.emitCondBr(*left.value, merge_block, rhs_block);
+    }
+    builder_.clearInsertionPoint();
+    builder_.positionAtEnd(ir_function_, rhs_block);
+    BodyResult right = lowerExpr(*expression.rhs_operand);
+    if (right.reaches_end) {
+        IrBuilder::requireIr(right.value.has_value() && right.value->type == module_.types.i1(), "logical right operand must produce i1");
+        storePlace(result_slot, *right.value);
+        builder_.emitBr(merge_block);
+        builder_.clearInsertionPoint();
+    }
+    builder_.positionAtEnd(ir_function_, merge_block);
+    return {true, loadPlace(result_slot)};
 }
 
 } // namespace ir

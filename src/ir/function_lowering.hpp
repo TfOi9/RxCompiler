@@ -93,6 +93,9 @@ private:
     BodyResult lowerCast(const ast::CastExpression& expression);
     BodyResult lowerAssignment(const ast::AssignmentExpression& expression);
     Operand emitCompoundOperation(ast::AssignmentOperator op, Operand lhs, Operand rhs, semantic::PrimaryTyKind left_kind);
+
+    BodyResult lowerIf(const ast::IfExpression& expression);
+    BodyResult lowerShortCircuit(const ast::BinaryExpression& expression);
 };
 
 } // namespace ir
