@@ -5,6 +5,7 @@
 #include "ir/instruction.hpp"
 #include "ir/ir_ids.hpp"
 #include "ir/layout.hpp"
+#include "ir/module_lowering.hpp"
 #include "semantic/body_semantics.hpp"
 #include "semantic/function_resolver.hpp"
 #include "semantic/path_resolution.hpp"
@@ -52,10 +53,16 @@ struct LoopContext {
     std::optional<Place> result_slot;
 };
 
+struct VecSlots {
+    Operand data;
+    Operand length;
+    Operand capacity;
+};
+
 class FunctionLowering {
 public:
-    FunctionLowering(const semantic::SemanticModel& model, const semantic::FunctionInfo& function, const semantic::FunctionBodyInfo& body, Module& module, TypeLowering& types, TargetLayout& layout, const FunctionMap& functions):
-        model_(model), function_(function), body_(body), module_(module), types_(types), layout_(layout), functions_(functions), builder_(module), locals_(body.locals.size()) {}
+    FunctionLowering(const semantic::SemanticModel& model, const semantic::FunctionInfo& function, const semantic::FunctionBodyInfo& body, Module& module, TypeLowering& types, TargetLayout& layout, const FunctionMap& functions, const RuntimeFunctions& runtime):
+        model_(model), function_(function), body_(body), module_(module), types_(types), layout_(layout), functions_(functions), builder_(module), locals_(body.locals.size()), runtime_(runtime) {}
     void lower();
 private:
     const semantic::SemanticModel& model_;
@@ -69,6 +76,7 @@ private:
     FunctionId ir_function_;
     std::vector<std::optional<LocalSlot>> locals_;
     std::map<semantic::LoopId, LoopContext> loops_;
+    const RuntimeFunctions& runtime_;
 
     LocalSlot& ensureLocalSlot(semantic::LocalId id);
     const LocalSlot& localSlot(semantic::LocalId id) const;
@@ -118,6 +126,18 @@ private:
     BodyResult lowerMethodCall(const ast::MethodCallExpression& expression);
     BodyResult lowerResolvedCall(const semantic::CallPlan& plan, const std::vector<ast::AstPtr<ast::Expression>>& arguments);
     BodyResult lowerReceiver(const semantic::ReceiverPlan& plan);
+
+    TypeLayout objectLayout(semantic::TyId type);
+    Operand emitAllocate(semantic::TyId element_type, Operand count);
+    VecSlots vecSlots(semantic::TyId owner, Operand address);
+    Place vectorElementPlace(semantic::TyId element_type, Operand data, Operand index);
+    Operand emitArrayLen(semantic::TyId owner);
+    Operand emitBoxNew(semantic::TyId owner, Operand value);
+    Operand emitVecNew(semantic::TyId owner);
+    Operand emitVecLen(semantic::TyId owner, Operand receiver);
+    Operand emitVecIsEmpty(semantic::TyId owner, Operand receiver);
+    void emitVecPush(semantic::TyId owner, Operand receiver, Operand value);
+    Operand emitVecRemove(semantic::TyId owner, Operand receiver, Operand index);
     BodyResult lowerBuiltin(const semantic::BuiltinTarget& target, const std::vector<Operand>& arguments);
 };
 

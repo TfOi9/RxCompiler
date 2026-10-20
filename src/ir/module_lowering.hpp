@@ -15,6 +15,12 @@ namespace ir {
 
 using FunctionMap = std::map<semantic::FunctionId, ir::FunctionId>;
 
+struct RuntimeFunctions {
+    FunctionId alloc;
+    FunctionId copy;
+    FunctionId move;
+};
+
 class ModuleLowering {
 public:
     ModuleLowering(const semantic::SemanticModel& model, Module& module): model_(model), module_(module), builder_(module), types_(model, module), layout_(module) {}
@@ -28,6 +34,7 @@ private:
     FunctionMap functions_;
     std::optional<semantic::FunctionId> source_main_;
     std::optional<ir::FunctionId> machine_main_;
+    RuntimeFunctions runtime;
 
     void initializeTarget();
     void registerStructs();

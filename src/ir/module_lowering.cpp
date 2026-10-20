@@ -39,6 +39,46 @@ void ModuleLowering::declareRuntime() {
     functions_[0] = get_i32_id;
     functions_[1] = print_i32_id;
     functions_[2] = println_i32_id;
+    runtime = {
+        builder_.addFunction(
+            "__rx_alloc",
+            Linkage::External,
+            FunctionForm::Declaration,
+            FunctionSignature{
+                module_.types.ptr(), 
+                {
+                    module_.types.i32(),
+                    module_.types.i32()
+                }
+            }
+        ),
+        builder_.addFunction(
+            "memcpy",
+            Linkage::External,
+            FunctionForm::Declaration,
+            FunctionSignature{
+                module_.types.ptr(),
+                {
+                    module_.types.ptr(),
+                    module_.types.ptr(),
+                    module_.types.i32()
+                }
+            }
+        ),
+        builder_.addFunction(
+            "memmove",
+            Linkage::External,
+            FunctionForm::Declaration,
+            FunctionSignature{
+                module_.types.ptr(),
+                {
+                    module_.types.ptr(),
+                    module_.types.ptr(),
+                    module_.types.i32()
+                }
+            }
+        )
+    };
 }
 
 void ModuleLowering::registerSourceFunctions() {
@@ -75,7 +115,7 @@ void ModuleLowering::lowerFunctionBodies() {
         }
         const auto* body = model_.findFunctionBody(func.id);
         IrBuilder::requireIr(body != nullptr, "source function has no semantic body");
-        FunctionLowering lowering(model_, func, *body, module_, types_, layout_, functions_);
+        FunctionLowering lowering(model_, func, *body, module_, types_, layout_, functions_, runtime);
         lowering.lower();
     }
 }

@@ -1147,4 +1147,169 @@ BodyResult FunctionLowering::lowerMethodCall(const ast::MethodCallExpression& ex
     return lowerResolvedCall(plan, expression.args);
 }
 
+TypeLayout FunctionLowering::objectLayout(semantic::TyId type) {
+    TypeLayout result = layout_.layoutOf(types_.storageType(type));
+    IrBuilder::requireIr(result.size != 0 && result.size <= std::numeric_limits<uint32_t>::max(), "object size is not representable on RV32");
+    IrBuilder::requireIr(result.alignment == 1 || result.alignment == 4, "unsupported object alignment");
+    return result;
+}
+
+Operand FunctionLowering::emitAllocate(semantic::TyId element_type, Operand count) {
+    IrBuilder::requireIr(count.type == module_.types.i32(), "allocation count must be usize");
+    TypeLayout object = objectLayout(element_type);
+    Operand stride = builder_.constantInt(module_.types.i32(), static_cast<uint32_t>(object.size));
+    Operand bytes = builder_.emitBinary(OpCode::Mul, count, stride);
+    Operand alignment = builder_.constantInt(module_.types.i32(), object.alignment);
+    auto result = builder_.emitCall(runtime_.alloc, {bytes, alignment});
+    IrBuilder::requireIr(result.has_value(), "allocator has no return value");
+    return *result;
+}
+
+VecSlots FunctionLowering::vecSlots(semantic::TyId owner, Operand address) {
+    IrBuilder::requireIr(std::holds_alternative<semantic::VecTy>(model_.typeContext().get(owner)), "Vec operation has a non-Vec owner");
+    TypeId storage = types_.storageType(owner);
+    TypeId i32 = module_.types.i32();
+    auto field = [&](uint32_t ordinal) {
+        return builder_.emitGep(
+            storage,
+            address,
+            {
+                builder_.constantInt(i32, 0),
+                builder_.constantInt(i32, ordinal)
+            }
+        );
+    };
+    return {field(0), field(1), field(2)};
+}
+
+Place FunctionLowering::vectorElementPlace(semantic::TyId element_type, Operand data, Operand index) {
+    TypeLayout object = objectLayout(element_type);
+    Operand address = builder_.emitGep(
+        types_.storageType(element_type),
+        data,
+        {index}
+    );
+    return {
+        address,
+        element_type,
+        static_cast<uint8_t>(object.alignment)
+    };
+}
+
+Operand FunctionLowering::emitArrayLen(semantic::TyId owner) {
+    const auto& array = std::get<semantic::ArrayTy>(model_.typeContext().get(owner));
+    return builder_.constantInt(module_.types.i32(), array.len);
+}
+
+Operand FunctionLowering::emitBoxNew(semantic::TyId owner, Operand value) {
+    const auto& box = std::get<semantic::BoxTy>(model_.typeContext().get(owner));
+    TypeLayout object = objectLayout(box.elem);
+    Operand address = emitAllocate(box.elem, builder_.constantInt(module_.types.i32(), 1));
+    storePlace(
+        Place{
+            address,
+            box.elem,
+            static_cast<uint8_t>(object.alignment)
+        },
+        value
+    );
+    return address;
+}
+
+Operand FunctionLowering::emitVecNew(semantic::TyId owner) {
+    Place result = createTemporary(owner);
+    VecSlots slots = vecSlots(owner, result.address);
+    Operand zero = builder_.constantInt(module_.types.i32(), 0);
+    builder_.emitStore(builder_.nullPointer(), slots.data, 4);
+    builder_.emitStore(zero, slots.length, 4);
+    builder_.emitStore(zero, slots.capacity, 4);
+    return loadPlace(result);
+}
+
+Operand FunctionLowering::emitVecLen(semantic::TyId owner, Operand receiver) {
+    VecSlots slots = vecSlots(owner, receiver);
+    return builder_.emitLoad(module_.types.i32(), slots.length, 4);
+}
+
+Operand FunctionLowering::emitVecIsEmpty(semantic::TyId owner, Operand receiver) {
+    Operand length = emitVecLen(owner, receiver);
+    return builder_.emitICmp(Predicate::Eq, length, builder_.constantInt(module_.types.i32(), 0));
+}
+
+void FunctionLowering::emitVecPush(semantic::TyId owner, Operand receiver, Operand value) {
+    const auto& vec = std::get<semantic::VecTy>(model_.typeContext().get(owner));
+    IrBuilder::requireIr(value.type == types_.valueType(vec.elem), "Vec push element type mismatch");
+    TypeLayout element = objectLayout(vec.elem);
+    VecSlots slots = vecSlots(owner, receiver);
+    TypeId i32 = module_.types.i32();
+    Operand zero = builder_.constantInt(i32, 0);
+    Operand one = builder_.constantInt(i32, 1);
+    Operand four = builder_.constantInt(i32, 4);
+    Operand length = builder_.emitLoad(i32, slots.length, 4);
+    Operand capacity = builder_.emitLoad(i32, slots.capacity, 4);
+    BlockId grow = builder_.createBlock(ir_function_);
+    BlockId copy = builder_.createBlock(ir_function_);
+    BlockId update = builder_.createBlock(ir_function_);
+    BlockId append = builder_.createBlock(ir_function_);
+    Operand full = builder_.emitICmp(Predicate::Eq, length, capacity);
+    builder_.emitCondBr(full, grow, append);
+    builder_.clearInsertionPoint();
+    builder_.positionAtEnd(ir_function_, grow);
+    Operand doubled = builder_.emitBinary(OpCode::Add, capacity, capacity);
+    Operand was_empty = builder_.emitICmp(Predicate::Eq, capacity, zero);
+    Operand initial_bonus = builder_.emitBinary(OpCode::Mul, builder_.emitZExt(was_empty, i32), four);
+    Operand new_capacity = builder_.emitBinary(OpCode::Add, doubled, initial_bonus);
+    Operand new_data = emitAllocate(vec.elem, new_capacity);
+    Operand has_elements = builder_.emitICmp(Predicate::Ne, length, zero);
+    builder_.emitCondBr(has_elements, copy, update);
+    builder_.clearInsertionPoint();
+    builder_.positionAtEnd(ir_function_, copy);
+    Operand old_data = builder_.emitLoad(module_.types.ptr(), slots.data, 4);
+    Operand live_bytes = builder_.emitBinary(OpCode::Mul, length, builder_.constantInt(i32, static_cast<uint32_t>(element.size)));
+    builder_.emitCall(runtime_.copy, {new_data, old_data, live_bytes});
+    builder_.emitBr(update);
+    builder_.clearInsertionPoint();
+    builder_.positionAtEnd(ir_function_, update);
+    builder_.emitStore(new_data, slots.data, 4);
+    builder_.emitStore(new_capacity, slots.capacity, 4);
+    builder_.emitBr(append);
+    builder_.clearInsertionPoint();
+    builder_.positionAtEnd(ir_function_, append);
+    Operand data = builder_.emitLoad(module_.types.ptr(), slots.data, 4);
+    storePlace(vectorElementPlace(vec.elem, data, length), value);
+    Operand new_length = builder_.emitBinary(OpCode::Add, length, one);
+    builder_.emitStore(new_length, slots.length, 4);
+}
+
+Operand FunctionLowering::emitVecRemove(semantic::TyId owner, Operand receiver, Operand index) {
+    const auto& vec = std::get<semantic::VecTy>(model_.typeContext().get(owner));
+    IrBuilder::requireIr(index.type == module_.types.i32(), "Vec remove index must be usize");
+    TypeLayout element = objectLayout(vec.elem);
+    VecSlots slots = vecSlots(owner, receiver);
+    TypeId i32 = module_.types.i32();
+    Operand zero = builder_.constantInt(i32, 0);
+    Operand one = builder_.constantInt(i32, 1);
+    Operand data = builder_.emitLoad(module_.types.ptr(), slots.data, 4);
+    Operand length = builder_.emitLoad(i32, slots.length, 4);
+    Place removed = vectorElementPlace(vec.elem, data, index);
+    Operand result = loadPlace(removed);
+    Operand next_index = builder_.emitBinary(OpCode::Add, index, one);
+    Operand tail_count = builder_.emitBinary(OpCode::Sub, length, next_index);
+    BlockId shift = builder_.createBlock(ir_function_);
+    BlockId done = builder_.createBlock(ir_function_);
+    Operand has_tail = builder_.emitICmp(Predicate::Ne, tail_count, zero);
+    builder_.emitCondBr(has_tail, shift, done);
+    builder_.clearInsertionPoint();
+    builder_.positionAtEnd(ir_function_, shift);
+    Place next = vectorElementPlace(vec.elem, data, next_index);
+    Operand bytes = builder_.emitBinary(OpCode::Mul, tail_count, builder_.constantInt(i32, static_cast<uint32_t>(element.size)));
+    builder_.emitCall(runtime_.move, {removed.address, next.address, bytes});
+    builder_.emitBr(done);
+    builder_.clearInsertionPoint();
+    builder_.positionAtEnd(ir_function_, done);
+    Operand new_length = builder_.emitBinary(OpCode::Sub, length, one);
+    builder_.emitStore(new_length, slots.length, 4);
+    return result;
+}
+
 } // namespace ir
