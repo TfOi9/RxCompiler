@@ -45,6 +45,12 @@ enum class BaseMode {
     Raw
 };
 
+struct LoopContext {
+    BlockId continue_target;
+    std::optional<BlockId> exit;
+    std::optional<Place> result_slot;
+};
+
 class FunctionLowering {
 public:
     FunctionLowering(const semantic::SemanticModel& model, const semantic::FunctionInfo& function, const semantic::FunctionBodyInfo& body, Module& module, TypeLowering& types, TargetLayout& layout, const FunctionMap& functions):
@@ -61,6 +67,7 @@ private:
     IrBuilder builder_;
     FunctionId ir_function_;
     std::vector<std::optional<LocalSlot>> locals_;
+    std::map<semantic::LoopId, LoopContext> loops_;
 
     LocalSlot& ensureLocalSlot(semantic::LocalId id);
     const LocalSlot& localSlot(semantic::LocalId id) const;
@@ -96,6 +103,10 @@ private:
 
     BodyResult lowerIf(const ast::IfExpression& expression);
     BodyResult lowerShortCircuit(const ast::BinaryExpression& expression);
+    BodyResult lowerLoop(const ast::LoopExpression& expression);
+    BodyResult lowerWhile(const ast::WhileExpression& expression);
+    BodyResult lowerBreak(const ast::BreakExpression& expression);
+    BodyResult lowerContinue(const ast::ContinueExpression& expression);
 };
 
 } // namespace ir

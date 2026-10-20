@@ -247,6 +247,14 @@ BodyResult FunctionLowering::lowerExprRaw(const ast::Expression& expression) {
             return lowerAssignment(static_cast<const ast::AssignmentExpression&>(expression));
         case ast::NodeType::IfExpr:
             return lowerIf(static_cast<const ast::IfExpression&>(expression));
+        case ast::NodeType::LoopExpr:
+            return lowerLoop(static_cast<const ast::LoopExpression&>(expression));
+        case ast::NodeType::WhileExpr:
+            return lowerWhile(static_cast<const ast::WhileExpression&>(expression));
+        case ast::NodeType::BreakExpr:
+            return lowerBreak(static_cast<const ast::BreakExpression&>(expression));
+        case ast::NodeType::ContinueExpr:
+            return lowerContinue(static_cast<const ast::ContinueExpression&>(expression));
         default:
             // TODO unimplemented
             throw std::logic_error("expression lowering unimplemented");
@@ -871,6 +879,97 @@ BodyResult FunctionLowering::lowerShortCircuit(const ast::BinaryExpression& expr
     }
     builder_.positionAtEnd(ir_function_, merge_block);
     return {true, loadPlace(result_slot)};
+}
+
+BodyResult FunctionLowering::lowerLoop(const ast::LoopExpression& expression) {
+    semantic::LoopId id = body_.loop_ids.at(&expression);
+    semantic::TyId result_type = body_.expressions.at(&expression).type;
+    const auto& type = model_.typeContext().get(result_type);
+    std::optional<Place> slot;
+    if (!std::holds_alternative<semantic::UnitTy>(type) && !std::holds_alternative<semantic::NeverTy>(type)) {
+        slot = createTemporary(result_type);
+    }
+    BlockId body_block = builder_.createBlock(ir_function_);
+    loops_.emplace(id, LoopContext{body_block, std::nullopt, slot});
+    builder_.emitBr(body_block);
+    builder_.clearInsertionPoint();
+    builder_.positionAtEnd(ir_function_, body_block);
+    BodyResult body_result = lowerExpr(*expression.body);
+    if (body_result.reaches_end) {
+        builder_.emitBr(body_block);
+        builder_.clearInsertionPoint();
+    }
+    LoopContext finished = loops_.at(id);
+    loops_.erase(id);
+    if (!finished.exit) {
+        builder_.clearInsertionPoint();
+        return {false, std::nullopt};
+    }
+    builder_.positionAtEnd(ir_function_, *finished.exit);
+    if (finished.result_slot) {
+        return {true, loadPlace(*finished.result_slot)};
+    }
+    return {true, std::nullopt};
+}
+
+BodyResult FunctionLowering::lowerWhile(const ast::WhileExpression& expression) {
+    BlockId condition_block = builder_.createBlock(ir_function_);
+    builder_.emitBr(condition_block);
+    builder_.clearInsertionPoint();
+    builder_.positionAtEnd(ir_function_, condition_block);
+    BodyResult condition = lowerExpr(*expression.condition);
+    if (!condition.reaches_end) {
+        return condition;
+    }
+    IrBuilder::requireIr(condition.value.has_value() && condition.value->type == module_.types.i1(), "while condition must produce i1");
+    semantic::LoopId id = body_.loop_ids.at(&expression);
+    BlockId body_block = builder_.createBlock(ir_function_);
+    BlockId exit_block = builder_.createBlock(ir_function_);
+    loops_.emplace(id, LoopContext{condition_block, exit_block, std::nullopt});
+    builder_.emitCondBr(*condition.value, body_block, exit_block);
+    builder_.clearInsertionPoint();
+    builder_.positionAtEnd(ir_function_, body_block);
+    BodyResult body_result = lowerExpr(*expression.body);
+    if (body_result.reaches_end) {
+        builder_.emitBr(condition_block);
+        builder_.clearInsertionPoint();
+    }
+    loops_.erase(id);
+    builder_.positionAtEnd(ir_function_, exit_block);
+    return {true, std::nullopt};
+}
+
+BodyResult FunctionLowering::lowerBreak(const ast::BreakExpression& expression) {
+    semantic::LoopId target = body_.break_targets.at(&expression);
+    std::optional<Operand> value;
+    if (expression.expr) {
+        BodyResult result = lowerExpr(*expression.expr);
+        if (!result.reaches_end) {
+            return result;
+        }
+        value = result.value;
+    }
+    auto& context = loops_.at(target);
+    if (context.result_slot) {
+        IrBuilder::requireIr(value.has_value(), "break has no loop result value");
+        storePlace(*context.result_slot, *value);
+    } else {
+        IrBuilder::requireIr(!value.has_value(), "unit break has an unexpected value");
+    }
+    if (!context.exit) {
+        context.exit = builder_.createBlock(ir_function_);
+    }
+    builder_.emitBr(*context.exit);
+    builder_.clearInsertionPoint();
+    return {false, std::nullopt};
+}
+
+BodyResult FunctionLowering::lowerContinue(const ast::ContinueExpression& expression) {
+    semantic::LoopId target = body_.continue_targets.at(&expression);
+    BlockId destination = loops_.at(target).continue_target;
+    builder_.emitBr(destination);
+    builder_.clearInsertionPoint();
+    return {false, std::nullopt};
 }
 
 } // namespace ir
