@@ -255,6 +255,10 @@ BodyResult FunctionLowering::lowerExprRaw(const ast::Expression& expression) {
             return lowerBreak(static_cast<const ast::BreakExpression&>(expression));
         case ast::NodeType::ContinueExpr:
             return lowerContinue(static_cast<const ast::ContinueExpression&>(expression));
+        case ast::NodeType::ArrayExpr:
+            return lowerArray(static_cast<const ast::ArrayExpression&>(expression));
+        case ast::NodeType::StructExpr:
+            return lowerStruct(static_cast<const ast::StructExpression&>(expression));
         default:
             // TODO unimplemented
             throw std::logic_error("expression lowering unimplemented");
@@ -970,6 +974,114 @@ BodyResult FunctionLowering::lowerContinue(const ast::ContinueExpression& expres
     builder_.emitBr(destination);
     builder_.clearInsertionPoint();
     return {false, std::nullopt};
+}
+
+Place FunctionLowering::arrayElementPlace(const Place& array, Operand index) {
+    const auto& type = std::get<semantic::ArrayTy>(model_.typeContext().get(array.type));
+    Operand address = builder_.emitGep(types_.storageType(array.type), array.address, {builder_.constantInt(module_.types.i32(), 0), index});
+    uint32_t element_alignment = layout_.layoutOf(types_.storageType(type.elem)).alignment;
+    auto alignment = static_cast<uint8_t>(std::min<uint32_t>(array.alignment, element_alignment));
+    return Place{address, type.elem, alignment};
+}
+
+Place FunctionLowering::structFieldPlace(const Place& object, size_t ordinal) {
+    IrBuilder::requireIr(ordinal <= static_cast<size_t>(std::numeric_limits<uint32_t>::max()), "struct ordinal out of range");
+    const auto& type = std::get<semantic::StructTy>(model_.typeContext().get(object.type));
+    Operand address = builder_.emitGep(types_.storageType(object.type), object.address, {builder_.constantInt(module_.types.i32(), 0), builder_.constantInt(module_.types.i32(), ordinal)});
+    const auto& stru = model_.findStruct(type.def);
+    uint32_t element_alignment = layout_.layoutOf(types_.storageType(stru->fields.at(ordinal).type)).alignment;
+    auto alignment = static_cast<uint8_t>(std::min<uint32_t>(object.alignment, element_alignment));
+    return Place{address, stru->fields.at(ordinal).type, alignment};
+}
+
+BodyResult FunctionLowering::lowerArray(const ast::ArrayExpression& expression) {
+    semantic::TyId result_type = body_.expressions.at(&expression).type;
+    const auto& array_type = std::get<semantic::ArrayTy>(model_.typeContext().get(result_type));
+    if (expression.repeated_length) {
+        IrBuilder::requireIr(expression.elements.size() == 1, "repeated array must have exactly one initializer");
+        BodyResult element = lowerExpr(*expression.elements.front());
+        if (!element.reaches_end) {
+            return element;
+        }
+        IrBuilder::requireIr(element.value.has_value(), "repeated element has no runtime value");
+        Place object = createTemporary(result_type);
+        fillRepeatedArray(object, *element.value, array_type.len);
+        return {true, loadPlace(object)};
+    }
+    std::vector<Operand> values;
+    values.reserve(expression.elements.size());
+    for (const auto& elem: expression.elements) {
+        BodyResult result = lowerExpr(*elem);
+        if (!result.reaches_end) {
+            return result;
+        }
+        IrBuilder::requireIr(result.value.has_value(), "array element has no runtime value");
+        values.push_back(*result.value);
+    }
+    IrBuilder::requireIr(values.size() == array_type.len, "array initializer length mismatch");
+    Place object = createTemporary(result_type);
+    for (size_t i = 0; i < values.size(); i++) {
+        Operand index = builder_.constantInt(module_.types.i32(), static_cast<uint32_t>(i));
+        storePlace(arrayElementPlace(object, index), values[i]);
+    }
+    return {true, loadPlace(object)};
+}
+
+void FunctionLowering::fillRepeatedArray(const Place& array, Operand element, uint32_t length) {
+    IrBuilder::requireIr(builder_.hasInsertionPoint(), "array filling has no insertion point");
+    const auto* array_type = std::get_if<semantic::ArrayTy>(&model_.typeContext().get(array.type));
+    IrBuilder::requireIr(array_type != nullptr, "array filling requires an array place");
+    IrBuilder::requireIr(length == array_type->len, "array filling length mismatch");
+    IrBuilder::requireIr(element.type == types_.valueType(array_type->elem), "repeated element type mismatch");
+    if (length == 0) {
+        return;
+    }
+    TypeId i32 = module_.types.i32();
+    auto counter_align = static_cast<uint8_t>(layout_.layoutOf(i32).alignment);
+    Operand zero = builder_.constantInt(i32, 0);
+    Operand one = builder_.constantInt(i32, 1);
+    Operand limit = builder_.constantInt(i32, length);
+    Operand counter = builder_.emitEntryAlloca(i32, counter_align);
+    builder_.emitStore(zero, counter, counter_align);
+    BlockId header = builder_.createBlock(ir_function_);
+    BlockId body = builder_.createBlock(ir_function_);
+    BlockId done = builder_.createBlock(ir_function_);
+    builder_.emitBr(header);
+    builder_.clearInsertionPoint();
+    builder_.positionAtEnd(ir_function_, header);
+    Operand index = builder_.emitLoad(i32, counter, counter_align);
+    Operand condition = builder_.emitICmp(Predicate::Ult, index, limit);
+    builder_.emitCondBr(condition, body, done);
+    builder_.clearInsertionPoint();
+    builder_.positionAtEnd(ir_function_, body);
+    storePlace(arrayElementPlace(array, index), element);
+    Operand next = builder_.emitBinary(OpCode::Add, index, one);
+    builder_.emitStore(next, counter, counter_align);
+    builder_.emitBr(header);
+    builder_.clearInsertionPoint();
+    builder_.positionAtEnd(ir_function_, done);
+}
+
+BodyResult FunctionLowering::lowerStruct(const ast::StructExpression& expression) {
+    semantic::TyId result_type = body_.expressions.at(&expression).type;
+    const auto& structure = std::get<semantic::StructTy>(model_.typeContext().get(result_type));
+    std::vector<std::pair<size_t, Operand>> values;
+    values.reserve(expression.fields.size());
+    for (const auto& initializer: expression.fields) {
+        const auto* field = model_.findField(structure.def, initializer.name);
+        IrBuilder::requireIr(field != nullptr, "struct initializer has no resolved field");
+        BodyResult result = lowerExpr(*initializer.value);
+        if (!result.reaches_end) {
+            return result;
+        }
+        IrBuilder::requireIr(result.value.has_value(), "struct field has no runtime value");
+        values.emplace_back(field->ordinal, *result.value);
+    }
+    Place object = createTemporary(result_type);
+    for (const auto& [ordinal, value]: values) {
+        storePlace(structFieldPlace(object, ordinal), value);
+    }
+    return {true, loadPlace(object)};
 }
 
 } // namespace ir

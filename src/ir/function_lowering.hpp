@@ -107,6 +107,12 @@ private:
     BodyResult lowerWhile(const ast::WhileExpression& expression);
     BodyResult lowerBreak(const ast::BreakExpression& expression);
     BodyResult lowerContinue(const ast::ContinueExpression& expression);
+
+    BodyResult lowerArray(const ast::ArrayExpression& expression);
+    BodyResult lowerStruct(const ast::StructExpression& expression);
+    Place arrayElementPlace(const Place& array, Operand index);
+    Place structFieldPlace(const Place& object, size_t ordinal);
+    void fillRepeatedArray(const Place& array, Operand element, uint32_t length);
 };
 
 } // namespace ir
