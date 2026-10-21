@@ -14,6 +14,8 @@
 namespace ir {
 
 using FunctionMap = std::map<semantic::FunctionId, ir::FunctionId>;
+class CloneHelper;
+class EqualityHelper;
 
 struct RuntimeFunctions {
     FunctionId alloc;
@@ -41,7 +43,7 @@ private:
     void declareRuntime();
     void registerSourceFunctions();
     void registerMachineMain();
-    void lowerFunctionBodies();
+    void lowerFunctionBodies(CloneHelper& clone_helper, EqualityHelper& equality_helper);
     void emitMachineMain();
 
     FunctionSignature lowerSignature(const semantic::FunctionSignature& signature);

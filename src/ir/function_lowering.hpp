@@ -19,6 +19,8 @@ namespace ir {
 
 using FunctionMap = std::map<semantic::FunctionId, ir::FunctionId>;
 class TypeLowering;
+class CloneHelper;
+class EqualityHelper;
 
 struct LocalSlot {
     Operand address;
@@ -61,8 +63,8 @@ struct VecSlots {
 
 class FunctionLowering {
 public:
-    FunctionLowering(const semantic::SemanticModel& model, const semantic::FunctionInfo& function, const semantic::FunctionBodyInfo& body, Module& module, TypeLowering& types, TargetLayout& layout, const FunctionMap& functions, const RuntimeFunctions& runtime):
-        model_(model), function_(function), body_(body), module_(module), types_(types), layout_(layout), functions_(functions), builder_(module), locals_(body.locals.size()), runtime_(runtime) {}
+    FunctionLowering(const semantic::SemanticModel& model, const semantic::FunctionInfo& function, const semantic::FunctionBodyInfo& body, Module& module, TypeLowering& types, TargetLayout& layout, const FunctionMap& functions, const RuntimeFunctions& runtime, CloneHelper& clone_helper, EqualityHelper& equality_helper):
+        model_(model), function_(function), body_(body), module_(module), types_(types), layout_(layout), functions_(functions), builder_(module), locals_(body.locals.size()), runtime_(runtime), clone_helper_(clone_helper), equality_helper_(equality_helper) {}
     void lower();
 private:
     const semantic::SemanticModel& model_;
@@ -77,6 +79,8 @@ private:
     std::vector<std::optional<LocalSlot>> locals_;
     std::map<semantic::LoopId, LoopContext> loops_;
     const RuntimeFunctions& runtime_;
+    CloneHelper& clone_helper_;
+    EqualityHelper& equality_helper_;
 
     LocalSlot& ensureLocalSlot(semantic::LocalId id);
     const LocalSlot& localSlot(semantic::LocalId id) const;
@@ -94,6 +98,8 @@ private:
 
     BodyResult lowerUnary(const ast::UnaryExpression& expression);
     BodyResult lowerBinary(const ast::BinaryExpression& expression);
+    std::optional<Place> lowerEqualityOperand(const ast::Expression& expression, const semantic::OperandPlan& plan);
+    BodyResult lowerEquality(const ast::BinaryExpression& expression);
     BodyResult lowerCall(const ast::CallExpression& expression);
     BodyResult lowerReturn(const ast::ReturnExpression& expression);
     semantic::PrimaryTyKind requireScalarOperand(const semantic::OperandPlan& plan) const;
@@ -139,6 +145,7 @@ private:
     void emitVecPush(semantic::TyId owner, Operand receiver, Operand value);
     Operand emitVecRemove(semantic::TyId owner, Operand receiver, Operand index);
     BodyResult lowerBuiltin(const semantic::BuiltinTarget& target, const std::vector<Operand>& arguments);
+    Operand emitClone(semantic::TyId owner, Operand receiver);
 };
 
 } // namespace ir

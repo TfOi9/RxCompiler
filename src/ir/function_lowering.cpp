@@ -5,6 +5,8 @@
 #include "ir/ir_ids.hpp"
 #include "ir/layout.hpp"
 #include "ir/module_lowering.hpp"
+#include "ir/clone_helper.hpp"
+#include "ir/equality_helper.hpp"
 #include "semantic/body_semantics.hpp"
 #include "semantic/integer_literal.hpp"
 #include "semantic/path_resolution.hpp"
@@ -427,6 +429,9 @@ BodyResult FunctionLowering::lowerBinary(const ast::BinaryExpression& expression
     if (expression.op == ast::BinaryOperator::LogicalAnd || expression.op == ast::BinaryOperator::LogicalOr) {
         return lowerShortCircuit(expression);
     }
+    if (expression.op == ast::BinaryOperator::Equal || expression.op == ast::BinaryOperator::NotEqual) {
+        return lowerEquality(expression);
+    }
     auto plan_it = body_.binary_operations.find(&expression);
     IrBuilder::requireIr(plan_it != body_.binary_operations.end(), "binary expression has no semantic plan");
     const auto& plan = plan_it->second;
@@ -477,10 +482,6 @@ BodyResult FunctionLowering::lowerBinary(const ast::BinaryExpression& expression
             }
             return binary(signed_left ? OpCode::Ashr : OpCode::Lshr);
         }
-        case ast::BinaryOperator::Equal:
-            return compare(Predicate::Eq);
-        case ast::BinaryOperator::NotEqual:
-            return compare(Predicate::Ne);
         case ast::BinaryOperator::Less:
             return compare(signed_left ? Predicate::Slt : Predicate::Ult);
         case ast::BinaryOperator::LessEqual:
@@ -831,7 +832,7 @@ BodyResult FunctionLowering::lowerIf(const ast::IfExpression& expression) {
     }
     if (!merge) {
         builder_.clearInsertionPoint();
-        return {true, std::nullopt};
+        return {false, std::nullopt};
     }
     builder_.positionAtEnd(ir_function_, *merge);
     if (result_slot) {
@@ -1310,6 +1311,95 @@ Operand FunctionLowering::emitVecRemove(semantic::TyId owner, Operand receiver, 
     Operand new_length = builder_.emitBinary(OpCode::Sub, length, one);
     builder_.emitStore(new_length, slots.length, 4);
     return result;
+}
+
+Operand FunctionLowering::emitClone(semantic::TyId owner, Operand receiver) {
+    IrBuilder::requireIr(receiver.type == module_.types.ptr(), "clone receiver must be an address");
+    Place result = createTemporary(owner);
+    FunctionId helper = clone_helper_.request(owner);
+    builder_.emitCall(helper, {result.address, receiver});
+    return loadPlace(result);
+}
+
+BodyResult FunctionLowering::lowerBuiltin(const semantic::BuiltinTarget& target, const std::vector<Operand>& arguments) {
+    auto requireArity = [&](size_t count) {
+        IrBuilder::requireIr(arguments.size() == count, "builtin argument count mismatch");
+    };
+    semantic::TyId owner = target.owner_type;
+    switch (target.operation) {
+        case semantic::BuiltinOp::ArrayLen:
+            requireArity(1);
+            IrBuilder::requireIr(arguments[0].type == module_.types.ptr(), "array len receiver must be an address");
+            return {true, emitArrayLen(owner)};
+        case semantic::BuiltinOp::BoxNew:
+            requireArity(1);
+            return {true, emitBoxNew(owner, arguments[0])};
+        case semantic::BuiltinOp::VecNew:
+            requireArity(0);
+            return {true, emitVecNew(owner)};
+        case semantic::BuiltinOp::VecLen:
+            requireArity(1);
+            return {true, emitVecLen(owner, arguments[0])};
+        case semantic::BuiltinOp::VecIsEmpty:
+            requireArity(1);
+            return {true, emitVecIsEmpty(owner, arguments[0])};
+        case semantic::BuiltinOp::VecPush:
+            requireArity(2);
+            emitVecPush(owner, arguments[0], arguments[1]);
+            return {true, std::nullopt};
+        case semantic::BuiltinOp::VecRemove:
+            requireArity(2);
+            return {true, emitVecRemove(owner, arguments[0], arguments[1])};
+        case semantic::BuiltinOp::Clone:
+            requireArity(1);
+            return {true, emitClone(owner, arguments[0])};
+        default:
+            throw std::logic_error("unknown builtin operation");
+    }
+}
+
+std::optional<Place> FunctionLowering::lowerEqualityOperand(const ast::Expression& expression, const semantic::OperandPlan& plan) {
+    IrBuilder::requireIr(
+        plan.read_kind == semantic::OperandReadKind::EqualityBorrow &&
+        plan.source_type == plan.operation_type &&
+        plan.reference_depth == 0 && !plan.outer_mutable_to_shared,
+        "invalid equality operand plan"
+    );
+    auto cursor = lowerPlaceBase(expression, BaseMode::Effective);
+    if (!cursor) {
+        return std::nullopt;
+    }
+    IrBuilder::requireIr(cursor->type == plan.source_type, "equality operand type mismatch");
+    if (const auto* place = std::get_if<Place>(&cursor->location)) {
+        return *place;
+    }
+    Place temporary = createTemporary(cursor->type);
+    storePlace(temporary, std::get<Operand>(cursor->location));
+    return temporary;
+}
+
+BodyResult FunctionLowering::lowerEquality(const ast::BinaryExpression& expression) {
+    IrBuilder::requireIr(expression.lhs_operand != nullptr && expression.rhs_operand != nullptr, "equality expression has an empty operand");
+    auto plan_it = body_.binary_operations.find(&expression);
+    IrBuilder::requireIr(plan_it != body_.binary_operations.end(), "equality expression has no semantic plan");
+    const auto& plan = plan_it->second;
+    IrBuilder::requireIr(plan.left.source_type == plan.right.source_type, "equality operands have different semantic types");
+    auto left = lowerEqualityOperand(*expression.lhs_operand, plan.left);
+    if (!left) {
+        return {false, std::nullopt};
+    }
+    auto right = lowerEqualityOperand(*expression.rhs_operand, plan.right);
+    if (!right) {
+        return {false, std::nullopt};
+    }
+    FunctionId helper = equality_helper_.request(plan.left.source_type);
+    auto result = builder_.emitCall(helper, {left->address, right->address});
+    IrBuilder::requireIr(result.has_value(), "equality helper has no return value");
+    Operand value = *result;
+    if (expression.op == ast::BinaryOperator::NotEqual) {
+        value = builder_.emitBinary(OpCode::Xor, value, builder_.constantInt(module_.types.i1(), 1));
+    }
+    return {true, value};
 }
 
 } // namespace ir

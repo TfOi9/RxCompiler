@@ -3,6 +3,8 @@
 #include "ir/function.hpp"
 #include "ir/ir_ids.hpp"
 #include "ir/function_lowering.hpp"
+#include "ir/clone_helper.hpp"
+#include "ir/equality_helper.hpp"
 #include "semantic/function_resolver.hpp"
 #include <stdexcept>
 
@@ -14,8 +16,12 @@ void ModuleLowering::lower() {
     declareRuntime();
     registerSourceFunctions();
     registerMachineMain();
-    lowerFunctionBodies();
+    CloneHelper clone_helper(model_, module_, types_, layout_, runtime);
+    EqualityHelper equality_helper(model_, module_, types_, layout_);
+    lowerFunctionBodies(clone_helper, equality_helper);
     emitMachineMain();
+    clone_helper.emitPending();
+    equality_helper.emitPending();
 }
 
 void ModuleLowering::initializeTarget() {
@@ -108,14 +114,14 @@ void ModuleLowering::registerMachineMain() {
     machine_main_ = id;
 }
 
-void ModuleLowering::lowerFunctionBodies() {
+void ModuleLowering::lowerFunctionBodies(CloneHelper& clone_helper, EqualityHelper& equality_helper) {
     for (const auto& func: model_.functions()) {
         if (func.kind == semantic::FunctionKind::Builtin) {
             continue;
         }
         const auto* body = model_.findFunctionBody(func.id);
         IrBuilder::requireIr(body != nullptr, "source function has no semantic body");
-        FunctionLowering lowering(model_, func, *body, module_, types_, layout_, functions_, runtime);
+        FunctionLowering lowering(model_, func, *body, module_, types_, layout_, functions_, runtime, clone_helper, equality_helper);
         lowering.lower();
     }
 }
