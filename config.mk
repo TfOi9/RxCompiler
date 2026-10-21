@@ -6,10 +6,9 @@ FILTER ?= official:codegen
 STAGE ?= ir
 
 # Optional: build your compiler once before testing. Leave empty if prebuilt.
+# Use pre-generated RV32 assembly: the OJ C++ build environment need not have Clang.
 BUILD = cmake -S . -B build/cpp && cmake --build build/cpp --parallel 1 \
-    && clang-22 --target=riscv32-unknown-elf -march=rv32im -mabi=ilp32 \
-        -O2 -fno-builtin -S scripts/runtime-example.c \
-        -mllvm -riscv-no-aliases -o {runtime}
+    && cp scripts/runtime-example.s {runtime}
 
 # Required for semantic tests: exit 0 to accept {source}, 1 to reject it.
 SEMANTIC = ./build/cpp/rx_compiler < {source}
