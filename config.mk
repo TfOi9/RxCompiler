@@ -7,7 +7,7 @@ STAGE ?= ir
 
 # Optional: build your compiler once before testing. Leave empty if prebuilt.
 BUILD = cmake -S . -B build/cpp && cmake --build build/cpp --parallel 1 \
-    && $(CLANG) --target=riscv32-unknown-elf -march=rv32im -mabi=ilp32 \
+    && clang-22 --target=riscv32-unknown-elf -march=rv32im -mabi=ilp32 \
         -O2 -fno-builtin -S scripts/runtime-example.c \
         -mllvm -riscv-no-aliases -o {runtime}
 
